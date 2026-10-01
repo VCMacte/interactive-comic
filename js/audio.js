@@ -18,7 +18,11 @@ let token = 0;
 // Все запущенные записи, а не только последняя. Раньше остановка глушила
 // лишь ту, что начата последней: при быстрых нажатиях предыдущая сцена
 // продолжала звучать поверх новой.
-const playing = new Set();
+//
+// Храним вместе с каждой записью то, чем её ожидание завершается. Полагаться
+// на событие ошибки после сброса источника нельзя: оно приходит не во всех
+// браузерах, и тогда повествование зависает, не дождавшись конца реплики.
+const playing = new Map();   // элемент -> завершить ожидание
 
 /** Тот же расчёт, что в tools/tts/collect.mjs — иначе файлы не найдутся. */
 export function clipId(text, role) {
@@ -52,8 +56,9 @@ export function hasClip(text, role) {
 
 export function stopAudio() {
   token++;
-  for (const el of playing) {
+  for (const [el, finish] of playing) {
     try { el.pause(); el.removeAttribute('src'); el.load(); } catch {}
+    finish(false);
   }
   playing.clear();
 }
@@ -70,7 +75,6 @@ export async function playClip(text, role) {
   const my = ++token;
   const el = new Audio(DIR + id + EXT);
   el.preload = 'auto';
-  playing.add(el);
 
   const played = await new Promise((resolve) => {
     let done = false;
@@ -81,6 +85,7 @@ export async function playClip(text, role) {
       playing.delete(el);
       resolve(ok);
     };
+    playing.set(el, finish);
 
     // Жёсткий предел на случай, если файл завис на загрузке и событий
     // не будет вовсе: без него повествование встало бы навсегда.

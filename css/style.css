@@ -159,7 +159,8 @@ body{
   width:7vmin; height:7vmin; border-radius:50%; border:0;
   background:var(--panel); color:var(--ink); font-size:3.4vmin; cursor:pointer;
 }
-/* Возврат к выбору — левее кнопки повтора, с запасом на её ширину. */
+/* Кнопки в углу идут в ряд справа налево: повтор, возврат, пропуск. */
 .icon-btn.home{right:calc(var(--safe) + 8.6vmin)}
+.icon-btn.skip{right:calc(var(--safe) + 17.2vmin); font-weight:700}
 
 @media (prefers-reduced-motion:reduce){ *{animation:none!important; transition:none!important} }

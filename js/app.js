@@ -8,7 +8,7 @@ const el = {
   gate: $('gate'), gateText: $('gateText'), comicList: $('comicList'),
   voiceToggle: $('voiceToggle'), installHint: $('installHint'), noVoiceHint: $('noVoiceHint'),
   stage: $('stage'), text: $('text'), choices: $('choices'),
-  mic: $('mic'), heard: $('heard'), replay: $('replayBtn'), home: $('homeBtn'),
+  mic: $('mic'), heard: $('heard'), replay: $('replayBtn'), home: $('homeBtn'), skip: $('skipBtn'),
 };
 
 // Установленное приложение само открывается без адресной строки и системных
@@ -360,14 +360,28 @@ function button(label, onClick, index) {
 
 function setChoicesEnabled(on) {
   state.narrating = !on;
+  // Кнопка пропуска нужна ровно тогда, когда есть что пропускать.
+  el.skip.hidden = on;
   for (const b of el.choices.querySelectorAll('.choice')) b.disabled = !on;
 }
+
+let skipToken = 0;
+
+function skipNarration() {
+  if (!state.narrating) return;
+  skipToken++;
+  cancelSpeech();
+}
+
+el.skip.addEventListener('click', skipNarration);
 
 /* ---------------- рассказчик ---------------- */
 
 const sleep = (ms) => new Promise(r => setTimeout(r, ms));
 
 async function narrate(scene, my) {
+  const skipAt = skipToken;
+  const skipped = () => skipToken !== skipAt;
   setChoicesEnabled(false);
 
   // Рассказ и вопрос произносятся отдельно и разной интонацией:
@@ -375,7 +389,7 @@ async function narrate(scene, my) {
   await speakDialogue(scene.speak ?? scene.text, { character: voiceOf(scene) });
   if (my !== token) return;   // ребёнок уже выбрал — не перебиваем его
 
-  if (scene.choices?.length) {
+  if (!skipped() && scene.choices?.length) {
     // Вопрос задаёт рассказчик, а не герой: ребёнку должно быть слышно,
     // что обращаются уже к нему.
     const prompt = scene.prompt ?? askLine(scene);
@@ -387,6 +401,7 @@ async function narrate(scene, my) {
     // вопрос их уже перечислил, и повтор звучал бы как заикание.
     const said = prompt.toLowerCase();
     for (const c of scene.choices) {
+      if (skipped()) break;
       if (said.includes(c.label.toLowerCase())) continue;
       await sleep(180);
       if (my !== token) return;

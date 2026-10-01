@@ -52,9 +52,20 @@ el.startBtn.addEventListener('click', async () => {
   show(state.story.start);
 });
 
+// Полный экран и поворот — украшение, а не условие работы. Оба запроса
+// умеют не отвечать вовсе: без настоящего касания браузер промис ни разрешает,
+// ни отклоняет, и запуск встаёт намертво на «Готовим…». Поэтому ждём их
+// с ограничением и идём дальше в любом случае.
+const withTimeout = (promise, ms) =>
+  Promise.race([promise, new Promise(r => setTimeout(r, ms))]).catch(() => {});
+
 async function goFullscreenLandscape() {
-  try { await document.documentElement.requestFullscreen({ navigationUI: 'hide' }); } catch {}
-  try { await screen.orientation.lock('landscape'); } catch {}
+  try {
+    await withTimeout(document.documentElement.requestFullscreen({ navigationUI: 'hide' }), 3000);
+  } catch {}
+  try {
+    await withTimeout(screen.orientation.lock('landscape'), 1500);
+  } catch {}
 }
 
 async function keepScreenAwake() {
@@ -71,9 +82,9 @@ async function keepScreenAwake() {
 // Разрешение на микрофон спрашиваем один раз на старте, а не посреди сказки.
 // Диалог может висеть сколько угодно — поэтому ограничиваем ожидание.
 async function primeMicrophone() {
-  const timeout = new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), 20000));
   try {
-    const stream = await Promise.race([navigator.mediaDevices.getUserMedia({ audio: true }), timeout]);
+    const stream = await withTimeout(navigator.mediaDevices.getUserMedia({ audio: true }), 20000);
+    if (!stream) throw new Error('timeout');
     stream.getTracks().forEach(t => t.stop());
   } catch {
     state.useVoice = false;

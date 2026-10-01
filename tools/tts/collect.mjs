@@ -13,7 +13,21 @@ import { fileURLToPath } from 'node:url';
 import { makeTask } from '../../js/tasks.js';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
-const VARIANTS = 16;        // сколько вариантов на каждый вид задания
+const VARIANTS = 40;        // сколько вариантов на каждый вид задания
+
+// Генератор заданий берёт числа из Math.random, поэтому каждый запуск
+// коллектора давал бы новый пул, и вся озвучка устаревала целиком.
+// Подменяем источник случайности на воспроизводимый: тот же VARIANTS —
+// тот же набор вопросов, и пересобирать нужно только то, что добавилось.
+function seedRandom(seed) {
+  let s = seed >>> 0;
+  return () => {
+    s = (s + 0x6D2B79F5) >>> 0;
+    let t = Math.imul(s ^ (s >>> 15), 1 | s);
+    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
 
 /**
  * Идентификатор реплики — от её текста и роли. Так приложение находит
@@ -62,7 +76,10 @@ function add(text, role) {
   utterances.set(id, { id, role, text: clean });
 }
 
-const stories = readdirSync(join(ROOT, 'stories')).filter(f => f.endsWith('.json'));
+// Пул заданий лежит там же, но историей не является: при повторном запуске
+// коллектор пытался прочитать собственный результат и падал.
+const stories = readdirSync(join(ROOT, 'stories'))
+  .filter(f => f.endsWith('.json') && f !== 'tasks-pool.json');
 const taskSpecs = new Map();    // "theme|kind|max" -> spec
 
 for (const file of stories) {
@@ -80,6 +97,9 @@ for (const file of stories) {
     for (const c of scene.choices || []) {
       if (c.say) for (const part of splitDialogue(fill(c.say), character)) add(part.text, part.role);
       if (c.hint) add(fill(c.hint), 'narrator');
+      // Подписи на кнопках проговариваются вслух: мелкий текст с дивана
+      // не прочесть, а выбирать ребёнок должен на слух.
+      add(c.label, 'narrator');
     }
 
     if (scene.task) {
@@ -100,10 +120,14 @@ const SYSTEM = [
   'Не расслышал. Нажми на нужный ответ внизу.',
 ];
 for (const line of SYSTEM) add(line, 'narrator');
+add('Выбирай:', 'narrator');
 
 /* ---------------- пул заданий ---------------- */
 
 const pool = {};
+
+const realRandom = Math.random;
+Math.random = seedRandom(20260101);
 
 for (const [key, spec] of taskSpecs) {
   const seen = new Map();
@@ -121,9 +145,15 @@ for (const [key, spec] of taskSpecs) {
   }
 
   pool[key] = [...seen.values()];
-  for (const t of pool[key]) { add(t.question, 'narrator'); add(t.hint, 'narrator'); }
+  for (const t of pool[key]) {
+    add(t.question, 'narrator');
+    add(t.hint, 'narrator');
+    for (const c of t.choices) add(c.label, 'narrator');
+  }
   console.log(`${key}: ${pool[key].length} вариантов`);
 }
+
+Math.random = realRandom;
 
 /* ---------------- запись ---------------- */
 

@@ -350,6 +350,8 @@ function button(label, onClick, index) {
 
 /* ---------------- рассказчик ---------------- */
 
+const sleep = (ms) => new Promise(r => setTimeout(r, ms));
+
 async function narrate(scene, my) {
   // Рассказ и вопрос произносятся отдельно и разной интонацией:
   // так ребёнок слышит, где кончилась сказка и начался вопрос к нему.
@@ -359,8 +361,21 @@ async function narrate(scene, my) {
   if (scene.choices?.length) {
     // Вопрос задаёт рассказчик, а не герой: ребёнку должно быть слышно,
     // что обращаются уже к нему.
-    await speak(scene.prompt ?? askLine(scene), 'question', 'narrator');
+    const prompt = scene.prompt ?? askLine(scene);
+    await speak(prompt, 'question', 'narrator');
     if (my !== token) return;
+
+    // Подписи на кнопках мелкие, с дивана их не прочесть — проговариваем.
+    // Но только те, которых не было в самом вопросе: у сюжетных развилок
+    // вопрос их уже перечислил, и повтор звучал бы как заикание.
+    const said = prompt.toLowerCase();
+    for (const c of scene.choices) {
+      if (said.includes(c.label.toLowerCase())) continue;
+      await sleep(180);
+      if (my !== token) return;
+      await speak(c.label, 'question', 'narrator');
+      if (my !== token) return;
+    }
   }
 
   listen(my);

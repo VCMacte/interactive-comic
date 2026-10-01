@@ -7,8 +7,17 @@ const $ = (id) => document.getElementById(id);
 const el = {
   gate: $('gate'), startBtn: $('startBtn'), voiceToggle: $('voiceToggle'),
   stage: $('stage'), text: $('text'), choices: $('choices'),
-  mic: $('mic'), heard: $('heard'), replay: $('replayBtn'),
+  mic: $('mic'), heard: $('heard'), replay: $('replayBtn'), installHint: $('installHint'),
 };
+
+// Установленное приложение само открывается без адресной строки и системных
+// кнопок — это задаёт манифест. Во вкладке браузера их приходится убирать
+// полноэкранным режимом, а он ещё и теряется при каждом возврате в приложение.
+const installedApp = matchMedia('(display-mode: fullscreen)').matches
+  || matchMedia('(display-mode: standalone)').matches
+  || navigator.standalone === true;
+
+if (!installedApp) el.installHint.hidden = false;
 
 const state = {
   story: null,
@@ -35,6 +44,7 @@ el.startBtn.addEventListener('click', async () => {
   el.startBtn.textContent = 'Готовим…';
 
   await goFullscreenLandscape();
+  keepFullscreen();
   keepScreenAwake();
   if (state.useVoice) await primeMicrophone();
 
@@ -60,12 +70,33 @@ const withTimeout = (promise, ms) =>
   Promise.race([promise, new Promise(r => setTimeout(r, ms))]).catch(() => {});
 
 async function goFullscreenLandscape() {
-  try {
-    await withTimeout(document.documentElement.requestFullscreen({ navigationUI: 'hide' }), 3000);
-  } catch {}
+  // У установленного приложения полный экран уже есть от манифеста —
+  // повторный запрос только мигнул бы системным уведомлением.
+  if (!installedApp) {
+    try {
+      await withTimeout(document.documentElement.requestFullscreen({ navigationUI: 'hide' }), 3000);
+    } catch {}
+  }
   try {
     await withTimeout(screen.orientation.lock('landscape'), 1500);
   } catch {}
+}
+
+// Полный экран во вкладке браузера не держится: его сбрасывает поворот,
+// шторка уведомлений, переключение приложений. На трансляции это выглядит
+// как внезапно выехавшая адресная строка посреди сказки. Возвращаем его
+// первым же касанием экрана — касание даёт то самое разрешение пользователя,
+// без которого браузер полноэкранный режим не включит.
+function keepFullscreen() {
+  if (installedApp) return;
+
+  const restore = () => {
+    if (document.fullscreenElement) return;
+    document.documentElement.requestFullscreen({ navigationUI: 'hide' }).catch(() => {});
+    screen.orientation?.lock?.('landscape').catch(() => {});
+  };
+
+  el.stage.addEventListener('pointerdown', restore);
 }
 
 async function keepScreenAwake() {

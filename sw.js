@@ -1,6 +1,6 @@
 // Офлайн-кэш: история и картинки доступны без сети.
 // Распознавание речи сетью всё равно пользуется — оно идёт через серверы Google.
-const CACHE = 'comic-v6';
+const CACHE = 'comic-v7';
 const ASSETS = [
   './',
   './index.html',
@@ -28,6 +28,8 @@ const ASSETS = [
   './assets/char/firefly.svg',
   './assets/char/hedgehog.svg',
   './assets/char/owl.svg',
+  './assets/icon-192.png',
+  './assets/icon-512.png',
   './assets/icon.svg',
 ];
 

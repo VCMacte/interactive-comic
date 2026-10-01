@@ -36,6 +36,10 @@ body{
   background:var(--accent); color:var(--accent-ink); cursor:pointer;
 }
 .toggle{display:flex; gap:.5rem; align-items:center; opacity:.8; font-size:.95rem}
+.hint{
+  margin:0; max-width:34ch; font-size:.9rem; line-height:1.5;
+  color:var(--accent); opacity:.85;
+}
 
 /* ---------- сцена ---------- */
 .stage{

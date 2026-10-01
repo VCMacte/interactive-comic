@@ -26,7 +26,8 @@ const MOODS = {
 /* ---------------- выбор голосов ---------------- */
 
 let voicesReady = false;
-let assigned = null;   // роль -> голос
+let assigned = null;      // роль -> голос
+let ttsUsable = null;     // null — ещё не выясняли
 
 function loadVoices() {
   return new Promise((resolve) => {
@@ -62,11 +63,20 @@ function scoreVoice(v) {
 function assignVoices() {
   if (assigned) return assigned;
 
-  const ranked = speechSynthesis.getVoices()
+  const all = speechSynthesis.getVoices() || [];
+  let ranked = all
     .map(v => ({ v, score: scoreVoice(v) }))
     .filter(x => x.score >= 0)
     .sort((a, b) => b.score - a.score)
     .map(x => x.v);
+
+  // Русского голоса может не быть вовсе — так случилось в браузере телевизора.
+  // Раньше роли оставались вообще без голоса, движок получал неизвестный ему
+  // язык и молча ничего не произносил. Лучше нерусский голос, чем тишина:
+  // слова он выговорит коряво, но история хотя бы зазвучит.
+  if (!ranked.length && all.length) ranked = all.slice();
+
+  ttsUsable = ranked.length > 0;
 
   const roles = Object.keys(ROLES);
   assigned = {};
@@ -75,6 +85,18 @@ function assignVoices() {
   // Рассказчику всегда лучший голос: его слышно дольше всех.
   if (ranked.length) assigned.narrator = ranked[0];
   return assigned;
+}
+
+/**
+ * Можно ли вообще рассчитывать на озвучку. Если голосов в системе нет,
+ * синтезатор молчит, но об этом не сообщает — история просто идёт в тишине,
+ * и непонятно, сломалось что-то или так задумано.
+ */
+export async function ttsAvailable() {
+  if (!('speechSynthesis' in window)) return false;
+  await loadVoices();
+  assignVoices();
+  return !!ttsUsable;
 }
 
 /** Какие голоса достались ролям — чтобы можно было проверить на устройстве. */
@@ -165,6 +187,7 @@ function tone(role, mood) {
 export async function speak(text, mood = 'story', role = 'narrator') {
   if (!('speechSynthesis' in window) || !text) return;
   await loadVoices();
+  if (!await ttsAvailable()) return;
 
   const opts = tone(role, mood);
   const my = ++speechToken;
@@ -186,6 +209,7 @@ export async function speak(text, mood = 'story', role = 'narrator') {
 export async function speakDialogue(text, { character = 'hero', mood = 'story' } = {}) {
   if (!('speechSynthesis' in window) || !text) return;
   await loadVoices();
+  if (!await ttsAvailable()) return;
 
   const segments = [];
   const re = /«([^»]*)»/g;
@@ -253,7 +277,7 @@ export function createListener({ onInterim, onResult, onEnd, windowMs = 30000 })
     rec.lang = LANG;
     rec.interimResults = true;
     rec.continuous = true;          // не обрывать после первой фразы
-    rec.maxAlternatives = 3;
+    rec.maxAlternatives = 6;
 
     rec.onresult = (e) => {
       const last = e.results[e.results.length - 1];

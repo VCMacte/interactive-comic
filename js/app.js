@@ -1,4 +1,4 @@
-import { speak, speakDialogue, cancelSpeech, createListener, voiceSupported } from './voice.js';
+import { speak, speakDialogue, cancelSpeech, createListener, voiceSupported, ttsAvailable } from './voice.js';
 import { matchChoice } from './match.js';
 import { makeTask } from './tasks.js';
 import { setScene, preloadScene, enter, leave, cheer, wobble } from './stage.js';
@@ -6,7 +6,7 @@ import { setScene, preloadScene, enter, leave, cheer, wobble } from './stage.js'
 const $ = (id) => document.getElementById(id);
 const el = {
   gate: $('gate'), gateText: $('gateText'), comicList: $('comicList'),
-  voiceToggle: $('voiceToggle'), installHint: $('installHint'),
+  voiceToggle: $('voiceToggle'), installHint: $('installHint'), noVoiceHint: $('noVoiceHint'),
   stage: $('stage'), text: $('text'), choices: $('choices'),
   mic: $('mic'), heard: $('heard'), replay: $('replayBtn'), home: $('homeBtn'),
 };
@@ -46,6 +46,14 @@ const MAX_MISSES = 4;             // после скольких — перей�
 
 loadCatalogue();
 lockOrientation('portrait');
+checkVoiceSupport();
+
+// Отсутствие озвучки выглядит как поломка: история идёт, а звука нет.
+// Проверяем дважды — список голосов на части устройств наполняется только
+// после первого обращения пользователя к странице.
+async function checkVoiceSupport() {
+  el.noVoiceHint.hidden = await ttsAvailable();
+}
 
 async function loadCatalogue() {
   let comics;
@@ -94,6 +102,7 @@ async function openComic(comic, card) {
   keepFullscreen();
   keepScreenAwake();
   if (state.useVoice) await primeMicrophone();
+  checkVoiceSupport();
 
   let story;
   try {

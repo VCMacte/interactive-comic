@@ -1,13 +1,14 @@
-import { speak, cancelSpeech, createListener, voiceSupported } from './voice.js';
+import { speak, speakDialogue, cancelSpeech, createListener, voiceSupported } from './voice.js';
 import { matchChoice } from './match.js';
 import { makeTask } from './tasks.js';
 import { setScene, preloadScene, enter, leave, cheer, wobble } from './stage.js';
 
 const $ = (id) => document.getElementById(id);
 const el = {
-  gate: $('gate'), startBtn: $('startBtn'), voiceToggle: $('voiceToggle'),
+  gate: $('gate'), gateText: $('gateText'), comicList: $('comicList'),
+  voiceToggle: $('voiceToggle'), installHint: $('installHint'),
   stage: $('stage'), text: $('text'), choices: $('choices'),
-  mic: $('mic'), heard: $('heard'), replay: $('replayBtn'), installHint: $('installHint'),
+  mic: $('mic'), heard: $('heard'), replay: $('replayBtn'), home: $('homeBtn'),
 };
 
 // Установленное приложение само открывается без адресной строки и системных
@@ -35,32 +36,120 @@ const state = {
 let token = 0;
 let listener = null;
 
+// Подобрано по жалобе из реальной эксплуатации: посторонний шум принимался
+// за попытку ответить, и прослушивание обрывалось почти сразу.
+const LISTEN_WINDOW_MS = 30000;   // сколько держим микрофон открытым
+const NUDGE_AFTER = 2;            // после скольких промахов мягко подсказать
+const MAX_MISSES = 4;             // после скольких — перейти на кнопки
+
 /* ---------------- запуск ---------------- */
 
-el.startBtn.addEventListener('click', async () => {
+loadCatalogue();
+
+async function loadCatalogue() {
+  let comics;
+  try {
+    comics = await fetch('comics.json').then(r => r.json());
+  } catch {
+    el.gateText.textContent = 'Не удалось загрузить список историй. Проверьте соединение.';
+    return;
+  }
+
+  el.comicList.innerHTML = '';
+  comics.forEach((comic, i) => el.comicList.append(comicCard(comic, i)));
+}
+
+function comicCard(comic, index) {
+  const card = document.createElement('button');
+  card.className = 'comic';
+  card.dataset.index = index;
+
+  const img = document.createElement('img');
+  img.src = comic.cover;
+  img.alt = '';
+
+  const title = document.createElement('b');
+  title.textContent = comic.title;
+
+  const sub = document.createElement('span');
+  sub.textContent = comic.subtitle ?? '';
+
+  card.append(img, title, sub);
+  card.addEventListener('click', () => openComic(comic, card));
+  return card;
+}
+
+// Нажатие на карточку — тот самый жест пользователя, без которого браузер
+// не отдаст ни полный экран, ни микрофон. Поэтому всё разрешение запрашиваем
+// здесь, а не при загрузке страницы.
+async function openComic(comic, card) {
   state.useVoice = el.voiceToggle.checked && voiceSupported;
 
-  el.startBtn.disabled = true;
-  el.startBtn.textContent = 'Готовим…';
+  const cards = [...el.comicList.querySelectorAll('.comic')];
+  cards.forEach(c => { c.disabled = true; });
+  card.querySelector('span').textContent = 'Готовим…';
 
   await goFullscreenLandscape();
   keepFullscreen();
   keepScreenAwake();
   if (state.useVoice) await primeMicrophone();
 
+  let story;
   try {
-    state.story = await fetch('story.json').then(r => r.json());
+    story = await fetch(comic.story).then(r => r.json());
   } catch {
-    el.startBtn.disabled = false;
-    el.startBtn.textContent = 'Начать историю';
-    el.gate.querySelector('p').textContent = 'Не удалось загрузить историю. Проверьте соединение.';
+    cards.forEach(c => { c.disabled = false; });
+    card.querySelector('span').textContent = comic.subtitle ?? '';
+    el.gateText.textContent = 'Не удалось загрузить историю. Проверьте соединение.';
     return;
   }
+
+  state.story = fillViewerName(story);
+  state.sceneId = null;
+  state.scene = null;
+  // Новая история начинается с чистого листа: иначе её первая сцена
+  // попыталась бы «выехать» из сцены прошлого комикса.
+  state.started = false;
+  token++;
 
   el.gate.hidden = true;
   el.stage.hidden = false;
   show(state.story.start);
-});
+
+  cards.forEach(c => { c.disabled = false; });
+  card.querySelector('span').textContent = comic.subtitle ?? '';
+}
+
+/**
+ * Имя зрителя подставляется один раз при загрузке истории, а не при каждом
+ * показе сцены: иначе плейсхолдер пришлось бы помнить во всех местах, где
+ * текст читается вслух или попадает на экран.
+ */
+function fillViewerName(story) {
+  const name = story.viewer;
+  if (!name) return story;
+
+  const walk = (value) => {
+    if (typeof value === 'string') return value.replaceAll('{{имя}}', name);
+    if (Array.isArray(value)) return value.map(walk);
+    if (value && typeof value === 'object') {
+      return Object.fromEntries(Object.entries(value).map(([k, v]) => [k, walk(v)]));
+    }
+    return value;
+  };
+  return walk(story);
+}
+
+function backToHub() {
+  token++;                 // всё, что было запущено, увидит чужой токен и замолчит
+  stopListening();
+  cancelSpeech();
+  state.started = false;
+  el.stage.hidden = true;
+  el.gate.hidden = false;
+}
+
+el.home.addEventListener('click', backToHub);
 
 // Полный экран и поворот — украшение, а не условие работы. Оба запроса
 // умеют не отвечать вовсе: без настоящего касания браузер промис ни разрешает,
@@ -119,7 +208,7 @@ async function primeMicrophone() {
     stream.getTracks().forEach(t => t.stop());
   } catch {
     state.useVoice = false;
-    el.startBtn.textContent = 'Начинаем без голоса…';
+    el.gateText.textContent = 'Микрофон не разрешён — история пойдёт с кнопками.';
   }
 }
 
@@ -173,7 +262,10 @@ const PRAISE = [
 // Сцена с заданием каждый раз получает новый вопрос и новые ответы,
 // поэтому сказку можно слушать много раз подряд.
 function withTask(raw) {
-  const task = makeTask(raw.task);
+  // Сцена может задать вид задания строкой ("math") или объектом с пределом
+  // счёта: {"kind":"math","max":20}. Так сложность растёт по ходу истории.
+  const spec = typeof raw.task === 'string' ? { kind: raw.task } : raw.task;
+  const task = makeTask(spec.kind, { theme: state.story.theme, max: spec.max });
   const choices = task.choices.map(c => c.correct
     ? { label: c.label, keywords: c.keywords, correct: true, say: PRAISE[Math.floor(Math.random() * PRAISE.length)], next: raw.next }
     : { label: c.label, keywords: c.keywords, hint: task.hint });
@@ -200,7 +292,8 @@ function renderChoices(scene) {
   const choices = scene.choices || [];
 
   if (!choices.length) {
-    el.choices.append(button('Прочитать ещё раз', (b) => show(state.story.start, 'forward'), 0));
+    el.choices.append(button('Прочитать ещё раз', () => show(state.story.start, 'forward'), 0));
+    el.choices.append(button('Выбрать другую историю', () => backToHub(), 1));
     highlight();
     return;
   }
@@ -224,16 +317,21 @@ function button(label, onClick, index) {
 async function narrate(scene, my) {
   // Рассказ и вопрос произносятся отдельно и разной интонацией:
   // так ребёнок слышит, где кончилась сказка и начался вопрос к нему.
-  await speak(scene.speak ?? scene.text, 'story');
+  await speakDialogue(scene.speak ?? scene.text, { character: voiceOf(scene) });
   if (my !== token) return;   // ребёнок уже выбрал — не перебиваем его
 
   if (scene.choices?.length) {
-    await speak(scene.prompt ?? askLine(scene), 'question');
+    // Вопрос задаёт рассказчик, а не герой: ребёнку должно быть слышно,
+    // что обращаются уже к нему.
+    await speak(scene.prompt ?? askLine(scene), 'question', 'narrator');
     if (my !== token) return;
   }
 
   listen(my);
 }
+
+// Чьим голосом говорит прямая речь в этой истории.
+const voiceOf = (scene) => scene.voice ?? state.story?.voice ?? 'hero';
 
 function askLine(scene) {
   return 'Что выберем: ' + scene.choices.map(c => c.label).join(', или ');
@@ -250,6 +348,7 @@ function listen(my) {
   el.heard.textContent = 'слушаю…';
 
   listener = createListener({
+    windowMs: LISTEN_WINDOW_MS,
     onInterim: (t) => { el.heard.textContent = t; },
     onResult: (text, alternatives) => {
       if (my !== token) return;
@@ -259,8 +358,14 @@ function listen(my) {
     },
     onEnd: (reason) => {
       if (my !== token) return;
-      if (reason === 'unsupported') { state.useVoice = false; stopListening(); }
-      else miss(my);
+      if (reason === 'unsupported' || reason === 'not-allowed' || reason === 'service-not-allowed') {
+        state.useVoice = false;
+        stopListening();
+        return;
+      }
+      // Окно кончилось — ребёнок молчит или отвлёкся. Не наказываем промахом,
+      // просто предлагаем кнопки и замолкаем.
+      giveUpToButtons();
     },
   });
   listener.start();
@@ -272,17 +377,30 @@ function stopListening() {
   el.mic.hidden = true;
 }
 
+// Ребёнок сказал что-то осмысленное, но не то. Прослушивание при этом живёт
+// дальше само — обрывать его на каждом промахе было ошибкой: ответ с третьей
+// попытки для семилетнего совершенно нормален.
 async function miss(my) {
-  stopListening();
   if (my !== token) return;
-
   state.misses++;
-  // Два промаха — переходим на кнопки, чтобы ребёнок не застрял на развилке.
-  if (state.misses >= 2) {
-    await speak('Что-то я не расслышал. Нажми на нужный ответ внизу.', 'hint');
-    return;
+
+  if (state.misses >= MAX_MISSES) { giveUpToButtons(); return; }
+
+  if (state.misses === NUDGE_AFTER) {
+    // Подсказку произносим с выключенным микрофоном, иначе рассказчика
+    // услышит он сам: звук идёт на телевизор и возвращается в телефон.
+    stopListening();
+    await speak('Скажи ещё раз, только погромче. Или нажми ответ внизу.', 'hint', 'narrator');
+    if (my !== token) return;
+    listen(my);
   }
-  listen(my);
+}
+
+async function giveUpToButtons() {
+  const my = token;
+  stopListening();
+  await speak('Не расслышал. Нажми на нужный ответ внизу.', 'hint', 'narrator');
+  if (my !== token) return;
 }
 
 /* ---------------- выбор ---------------- */
@@ -295,7 +413,7 @@ async function pick(choice, btn) {
   // Задание с проверкой: неверный ответ не ведёт дальше, а подсказывает.
   if (choice.hint) {
     wobble(btn);
-    await speak(choice.hint, 'hint');
+    await speak(choice.hint, 'hint', 'narrator');
     if (my !== token) return;
     state.misses = 0;
     listen(my);
@@ -307,7 +425,7 @@ async function pick(choice, btn) {
   if (choice.correct) cheer();
 
   if (choice.say) {
-    await speak(choice.say, 'praise');
+    await speakDialogue(choice.say, { character: voiceOf(state.scene), mood: 'praise' });
     if (my !== token) return;
   }
   show(choice.next, choice.dir ?? 'forward');

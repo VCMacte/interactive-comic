@@ -57,6 +57,45 @@ const LAYERS = {
   },
 };
 
+
+// ---- мир «Первой ночи» ----
+// Стиль описан нарочно жёстко: нейросеть склонна сглаживать кубы в холмики,
+// а здесь вся узнаваемость держится на чётких гранях.
+const MC_STYLE = 'blocky voxel game world, large cubic blocks, crisp square edges, '
+  + 'flat saturated colors, pixel art texture, no blur, no soft shading';
+const MC_NEG = 'text, letters, watermark, signature, frame, border, people, person, character, '
+  + 'blurry, soft focus, smooth gradients, rounded shapes, realistic, photo, lowres';
+
+const MC_LAYERS = {
+  'mc/sky-day': {
+    strength: 0.42,
+    prompt: `bright blue daytime sky with chunky square white clouds and a square sun, ${MC_STYLE}, no ground, no trees`,
+    negative: MC_NEG + ', round clouds, round sun',
+  },
+  'mc/sky-sunset': {
+    strength: 0.42,
+    prompt: `sunset sky, orange and pink bands, chunky square clouds, square sun near the horizon, ${MC_STYLE}, no ground, no trees`,
+    negative: MC_NEG + ', round clouds, round sun',
+  },
+  'mc/sky-night': {
+    strength: 0.42,
+    prompt: `dark blue night sky with a square moon, ${MC_STYLE}, no ground, no trees`,
+    negative: MC_NEG + ', round moon, crescent moon, second moon',
+  },
+  'mc/far-hills': {
+    strength: 0.34,
+    prompt: `distant blocky hills of grass and dirt cubes with cubic trees, layered depth, ${MC_STYLE}`,
+    negative: MC_NEG,
+  },
+  'mc/far-cave': {
+    strength: 0.34,
+    prompt: `underground cave wall of stone cubes with coal and diamond ore blocks, torchlight, ${MC_STYLE}`,
+    negative: MC_NEG + ', sky, sun, clouds',
+  },
+};
+
+Object.assign(LAYERS, MC_LAYERS);
+
 const wanted = process.argv.slice(2);
 const names = wanted.length ? wanted : Object.keys(LAYERS);
 
@@ -67,8 +106,8 @@ for (const name of names) {
   console.log(`\n=== ${name} (strength ${layer.strength}) ===`);
   const res = spawnSync(process.execPath, [
     'tools/ed-generate.mjs',
-    '--init', `tools/init/${name}.png`,
-    '--out', `tools/painted/${name}.png`,
+    '--init', `tools/init/${name.replace('/', '-')}.png`,
+    '--out', `tools/painted/${name.replace('/', '-')}.png`,
     '--prompt', layer.prompt,
     '--negative', layer.negative ? `${NEG}, ${layer.negative}` : NEG,
     '--strength', String(layer.strength),

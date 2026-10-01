@@ -71,4 +71,38 @@ for (const kind of ['math', 'logic']) {
 }
 
 console.log(failed ? `\n${failed} провалено` : '\nвсе проверки пройдены');
-process.exit(failed ? 1 : 0);
+if (failed) process.exitCode = 1;
+
+// ---- тема Minecraft и предел счёта ----
+{
+  let bad = 0;
+  const NUM20 = ['ноль','один','два','три','четыре','пять','шесть','семь','восемь','девять','десять',
+                 'одиннадцать','двенадцать','тринадцать','четырнадцать','пятнадцать',
+                 'шестнадцать','семнадцать','восемнадцать','девятнадцать','двадцать'];
+  const toNum20 = (w) => NUM20.indexOf(w.toLowerCase());
+
+  for (let i = 0; i < 500; i++) {
+    const max = i % 2 ? 20 : 10;
+    const t = makeTask('math', { theme: 'minecraft', max });
+    const answer = toNum20(t.choices.find(c => c.correct).label);
+    if (answer < 0 || answer > max) { console.log('FAIL: ответ вне предела', max, t.question, answer); bad++; }
+    for (const c of t.choices) {
+      const v = toNum20(c.label);
+      if (v < 0 || v > max) { console.log('FAIL: вариант вне предела', max, c.label); bad++; }
+    }
+    if (/укатил|ветер/.test(t.question)) { console.log('FAIL: лесной оборот в теме Minecraft:', t.question); bad++; }
+  }
+
+  // Логика темы должна говорить о Minecraft, а не о ёжиках.
+  const words = new Set();
+  for (let i = 0; i < 300; i++) {
+    const t = makeTask('logic', { theme: 'minecraft' });
+    t.choices.forEach(c => words.add(c.label.toLowerCase()));
+    if (t.choices.filter(c => c.correct).length !== 1) { console.log('FAIL: верных ответов не один:', t.question); bad++; }
+  }
+  const mc = ['крипер', 'алмаз', 'факел', 'пещера', 'сундук', 'зомби'];
+  if (!mc.some(w => words.has(w))) { console.log('FAIL: в логике нет слов темы'); bad++; }
+
+  console.log(bad ? `\n${bad} провалено в теме Minecraft` : '\nтема Minecraft и предел счёта в порядке');
+  if (bad) process.exitCode = 1;
+}

@@ -65,7 +65,7 @@ window.rasterInit = async (jobs, w, h) => {
  * применяем маску из того же SVG: destination-in оставляет только то,
  * что попадает в силуэт.
  */
-window.composeLayer = async ({ painted, mask, out, w, h, keepAlpha, softMask, type, quality }) => {
+window.composeLayer = async ({ painted, mask, out, w, h, keepAlpha, softMask, chromaKey, type, quality }) => {
   const img = await load(painted);
   const c = canvasOf(w, h);
   const ctx = c.getContext('2d');
@@ -76,6 +76,23 @@ window.composeLayer = async ({ painted, mask, out, w, h, keepAlpha, softMask, ty
     ctx.globalCompositeOperation = 'destination-in';
     ctx.drawImage(m, 0, 0, w, h);
     ctx.globalCompositeOperation = 'source-over';
+  }
+
+  // Хромакей. У дальнего плана после покраски небо залито ровной синевой
+  // от init-подложки. Жёсткая маска по исходному силуэту тут не годится:
+  // нейросеть делает кубы объёмными, и они вылезают за исходный контур —
+  // маска срезала бы им края. Поэтому убираем именно цвет подложки.
+  if (chromaKey) {
+    const [kr, kg, kb] = chromaKey.rgb;
+    const tol = chromaKey.tolerance ?? 70;
+    const data = ctx.getImageData(0, 0, w, h);
+    const d = data.data;
+    for (let i = 0; i < d.length; i += 4) {
+      const dist = Math.hypot(d[i] - kr, d[i + 1] - kg, d[i + 2] - kb);
+      if (dist < tol) d[i + 3] = 0;
+      else if (dist < tol * 1.6) d[i + 3] = Math.round(255 * ((dist - tol) / (tol * 0.6)));
+    }
+    ctx.putImageData(data, 0, 0);
   }
 
   // Мягкая маска для дальнего плана. Жёсткий силуэт срезает написанную
@@ -95,6 +112,34 @@ window.composeLayer = async ({ painted, mask, out, w, h, keepAlpha, softMask, ty
   // а комплект слоёв целиком уходит в офлайн-кэш приложения.
   const bytes = await save(out, c, type || 'image/png', quality);
   log('готово: ' + out + ' — ' + bytes + ' байт');
+  return bytes;
+};
+
+/**
+ * Обложка для главного экрана — те же слои сцены, сложенные в один кадр.
+ * Отдельных картинок рисовать не нужно: обложка обязана совпадать с тем,
+ * что ребёнок увидит, нажав на карточку.
+ */
+window.composeCover = async ({ layers, cast = [], out, w = 640, h = 360 }) => {
+  const c = canvasOf(w, h);
+  const ctx = c.getContext('2d');
+  ctx.fillStyle = '#0b0d14';
+  ctx.fillRect(0, 0, w, h);
+
+  for (const src of layers) {
+    if (!src) continue;
+    ctx.drawImage(await load(src), -w * 0.04, -h * 0.04, w * 1.08, h * 1.08);
+  }
+
+  for (const actor of cast) {
+    const img = await load(actor.src);
+    const cw = w * (actor.w / 100);
+    const ch = cw * (img.naturalHeight / img.naturalWidth);
+    ctx.drawImage(img, w * (actor.x / 100), h - h * (actor.y / 100) - ch, cw, ch);
+  }
+
+  const bytes = await save(out, c, 'image/webp', 0.85);
+  log('обложка: ' + out + ' — ' + bytes + ' байт');
   return bytes;
 };
 </script>

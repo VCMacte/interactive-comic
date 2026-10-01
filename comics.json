@@ -1,0 +1,16 @@
+[
+  {
+    "id": "minecraft",
+    "title": "Первая ночь",
+    "subtitle": "По мотивам Minecraft · пять игр",
+    "cover": "assets/covers/minecraft.webp",
+    "story": "stories/minecraft.json"
+  },
+  {
+    "id": "hedgehog",
+    "title": "Ёжик и лунная тропа",
+    "subtitle": "Сказка на ночь",
+    "cover": "assets/covers/hedgehog.webp",
+    "story": "stories/hedgehog.json"
+  }
+]

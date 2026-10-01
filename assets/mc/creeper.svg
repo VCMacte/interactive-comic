@@ -1,0 +1,48 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 520" width="160" height="520">
+<style>
+  .idle { animation: idle 3.2s ease-in-out infinite; transform-origin: 50% 100%; }
+  @keyframes idle { 0%,100% { transform: translateY(0) } 50% { transform: translateY(-6px) } }
+  @media (prefers-reduced-motion: reduce) { .idle { animation: none } }
+  
+</style>
+<g class="idle">
+
+<rect x="0" y="0" width="160" height="160" fill="#5ca64c"/>
+<rect x="40" y="160" width="80" height="240" fill="#5ca64c"/>
+<rect x="0" y="400" width="80" height="120" fill="#5ca64c"/>
+<rect x="80" y="400" width="80" height="120" fill="#5ca64c"/>
+<rect x="40" y="400" width="20" height="20" fill="#74bd63" opacity="0.55"/>
+<rect x="100" y="0" width="20" height="20" fill="#74bd63" opacity="0.55"/>
+<rect x="0" y="40" width="20" height="20" fill="#4a8a3d" opacity="0.55"/>
+<rect x="100" y="180" width="20" height="20" fill="#4a8a3d" opacity="0.55"/>
+<rect x="40" y="360" width="20" height="20" fill="#4a8a3d" opacity="0.55"/>
+<rect x="20" y="220" width="20" height="20" fill="#74bd63" opacity="0.55"/>
+<rect x="60" y="140" width="20" height="20" fill="#74bd63" opacity="0.55"/>
+<rect x="120" y="180" width="20" height="20" fill="#74bd63" opacity="0.55"/>
+<rect x="140" y="260" width="20" height="20" fill="#4a8a3d" opacity="0.55"/>
+<rect x="140" y="100" width="20" height="20" fill="#4a8a3d" opacity="0.55"/>
+<rect x="100" y="200" width="20" height="20" fill="#4a8a3d" opacity="0.55"/>
+<rect x="20" y="340" width="20" height="20" fill="#4a8a3d" opacity="0.55"/>
+<rect x="140" y="100" width="20" height="20" fill="#74bd63" opacity="0.55"/>
+<rect x="60" y="300" width="20" height="20" fill="#74bd63" opacity="0.55"/>
+<rect x="120" y="140" width="20" height="20" fill="#74bd63" opacity="0.55"/>
+<rect x="120" y="220" width="20" height="20" fill="#4a8a3d" opacity="0.55"/>
+<rect x="0" y="320" width="20" height="20" fill="#74bd63" opacity="0.55"/>
+<rect x="80" y="140" width="20" height="20" fill="#74bd63" opacity="0.55"/>
+<rect x="120" y="240" width="20" height="20" fill="#74bd63" opacity="0.55"/>
+<rect x="40" y="380" width="20" height="20" fill="#74bd63" opacity="0.55"/>
+<rect x="120" y="60" width="20" height="20" fill="#74bd63" opacity="0.55"/>
+<rect x="0" y="140" width="20" height="20" fill="#74bd63" opacity="0.55"/>
+<rect x="40" y="160" width="20" height="20" fill="#74bd63" opacity="0.55"/>
+<rect x="0" y="400" width="20" height="20" fill="#4a8a3d" opacity="0.55"/>
+<rect x="80" y="280" width="20" height="20" fill="#74bd63" opacity="0.55"/>
+<rect x="0" y="500" width="20" height="20" fill="#74bd63" opacity="0.55"/>
+
+<!-- лицо крипера: две глазницы и рот «подковой» -->
+<rect x="20" y="40" width="40" height="40" fill="#0d1a0d"/>
+<rect x="100" y="40" width="40" height="40" fill="#0d1a0d"/>
+<rect x="60" y="80" width="40" height="40" fill="#0d1a0d"/>
+<rect x="40" y="100" width="20" height="40" fill="#0d1a0d"/>
+<rect x="100" y="100" width="20" height="40" fill="#0d1a0d"/>
+</g>
+</svg>

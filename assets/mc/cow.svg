@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 260" width="340" height="260">
+<style>
+  .idle { animation: idle 3.2s ease-in-out infinite; transform-origin: 50% 100%; }
+  @keyframes idle { 0%,100% { transform: translateY(0) } 50% { transform: translateY(-6px) } }
+  @media (prefers-reduced-motion: reduce) { .idle { animation: none } }
+  
+</style>
+<g class="idle">
+
+<!-- туловище -->
+<rect x="0" y="0" width="240" height="160" fill="#e8e4dc"/>
+<rect x="20" y="20" width="60" height="60" fill="#3a3028"/>
+<rect x="120" y="0" width="80" height="60" fill="#3a3028"/>
+<rect x="60" y="100" width="60" height="60" fill="#3a3028"/>
+
+<!-- голова -->
+<rect x="240" y="40" width="100" height="120" fill="#3a3028"/>
+<rect x="260" y="100" width="80" height="60" fill="#d9a8a0"/>
+<rect x="280" y="120" width="16" height="16" fill="#3a3028"/>
+<rect x="312" y="120" width="16" height="16" fill="#3a3028"/>
+<rect x="260" y="60" width="20" height="20" fill="#e8e4dc"/>
+<rect x="240" y="20" width="20" height="20" fill="#cfc6a8"/>
+<rect x="320" y="20" width="20" height="20" fill="#cfc6a8"/>
+
+<!-- ноги -->
+<rect x="20" y="160" width="50" height="100" fill="#3a3028"/>
+<rect x="100" y="160" width="50" height="100" fill="#e8e4dc"/>
+<rect x="180" y="160" width="50" height="100" fill="#3a3028"/>
+</g>
+</svg>

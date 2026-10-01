@@ -35,6 +35,26 @@ body{
   font:700 1.25rem/1 inherit; padding:1.1rem 2.4rem; border:0; border-radius:999px;
   background:var(--accent); color:var(--accent-ink); cursor:pointer;
 }
+
+/* ---------- карточки историй ---------- */
+.comics{
+  display:flex; flex-wrap:wrap; justify-content:center; gap:1rem;
+  width:100%; max-width:46rem;
+}
+.comic{
+  display:flex; flex-direction:column; align-items:stretch; gap:0;
+  width:min(17rem,42vw); padding:0; overflow:hidden;
+  border:0; border-radius:1rem; cursor:pointer; text-align:left;
+  background:#161a26; color:var(--ink);
+  transition:transform .14s, outline-color .14s;
+  outline:.2rem solid transparent;
+}
+.comic:focus-visible,.comic.focus{outline-color:var(--accent); transform:scale(1.03)}
+.comic:disabled{opacity:.5}
+/* Обложка 16:9 — тот же кадр, что и в самой истории. */
+.comic img{width:100%; aspect-ratio:16/9; object-fit:cover; background:#0b0d14}
+.comic b{font-size:1.05rem; padding:.7rem .9rem .1rem}
+.comic span{font-size:.85rem; opacity:.7; padding:0 .9rem .8rem}
 .toggle{display:flex; gap:.5rem; align-items:center; opacity:.8; font-size:.95rem}
 .hint{
   margin:0; max-width:34ch; font-size:.9rem; line-height:1.5;
@@ -123,5 +143,7 @@ body{
   width:7vmin; height:7vmin; border-radius:50%; border:0;
   background:var(--panel); color:var(--ink); font-size:3.4vmin; cursor:pointer;
 }
+/* Возврат к выбору — левее кнопки повтора, с запасом на её ширину. */
+.icon-btn.home{right:calc(var(--safe) + 8.6vmin)}
 
 @media (prefers-reduced-motion:reduce){ *{animation:none!important; transition:none!important} }

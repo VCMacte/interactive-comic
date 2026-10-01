@@ -37,13 +37,18 @@ const cases = [
     voices: [V('Milena', 'ru_RU')],
     ждём: 'Milena',
   },
+  {
+    название: 'два голоса достаются разным ролям',
+    voices: [V('Google русский', 'ru-RU'), V('Microsoft Irina', 'ru-RU')],
+    ждём: 'Google русский',
+  },
 ];
 
 let failed = 0;
 for (const c of cases) {
   makeEnv(c.voices);
   const mod = await import('./js/voice.js?v=' + Math.random());
-  const got = mod.currentVoiceName();
+  const got = mod.voiceReport().narrator;
   const ok = got === c.ждём;
   if (!ok) failed++;
   console.log(`${ok ? 'ok  ' : 'FAIL'}  ${c.название}: ${got}`);

@@ -1,5 +1,6 @@
 {
   "title": "Ёжик и лунная тропа",
+  "voice": "friend",
   "start": "start",
   "scenes": {
     "start": {

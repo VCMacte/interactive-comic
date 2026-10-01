@@ -1,0 +1,164 @@
+{
+  "title": "Первая ночь",
+  "viewer": "Матвей",
+  "theme": "minecraft",
+  "voice": "hero",
+  "start": "start",
+  "scenes": {
+    "start": {
+      "bg": {
+        "sky": "assets/mc/sky-day.webp",
+        "stars": "assets/mc/sun-day.svg",
+        "far": "assets/mc/far-hills.webp",
+        "near": "assets/mc/near-forest.svg"
+      },
+      "cast": [
+        { "src": "assets/mc/steve.svg", "x": 62, "y": 28, "w": 8 }
+      ],
+      "text": "Стив открыл глаза. Квадратные деревья, квадратные облака, даже солнце квадратное. И тут он повернулся прямо к тебе: «Погоди… {{имя}}? Ты меня видишь? Один я тут точно пропаду».",
+      "prompt": "С чего начнём: пойдём рубить деревья или сперва осмотримся?",
+      "choices": [
+        { "label": "Рубить деревья", "keywords": ["рубить", "деревья", "дерево", "лес"], "dir": "left", "next": "wood" },
+        { "label": "Осмотреться", "keywords": ["осмотреться", "посмотреть", "оглядеться", "вокруг"], "dir": "right", "next": "look" }
+      ]
+    },
+
+    "look": {
+      "bg": {
+        "sky": "assets/mc/sky-day.webp",
+        "stars": "assets/mc/sun-day.svg",
+        "far": "assets/mc/far-hills.webp",
+        "near": "assets/mc/near-forest.svg"
+      },
+      "cast": [
+        { "src": "assets/mc/steve.svg", "x": 52, "y": 28, "w": 8 },
+        { "src": "assets/mc/cow.svg", "x": 68, "y": 28, "w": 8.6 }
+      ],
+      "text": "На лугу стояла корова и спокойно жевала траву. «Корова — это хорошо. Но из коровы дом не построишь, {{имя}}».",
+      "prompt": "Возвращаемся за деревом?",
+      "choices": [
+        { "label": "Да, за деревом", "keywords": ["да", "дерево", "деревом", "рубить"], "dir": "left", "next": "wood" },
+        { "label": "Погладить корову", "keywords": ["корова", "корову", "погладить"], "say": "Корова не возражала. Стив сказал, что это считается за знакомство.", "dir": "forward", "next": "look" }
+      ]
+    },
+
+    "wood": {
+      "bg": {
+        "sky": "assets/mc/sky-day.webp",
+        "stars": "assets/mc/sun-day.svg",
+        "far": "assets/mc/far-hills.webp",
+        "near": "assets/mc/near-forest.svg"
+      },
+      "cast": [
+        { "src": "assets/mc/steve.svg", "x": 62, "y": 28, "w": 8 }
+      ],
+      "text": "Стив стукнул кулаком по дереву, и бревно выпало само. «Не спрашивай, {{имя}}, тут так устроено. У меня руки квадратные, я собьюсь — посчитай за меня».",
+      "task": { "kind": "math", "max": 10 },
+      "next": "craft"
+    },
+
+    "craft": {
+      "bg": {
+        "sky": "assets/mc/sky-day.webp",
+        "stars": "assets/mc/sun-day.svg",
+        "far": "assets/mc/far-hills.webp",
+        "near": "assets/mc/near-craft.svg"
+      },
+      "cast": [
+        { "src": "assets/mc/steve.svg", "x": 50, "y": 28, "w": 8 }
+      ],
+      "text": "Из досок Стив сколотил верстак. «Теперь главное ничего не перепутать», — сказал он и почесал квадратный затылок.",
+      "task": { "kind": "logic" },
+      "next": "mine"
+    },
+
+    "mine": {
+      "bg": {
+        "far": "assets/mc/far-cave.webp",
+        "near": "assets/mc/near-cave.svg"
+      },
+      "cast": [
+        { "src": "assets/mc/steve.svg", "x": 60, "y": 28, "w": 8 }
+      ],
+      "text": "В пещере темно и где-то капает вода. Стив расставил факелы и крикнул в потолок: «Эй, рассказчик! Давай сегодня без крипера!» Тишина. «{{имя}}, он меня не слушает».",
+      "task": { "kind": "math", "max": 10 },
+      "next": "fork"
+    },
+
+    "fork": {
+      "bg": {
+        "far": "assets/mc/far-cave.webp",
+        "near": "assets/mc/near-cave.svg"
+      },
+      "cast": [
+        { "src": "assets/mc/steve.svg", "x": 62, "y": 28, "w": 8 }
+      ],
+      "text": "Факелы горят, и в пещере стало видно. Впереди ход уходит ещё глубже, а назад ведёт лестница наверх. Солнце, между прочим, уже клонится к закату.",
+      "prompt": "Пойдём глубже или наверх, строить дом?",
+      "choices": [
+        { "label": "Глубже", "keywords": ["глубже", "вниз", "дальше", "вперёд"], "dir": "forward", "next": "deeper" },
+        { "label": "Наверх, строить", "keywords": ["наверх", "строить", "дом", "назад"], "dir": "right", "next": "build" }
+      ]
+    },
+
+    "deeper": {
+      "bg": {
+        "far": "assets/mc/far-cave.webp",
+        "near": "assets/mc/near-cave.svg"
+      },
+      "cast": [
+        { "src": "assets/mc/steve.svg", "x": 58, "y": 28, "w": 8 }
+      ],
+      "text": "В глубине блеснул сундук: три яблока и старая карта. «Карта не пригодится, я всё равно не умею их читать». Стив подмигнул: «{{имя}}, ты ведь никому не скажешь?»",
+      "prompt": "Теперь наверх?",
+      "choices": [
+        { "label": "Наверх, строить", "keywords": ["наверх", "строить", "дом", "да"], "dir": "right", "next": "build" }
+      ]
+    },
+
+    "build": {
+      "bg": {
+        "sky": "assets/mc/sky-sunset.webp",
+        "stars": "assets/mc/sun-sunset.svg",
+        "far": "assets/mc/far-hills.webp",
+        "near": "assets/mc/near-build.svg"
+      },
+      "cast": [
+        { "src": "assets/mc/steve.svg", "x": 50, "y": 28, "w": 8 }
+      ],
+      "text": "Тени вытянулись через всю поляну. «Нам нужна стена. Высота два блока, а длину считай внимательно, {{имя}}: второй раз строить уже некогда».",
+      "task": { "kind": "math", "max": 20 },
+      "next": "night"
+    },
+
+    "night": {
+      "bg": {
+        "sky": "assets/mc/sky-night.webp",
+        "stars": "assets/mc/moon-night.svg",
+        "far": "assets/mc/far-hills.webp",
+        "near": "assets/mc/near-house.svg"
+      },
+      "cast": [
+        { "src": "assets/mc/steve.svg", "x": 48, "y": 28, "w": 8 },
+        { "src": "assets/mc/creeper.svg", "x": 68, "y": 28, "w": 4.2 }
+      ],
+      "text": "За стеной кто-то зашипел — зелёный, в крапинку и совсем без рук. «Это крипер, он взрывается, когда волнуется». Стив наклонился к экрану: «{{имя}}, скажи ответ вслух, только погромче».",
+      "task": { "kind": "logic" },
+      "next": "dawn"
+    },
+
+    "dawn": {
+      "bg": {
+        "sky": "assets/mc/sky-sunset.webp",
+        "stars": "assets/mc/sun-sunset.svg",
+        "far": "assets/mc/far-hills.webp",
+        "near": "assets/mc/near-house.svg"
+      },
+      "cast": [
+        { "src": "assets/mc/steve.svg", "x": 56, "y": 28, "w": 8 },
+        { "src": "assets/mc/cow.svg", "x": 78, "y": 28, "w": 8.6 }
+      ],
+      "text": "Крипер обиженно зашипел и ушёл в темноту — взрывать его никто не просил. А небо порозовело, и из-за холма поднялось квадратное солнце. «Пережили, {{имя}}! Приходи завтра, я тут ещё поживу»."
+    }
+  }
+}

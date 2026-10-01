@@ -5,6 +5,7 @@
 <h1>Растеризация слоёв</h1>
 <pre id="log">готов</pre>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/lamejs/1.2.1/lame.min.js"></script>
 <script type="module">
 // На машине нет ни ImageMagick, ни Inkscape, ни cairosvg, а SVG нужно
 // превращать в растр дважды: до генерации (init-картинка для img2img)
@@ -113,6 +114,61 @@ window.composeLayer = async ({ painted, mask, out, w, h, keepAlpha, softMask, ch
   const bytes = await save(out, c, type || 'image/png', quality);
   log('готово: ' + out + ' — ' + bytes + ' байт');
   return bytes;
+};
+
+/**
+ * Перегон озвучки из WAV в MP3. Нейросетевой синтез отдаёт только WAV,
+ * а это сорок восемь килобайт на секунду речи — весь комплект не влез бы
+ * ни в репозиторий, ни в офлайн-кэш приложения.
+ */
+window.transcodeAudio = async (ids, bitrate = 40) => {
+  const ctx = new (window.AudioContext || window.webkitAudioContext)();
+  const done = [];
+  let total = 0;
+
+  for (const id of ids) {
+    const buf = await fetch('/tools/tts/wav/' + id + '.wav').then(r => r.arrayBuffer());
+    const audio = await ctx.decodeAudioData(buf);
+
+    const pcm = audio.getChannelData(0);
+    const samples = new Int16Array(pcm.length);
+    for (let i = 0; i < pcm.length; i++) {
+      const v = Math.max(-1, Math.min(1, pcm[i]));
+      samples[i] = v < 0 ? v * 0x8000 : v * 0x7fff;
+    }
+
+    const enc = new lamejs.Mp3Encoder(1, audio.sampleRate, bitrate);
+    const chunks = [];
+    const BLOCK = 1152;
+    for (let i = 0; i < samples.length; i += BLOCK) {
+      const part = enc.encodeBuffer(samples.subarray(i, i + BLOCK));
+      if (part.length) chunks.push(new Int8Array(part));
+    }
+    const tail = enc.flush();
+    if (tail.length) chunks.push(new Int8Array(tail));
+
+    const blob = new Blob(chunks, { type: 'audio/mpeg' });
+    const dataUrl = await new Promise((resolve) => {
+      const fr = new FileReader();
+      fr.onload = () => resolve(fr.result);
+      fr.readAsDataURL(blob);
+    });
+
+    const res = await fetch('/save', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ path: 'assets/audio/' + id + '.mp3', dataUrl }),
+    });
+    const out = await res.json();
+    if (out.error) throw new Error(id + ': ' + out.error);
+
+    total += out.bytes;
+    done.push(id);
+    if (done.length % 20 === 0) log('сжато ' + done.length + ' из ' + ids.length);
+  }
+
+  log('готово: ' + done.length + ' файлов, ' + Math.round(total / 1024) + ' КБ');
+  return { count: done.length, kb: Math.round(total / 1024) };
 };
 
 /**

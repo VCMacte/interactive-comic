@@ -10,3 +10,8 @@ tools/out/
 
 # Артефакты отладки в браузере
 .playwright-mcp/
+
+# Нейросетевая озвучка: модель Silero и промежуточные WAV.
+# В приложение уходят только сжатые MP3 из assets/audio.
+tools/tts/models/
+tools/tts/wav/

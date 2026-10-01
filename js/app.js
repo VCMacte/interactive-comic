@@ -1,6 +1,6 @@
 import { speak, speakDialogue, cancelSpeech, createListener, voiceSupported, ttsAvailable } from './voice.js';
 import { matchChoice } from './match.js';
-import { makeTask } from './tasks.js';
+import { makeTask, usePool } from './tasks.js';
 import { setScene, preloadScene, enter, leave, cheer, wobble } from './stage.js';
 
 const $ = (id) => document.getElementById(id);
@@ -45,8 +45,15 @@ const MAX_MISSES = 4;             // после скольких — перей�
 /* ---------------- запуск ---------------- */
 
 loadCatalogue();
+loadTaskPool();
 lockOrientation('portrait');
 checkVoiceSupport();
+
+// Пул заданий, озвученных заранее. Не загрузился — генератор справится сам,
+// просто вопросы будут без готовой записи.
+async function loadTaskPool() {
+  try { usePool(await fetch('stories/tasks-pool.json').then(r => r.json())); } catch {}
+}
 
 // Отсутствие озвучки выглядит как поломка: история идёт, а звука нет.
 // Проверяем дважды — список голосов на части устройств наполняется только

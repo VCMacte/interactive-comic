@@ -2,6 +2,8 @@
 // Главное правило — никогда не слушать, пока говорит рассказчик:
 // звук идёт на телевизор, микрофон слышит его обратно и ловит эхо.
 
+import { playClip, hasClip, stopAudio, loadIndex } from './audio.js';
+
 const LANG = 'ru-RU';
 
 /* ---------------- роли и интонации ---------------- */
@@ -61,7 +63,10 @@ function scoreVoice(v) {
  * по-разному за счёт высоты и темпа.
  */
 function assignVoices() {
-  if (assigned) return assigned;
+  // Пустой результат не кэшируем: на части устройств список голосов
+  // наполняется с задержкой, и один неудачный опрос навсегда объявил бы
+  // устройство немым — озвучка не включилась бы до перезапуска.
+  if (assigned && ttsUsable) return assigned;
 
   const all = speechSynthesis.getVoices() || [];
   let ranked = all
@@ -111,6 +116,7 @@ let speechToken = 0;
 
 export function cancelSpeech() {
   speechToken++;
+  stopAudio();
   try { speechSynthesis.cancel(); } catch {}
 }
 
@@ -185,7 +191,12 @@ function tone(role, mood) {
  * @param {keyof ROLES} role
  */
 export async function speak(text, mood = 'story', role = 'narrator') {
-  if (!('speechSynthesis' in window) || !text) return;
+  if (!text) return;
+
+  await loadIndex();
+  if (hasClip(text, role)) { await playClip(text, role); return; }
+
+  if (!('speechSynthesis' in window)) return;
   await loadVoices();
   if (!await ttsAvailable()) return;
 
@@ -207,9 +218,8 @@ export async function speak(text, mood = 'story', role = 'narrator') {
  * Отдельного языка разметки заводить незачем.
  */
 export async function speakDialogue(text, { character = 'hero', mood = 'story' } = {}) {
-  if (!('speechSynthesis' in window) || !text) return;
-  await loadVoices();
-  if (!await ttsAvailable()) return;
+  if (!text) return;
+  await loadIndex();
 
   const segments = [];
   const re = /«([^»]*)»/g;
@@ -227,6 +237,15 @@ export async function speakDialogue(text, { character = 'hero', mood = 'story' }
     const seg = segments[i];
     const clean = seg.text.replace(/^[\s—,.:;-]+/, '').trim();
     if (!clean) continue;
+
+    if (hasClip(clean, seg.role)) {
+      await playClip(clean, seg.role);
+      if (my !== speechToken) return;
+      if (i < segments.length - 1) await sleep(260);
+      continue;
+    }
+
+    if (!('speechSynthesis' in window) || !await ttsAvailable()) continue;
 
     const opts = tone(seg.role, mood);
     const chunks = toChunks(clean);

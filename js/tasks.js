@@ -272,6 +272,14 @@ const LOGIC = [taskOddOneOut, taskOpposite, taskPattern, taskHome];
 // Чтобы одно и то же задание не выпало дважды подряд.
 const recent = [];
 
+// Готовый пул заданий, озвученных заранее. Генератор остаётся на месте:
+// он и строит этот пул на сборке, и работает запасным вариантом, если
+// пул не загрузился. Разница только в том, что из пула берётся фраза,
+// для которой уже есть запись голосом.
+let pool = null;
+
+export function usePool(data) { pool = data || null; }
+
 /**
  * @param {'math'|'logic'|'any'} kind
  * @param {{theme?: string, max?: number}} opts предел счёта задаёт сцена,
@@ -279,16 +287,35 @@ const recent = [];
  * @returns {{question:string, hint:string, choices:Array<{label:string,keywords:string[],correct:boolean}>}}
  */
 export function makeTask(kind = 'any', opts = {}) {
-  const theme = THEMES[opts.theme] ?? THEMES.forest;
+  const themeName = opts.theme ?? 'forest';
+  const theme = THEMES[themeName] ?? THEMES.forest;
   const max = Math.min(Math.max(opts.max ?? 10, 5), 20);
-  const pool = kind === 'math' ? MATH : kind === 'logic' ? LOGIC : [...MATH, ...LOGIC];
+
+  const ready = pool?.[`${themeName}|${kind}|${max}`];
+  if (ready && ready.length) return fromPool(ready);
+
+  const generators = kind === 'math' ? MATH : kind === 'logic' ? LOGIC : [...MATH, ...LOGIC];
 
   let task;
   for (let attempt = 0; attempt < 6; attempt++) {
-    task = pickOne(pool)(theme, max);
+    task = pickOne(generators)(theme, max);
     if (!recent.includes(task.question)) break;
   }
 
+  return remember(task);
+}
+
+function fromPool(ready) {
+  let task = pickOne(ready);
+  for (let attempt = 0; attempt < 6 && recent.includes(task.question); attempt++) {
+    task = pickOne(ready);
+  }
+  // Варианты перемешиваем при каждой выдаче: иначе верный ответ всегда
+  // оказывался бы на одной и той же кнопке и запоминался позицией.
+  return remember({ ...task, choices: shuffle(task.choices) });
+}
+
+function remember(task) {
   recent.push(task.question);
   if (recent.length > 4) recent.shift();
   return task;

@@ -70,6 +70,7 @@ body{
   .comics{flex-direction:column; flex-wrap:nowrap; align-items:center}
   .comic{width:min(22rem,88vw)}
 }
+.resume{display:flex; justify-content:center; width:100%}
 .toggle{display:flex; gap:.5rem; align-items:center; opacity:.8; font-size:.95rem}
 .hint{
   margin:0; max-width:34ch; font-size:.9rem; line-height:1.5;

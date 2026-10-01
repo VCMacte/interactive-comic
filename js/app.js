@@ -7,6 +7,7 @@ const $ = (id) => document.getElementById(id);
 const el = {
   gate: $('gate'), gateText: $('gateText'), comicList: $('comicList'),
   voiceToggle: $('voiceToggle'), installHint: $('installHint'), noVoiceHint: $('noVoiceHint'),
+  resumeBox: $('resumeBox'),
   stage: $('stage'), text: $('text'), choices: $('choices'),
   mic: $('mic'), heard: $('heard'), replay: $('replayBtn'), home: $('homeBtn'), skip: $('skipBtn'),
 };
@@ -24,6 +25,7 @@ const state = {
   story: null,
   sceneId: null,
   scene: null,      // сцена как её видит ребёнок: у заданий выбор создаётся на лету
+  comicId: null,    // какая история открыта — нужно для сохранения места
   started: false,   // первую сцену не из чего «выводить»
   narrating: false, // пока рассказчик говорит, отвечать рано
   misses: 0,        // подряд не распознанных ответов
@@ -42,6 +44,41 @@ let listener = null;
 const LISTEN_WINDOW_MS = 30000;   // сколько держим микрофон открытым
 const NUDGE_AFTER = 2;            // после скольких промахов мягко подсказать
 const MAX_MISSES = 4;             // после скольких — перейти на кнопки
+
+/* ---------------- где мы остановились ---------------- */
+
+// Телевизор умеет увести со страницы помимо нашей воли: кнопка микрофона
+// на пульте открывает системный поиск. Перехватить её веб-страница не может,
+// но может запомнить место, чтобы возвращение стоило одного нажатия.
+const PROGRESS_KEY = 'comic-progress';
+let catalogue = [];     // список историй нужен и после возврата на главный экран
+
+function saveProgress(sceneId) {
+  if (!state.comicId) return;
+  try { localStorage.setItem(PROGRESS_KEY, JSON.stringify({ comicId: state.comicId, sceneId })); } catch {}
+}
+
+function loadProgress() {
+  try { return JSON.parse(localStorage.getItem(PROGRESS_KEY) || 'null'); } catch { return null; }
+}
+
+function clearProgress() {
+  try { localStorage.removeItem(PROGRESS_KEY); } catch {}
+}
+
+function renderResume() {
+  const saved = loadProgress();
+  const comic = saved && catalogue.find(c => c.id === saved.comicId);
+  el.resumeBox.innerHTML = '';
+  el.resumeBox.hidden = !comic;
+  if (!comic) return;
+
+  const b = document.createElement('button');
+  b.className = 'big-btn';
+  b.textContent = 'Продолжить: ' + comic.title;
+  b.addEventListener('click', () => openComic(comic, b, saved.sceneId));
+  el.resumeBox.append(b);
+}
 
 /* ---------------- запуск ---------------- */
 
@@ -72,8 +109,10 @@ async function loadCatalogue() {
     return;
   }
 
+  catalogue = comics;
   el.comicList.innerHTML = '';
   comics.forEach((comic, i) => el.comicList.append(comicCard(comic, i)));
+  renderResume();
 }
 
 function comicCard(comic, index) {
@@ -99,12 +138,15 @@ function comicCard(comic, index) {
 // Нажатие на карточку — тот самый жест пользователя, без которого браузер
 // не отдаст ни полный экран, ни микрофон. Поэтому всё разрешение запрашиваем
 // здесь, а не при загрузке страницы.
-async function openComic(comic, card) {
+async function openComic(comic, card, startAt) {
   state.useVoice = el.voiceToggle.checked && voiceSupported;
 
   const cards = [...el.comicList.querySelectorAll('.comic')];
   cards.forEach(c => { c.disabled = true; });
-  card.querySelector('span').textContent = 'Готовим…';
+  // Кнопка «Продолжить» устроена иначе карточки — подпись меняем, только если есть.
+  const status = card.querySelector('span');
+  const say = (t) => { if (status) status.textContent = t; };
+  say('Готовим…');
 
   await goFullscreenLandscape();
   keepFullscreen();
@@ -117,12 +159,13 @@ async function openComic(comic, card) {
     story = await fetch(comic.story).then(r => r.json());
   } catch {
     cards.forEach(c => { c.disabled = false; });
-    card.querySelector('span').textContent = comic.subtitle ?? '';
+    say(comic.subtitle ?? '');
     el.gateText.textContent = 'Не удалось загрузить историю. Проверьте соединение.';
     return;
   }
 
   state.story = fillViewerName(story);
+  state.comicId = comic.id;
   state.sceneId = null;
   state.scene = null;
   // Новая история начинается с чистого листа: иначе её первая сцена
@@ -132,10 +175,10 @@ async function openComic(comic, card) {
 
   el.gate.hidden = true;
   el.stage.hidden = false;
-  show(state.story.start);
+  show(state.story.scenes[startAt] ? startAt : state.story.start);
 
   cards.forEach(c => { c.disabled = false; });
-  card.querySelector('span').textContent = comic.subtitle ?? '';
+  say(comic.subtitle ?? '');
 }
 
 /**
@@ -172,6 +215,7 @@ function backToHub() {
   el.stage.hidden = true;
   el.gate.hidden = false;
   el.gate.scrollTop = 0;
+  renderResume();
   lockOrientation('portrait');
 }
 
@@ -286,6 +330,7 @@ async function show(id, dir = 'forward') {
   if (my !== token) return;
 
   setScene(scene);
+  if (scene.choices?.length || raw.task) saveProgress(id); else clearProgress();
   el.text.textContent = scene.text;
   renderChoices(scene);
   preloadNext(scene);

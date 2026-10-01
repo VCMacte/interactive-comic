@@ -20,6 +20,7 @@
   <div class="gate-inner">
     <h1>Интерактивный комикс</h1>
     <p id="gateText">Включите трансляцию экрана на телевизор и выберите историю.</p>
+    <div id="resumeBox" class="resume" hidden></div>
     <div id="comicList" class="comics"></div>
     <label class="toggle"><input type="checkbox" id="voiceToggle" checked> отвечать голосом</label>
     <p class="hint" id="noVoiceHint" hidden>
@@ -54,7 +55,7 @@
     </div>
 
     <div id="mic" class="mic" hidden>
-      <span class="dot"></span><span id="heard">слушаю…</span>
+      <span class="dot"></span><span id="heard">Говори, я слушаю</span>
     </div>
 
     <button id="replayBtn" class="icon-btn" title="Повторить вопрос" aria-label="Повторить вопрос">⟲</button>

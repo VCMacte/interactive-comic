@@ -13,8 +13,12 @@ const DIR = 'assets/audio/';
 const EXT = '.mp3';   // MP3 играет везде, включая браузер телевизора
 
 let index = null;          // множество доступных идентификаторов
-let current = null;        // то, что звучит прямо сейчас
 let token = 0;
+
+// Все запущенные записи, а не только последняя. Раньше остановка глушила
+// лишь ту, что начата последней: при быстрых нажатиях предыдущая сцена
+// продолжала звучать поверх новой.
+const playing = new Set();
 
 /** Тот же расчёт, что в tools/tts/collect.mjs — иначе файлы не найдутся. */
 export function clipId(text, role) {
@@ -48,10 +52,10 @@ export function hasClip(text, role) {
 
 export function stopAudio() {
   token++;
-  if (current) {
-    try { current.pause(); current.src = ''; } catch {}
-    current = null;
+  for (const el of playing) {
+    try { el.pause(); el.removeAttribute('src'); el.load(); } catch {}
   }
+  playing.clear();
 }
 
 /**
@@ -66,11 +70,21 @@ export async function playClip(text, role) {
   const my = ++token;
   const el = new Audio(DIR + id + EXT);
   el.preload = 'auto';
-  current = el;
+  playing.add(el);
 
   const played = await new Promise((resolve) => {
     let done = false;
-    const finish = (ok) => { if (!done) { done = true; resolve(ok); } };
+    const finish = (ok) => {
+      if (done) return;
+      done = true;
+      clearTimeout(cap);
+      playing.delete(el);
+      resolve(ok);
+    };
+
+    // Жёсткий предел на случай, если файл завис на загрузке и событий
+    // не будет вовсе: без него повествование встало бы навсегда.
+    const cap = setTimeout(() => finish(false), 30000);
 
     // «Закончилось» ещё не значит «прозвучало»: если устройство не отдало
     // звук или автовоспроизведение запретили, событие приходит мгновенно
@@ -87,7 +101,6 @@ export async function playClip(text, role) {
   });
 
   if (my !== token) return true;     // нас прервали — считаем, что отыграли
-  if (current === el) current = null;
   return played;
 }
 

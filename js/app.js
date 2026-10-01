@@ -25,6 +25,7 @@ const state = {
   sceneId: null,
   scene: null,      // сцена как её видит ребёнок: у заданий выбор создаётся на лету
   started: false,   // первую сцену не из чего «выводить»
+  narrating: false, // пока рассказчик говорит, отвечать рано
   misses: 0,        // подряд не распознанных ответов
   useVoice: true,
   focus: 0,
@@ -162,6 +163,12 @@ function backToHub() {
   stopListening();
   cancelSpeech();
   state.started = false;
+  state.narrating = false;
+  // Сцену не просто прячем, а опустошаем: иначе кнопки прошлой истории
+  // остаются в разметке, и стрелки с пульта на главном экране продолжают
+  // на них действовать.
+  el.choices.innerHTML = '';
+  el.text.textContent = '';
   el.stage.hidden = true;
   el.gate.hidden = false;
   el.gate.scrollTop = 0;
@@ -254,6 +261,7 @@ async function show(id, dir = 'forward') {
   const my = ++token;
   stopListening();
   cancelSpeech();
+  state.narrating = true;   // кнопки новой сцены рисуются уже заблокированными
 
   const raw = state.story.scenes[id];
   if (!raw) { console.error('нет сцены:', id); return; }
@@ -342,10 +350,17 @@ function button(label, onClick, index) {
   b.className = 'choice';
   b.textContent = label;
   b.dataset.index = index;
-  // Кнопки активны всегда: нажатие во время рассказа просто обрывает озвучку.
-  // Заблокированные кнопки ребёнок воспринимает как сломанные.
-  b.addEventListener('click', () => onClick(b));
+  // Пока говорит рассказчик, кнопки заблокированы: иначе ребёнок пропускает
+  // вопрос нажатием, сцена сменяется, и реплики двух сцен звучат разом.
+  // Приглушённый вид показывает, что ответ пока рано давать.
+  b.disabled = state.narrating;
+  b.addEventListener('click', () => { if (!b.disabled) onClick(b); });
   return b;
+}
+
+function setChoicesEnabled(on) {
+  state.narrating = !on;
+  for (const b of el.choices.querySelectorAll('.choice')) b.disabled = !on;
 }
 
 /* ---------------- рассказчик ---------------- */
@@ -353,6 +368,8 @@ function button(label, onClick, index) {
 const sleep = (ms) => new Promise(r => setTimeout(r, ms));
 
 async function narrate(scene, my) {
+  setChoicesEnabled(false);
+
   // Рассказ и вопрос произносятся отдельно и разной интонацией:
   // так ребёнок слышит, где кончилась сказка и начался вопрос к нему.
   await speakDialogue(scene.speak ?? scene.text, { character: voiceOf(scene) });
@@ -378,6 +395,7 @@ async function narrate(scene, my) {
     }
   }
 
+  setChoicesEnabled(true);
   listen(my);
 }
 
@@ -441,15 +459,19 @@ async function miss(my) {
     // Подсказку произносим с выключенным микрофоном, иначе рассказчика
     // услышит он сам: звук идёт на телевизор и возвращается в телефон.
     stopListening();
+    setChoicesEnabled(false);
     await speak('Скажи ещё раз, только погромче. Или нажми ответ внизу.', 'hint', 'narrator');
     if (my !== token) return;
+    setChoicesEnabled(true);
     listen(my);
   }
 }
 
 async function giveUpToButtons() {
   stopListening();
+  setChoicesEnabled(false);
   await speak('Не расслышал. Нажми на нужный ответ внизу.', 'hint', 'narrator');
+  setChoicesEnabled(true);
 }
 
 /* ---------------- выбор ---------------- */
@@ -458,12 +480,15 @@ async function pick(choice, btn) {
   const my = ++token;     // отменяет и текущую озвучку, и её продолжение
   stopListening();
   cancelSpeech();
+  setChoicesEnabled(false);
 
   // Задание с проверкой: неверный ответ не ведёт дальше, а подсказывает.
   if (choice.hint) {
     wobble(btn);
+    setChoicesEnabled(false);
     await speak(choice.hint, 'hint', 'narrator');
     if (my !== token) return;
+    setChoicesEnabled(true);
     state.misses = 0;
     listen(my);
     return;
@@ -474,6 +499,7 @@ async function pick(choice, btn) {
   if (choice.correct) cheer();
 
   if (choice.say) {
+    setChoicesEnabled(false);
     await speakDialogue(choice.say, { character: voiceOf(state.scene), mood: 'praise' });
     if (my !== token) return;
   }

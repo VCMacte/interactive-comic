@@ -14,6 +14,7 @@ export const ROLES = {
   narrator: { rate: 0.92, pitch: 1.00, gap: 320 },
   hero:     { rate: 0.99, pitch: 1.22, gap: 260 },
   friend:   { rate: 0.95, pitch: 1.34, gap: 260 },
+  kid:      { rate: 1.00, pitch: 1.42, gap: 240 },
   villain:  { rate: 0.82, pitch: 0.68, gap: 340 },
 };
 

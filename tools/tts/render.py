@@ -27,6 +27,7 @@ SPEAKERS = {
     'narrator': 'baya',
     'hero': 'aidar',
     'friend': 'xenia',
+    'kid': 'kseniya',
     'villain': 'eugene',
 }
 
@@ -38,6 +39,7 @@ RATE_SCALE = {
     'narrator': 1.00,
     'hero': 1.06,
     'friend': 1.03,
+    'kid': 1.08,
     'villain': 0.92,
 }
 

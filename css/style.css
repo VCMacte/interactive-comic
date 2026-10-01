@@ -24,12 +24,19 @@ body{
 }
 
 /* ---------- стартовый экран ---------- */
+/* Прокручивается сам контейнер, а центрирует содержимое внутренняя обёртка:
+   если центрировать флексом снаружи, при нехватке высоты обрезается верх
+   и домотать до него нельзя. На телефоне в портрете это и случилось. */
 .gate{
-  position:fixed; inset:0; display:flex; flex-direction:column;
-  align-items:center; justify-content:center; gap:1.2rem;
-  text-align:center; padding:2rem; background:var(--bg); z-index:10;
+  position:fixed; inset:0; z-index:10;
+  background:var(--bg); overflow-y:auto; -webkit-overflow-scrolling:touch;
 }
-.gate h1{font-size:clamp(1.5rem,6vw,2.5rem); margin:0}
+.gate-inner{
+  min-height:100%; display:flex; flex-direction:column;
+  align-items:center; justify-content:center; gap:1.2rem;
+  text-align:center; padding:1.5rem 1rem 2.5rem;
+}
+.gate h1{font-size:clamp(1.3rem,5.5vw,2.5rem); margin:0}
 .gate p{margin:0; opacity:.75; line-height:1.5; max-width:34ch}
 .big-btn{
   font:700 1.25rem/1 inherit; padding:1.1rem 2.4rem; border:0; border-radius:999px;
@@ -55,6 +62,13 @@ body{
 .comic img{width:100%; aspect-ratio:16/9; object-fit:cover; background:#0b0d14}
 .comic b{font-size:1.05rem; padding:.7rem .9rem .1rem}
 .comic span{font-size:.85rem; opacity:.7; padding:0 .9rem .8rem}
+
+/* В портрете карточки идут в столбик и во всю ширину: так обложку видно,
+   а ребёнку проще попасть пальцем. */
+@media (orientation:portrait){
+  .comics{flex-direction:column; flex-wrap:nowrap; align-items:center}
+  .comic{width:min(22rem,88vw)}
+}
 .toggle{display:flex; gap:.5rem; align-items:center; opacity:.8; font-size:.95rem}
 .hint{
   margin:0; max-width:34ch; font-size:.9rem; line-height:1.5;

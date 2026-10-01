@@ -45,6 +45,7 @@ const MAX_MISSES = 4;             // после скольких — перей�
 /* ---------------- запуск ---------------- */
 
 loadCatalogue();
+lockOrientation('portrait');
 
 async function loadCatalogue() {
   let comics;
@@ -147,6 +148,8 @@ function backToHub() {
   state.started = false;
   el.stage.hidden = true;
   el.gate.hidden = false;
+  el.gate.scrollTop = 0;
+  lockOrientation('portrait');
 }
 
 el.home.addEventListener('click', backToHub);
@@ -155,8 +158,20 @@ el.home.addEventListener('click', backToHub);
 // умеют не отвечать вовсе: без настоящего касания браузер промис ни разрешает,
 // ни отклоняет, и запуск встаёт намертво на «Готовим…». Поэтому ждём их
 // с ограничением и идём дальше в любом случае.
-const withTimeout = (promise, ms) =>
-  Promise.race([promise, new Promise(r => setTimeout(r, ms))]).catch(() => {});
+function withTimeout(promise, ms) {
+  return Promise.race([promise, new Promise(r => setTimeout(r, ms))]).catch(() => {});
+}
+
+/**
+ * Ориентация переключается по экранам: выбор истории удобнее листать
+ * в портрете, сама история живёт в кадре 16:9 и требует альбома.
+ * Манифест при этом не навязывает ничего — иначе портрет был бы недоступен.
+ */
+async function lockOrientation(mode) {
+  try {
+    await withTimeout(screen.orientation?.lock?.(mode), 1500);
+  } catch { /* браузер может не разрешить — не повод останавливать историю */ }
+}
 
 async function goFullscreenLandscape() {
   // У установленного приложения полный экран уже есть от манифеста —
@@ -166,9 +181,7 @@ async function goFullscreenLandscape() {
       await withTimeout(document.documentElement.requestFullscreen({ navigationUI: 'hide' }), 3000);
     } catch {}
   }
-  try {
-    await withTimeout(screen.orientation.lock('landscape'), 1500);
-  } catch {}
+  await lockOrientation('landscape');
 }
 
 // Полный экран во вкладке браузера не держится: его сбрасывает поворот,
@@ -182,7 +195,7 @@ function keepFullscreen() {
   const restore = () => {
     if (document.fullscreenElement) return;
     document.documentElement.requestFullscreen({ navigationUI: 'hide' }).catch(() => {});
-    screen.orientation?.lock?.('landscape').catch(() => {});
+    lockOrientation('landscape');
   };
 
   el.stage.addEventListener('pointerdown', restore);

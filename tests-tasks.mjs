@@ -106,3 +106,25 @@ if (failed) process.exitCode = 1;
   console.log(bad ? `\n${bad} провалено в теме Minecraft` : '\nтема Minecraft и предел счёта в порядке');
   if (bad) process.exitCode = 1;
 }
+
+// ---- ограничение вида задания сценой ----
+{
+  let bad = 0;
+  for (const [kind, types] of [['math', ['addition']], ['math', ['compare', 'next']],
+                               ['logic', ['home']], ['logic', ['oddOneOut', 'pattern']]]) {
+    for (let i = 0; i < 60; i++) {
+      const t = makeTask(kind, { theme: 'minecraft', max: 10, types });
+      if (!types.includes(t.type)) {
+        console.log('FAIL: просили', types.join('/'), 'получили', t.type, '—', t.question);
+        bad++;
+      }
+    }
+  }
+
+  // Несуществующий вид не должен ронять генератор: лучше любое задание, чем пустота.
+  const fallback = makeTask('logic', { theme: 'minecraft', types: ['выдуманный'] });
+  if (!fallback?.question) { console.log('FAIL: неизвестный вид уронил генератор'); bad++; }
+
+  console.log(bad ? `\n${bad} провалено в ограничении видов` : '\nограничение вида задания работает');
+  if (bad) process.exitCode = 1;
+}

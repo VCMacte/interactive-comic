@@ -10,10 +10,13 @@
 import { readFileSync, writeFileSync, readdirSync, mkdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { makeTask } from '../../js/tasks.js';
+import { makeTask, TASK_TYPES } from '../../js/tasks.js';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
-const VARIANTS = 40;        // сколько вариантов на каждый вид задания
+// Вариантов поровну на каждый вид задачи. Раньше генератор выбирал вид
+// случайно, и при ограничении сцены одним видом вариантов могло остаться
+// вчетверо меньше, чем кажется.
+const PER_TYPE = 10;
 
 // Генератор заданий берёт числа из Math.random, поэтому каждый запуск
 // коллектора давал бы новый пул, и вся озвучка устаревала целиком.
@@ -131,17 +134,22 @@ Math.random = seedRandom(20260101);
 
 for (const [key, spec] of taskSpecs) {
   const seen = new Map();
-  // Генератор повторяется, поэтому крутим с запасом и отбираем уникальные.
-  for (let i = 0; i < VARIANTS * 40 && seen.size < VARIANTS; i++) {
-    const t = makeTask(spec.kind, { theme: spec.theme, max: spec.max });
-    if (seen.has(t.question)) continue;
-    seen.set(t.question, {
-      question: t.question,
-      hint: t.hint,
-      choices: t.choices,
-      audio: clipId(t.question, 'narrator'),
-      hintAudio: clipId(t.hint, 'narrator'),
-    });
+
+  for (const type of TASK_TYPES[spec.kind] ?? []) {
+    let made = 0;
+    for (let i = 0; i < PER_TYPE * 60 && made < PER_TYPE; i++) {
+      const t = makeTask(spec.kind, { theme: spec.theme, max: spec.max, types: [type] });
+      if (seen.has(t.question)) continue;
+      seen.set(t.question, {
+        type: t.type,
+        question: t.question,
+        hint: t.hint,
+        choices: t.choices,
+        audio: clipId(t.question, 'narrator'),
+        hintAudio: clipId(t.hint, 'narrator'),
+      });
+      made++;
+    }
   }
 
   pool[key] = [...seen.values()];
@@ -150,7 +158,9 @@ for (const [key, spec] of taskSpecs) {
     add(t.hint, 'narrator');
     for (const c of t.choices) add(c.label, 'narrator');
   }
-  console.log(`${key}: ${pool[key].length} вариантов`);
+  const byType = {};
+  for (const t of pool[key]) byType[t.type] = (byType[t.type] ?? 0) + 1;
+  console.log(`${key}: ${pool[key].length} вариантов`, byType);
 }
 
 Math.random = realRandom;

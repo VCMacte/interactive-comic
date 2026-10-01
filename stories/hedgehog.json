@@ -35,7 +35,7 @@
       ],
       "voice": "hero",
       "text": "У реки сидел бобёр и чинил плотину. «Помоги мне сосчитать, а то я опять собьюсь!» — попросил он.",
-      "task": "math",
+      "task": { "kind": "math", "max": 10, "types": ["addition", "subtraction"] },
       "next": "gift"
     },
 
@@ -72,7 +72,7 @@
       ],
       "voice": "friend",
       "text": "Сова обрадовалась и говорит: «За ключик я загадаю тебе загадку».",
-      "task": "logic",
+      "task": { "kind": "logic", "types": ["oddOneOut", "opposite", "home"] },
       "next": "gift"
     },
 

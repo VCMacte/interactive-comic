@@ -30,6 +30,7 @@ const state = {
   narrating: false, // пока рассказчик говорит, отвечать рано
   misses: 0,        // подряд не распознанных ответов
   heard: false,     // донёсся ли хоть какой-то звук в текущем окне
+  lastHeardAt: 0,   // когда в последний раз что-то слышали — чтобы не перебивать
   deafWindows: 0,   // окон подряд, в которые микрофон не услышал вообще ничего
   useVoice: true,
   focus: 0,
@@ -369,7 +370,7 @@ function withTask(raw) {
   // Сцена может задать вид задания строкой ("math") или объектом с пределом
   // счёта: {"kind":"math","max":20}. Так сложность растёт по ходу истории.
   const spec = typeof raw.task === 'string' ? { kind: raw.task } : raw.task;
-  const task = makeTask(spec.kind, { theme: state.story.theme, max: spec.max });
+  const task = makeTask(spec.kind, { theme: state.story.theme, max: spec.max, types: spec.types });
   const choices = task.choices.map(c => c.correct
     ? { label: c.label, keywords: c.keywords, correct: true, say: PRAISE[Math.floor(Math.random() * PRAISE.length)], next: raw.next }
     : { label: c.label, keywords: c.keywords, hint: task.hint });
@@ -457,16 +458,23 @@ async function narrate(scene, my) {
     if (my !== token) return;
 
     // Подписи на кнопках мелкие, с дивана их не прочесть — проговариваем.
-    // Но только те, которых не было в самом вопросе: у сюжетных развилок
-    // вопрос их уже перечислил, и повтор звучал бы как заикание.
+    // Правило «всё или ничего»: читаем либо все варианты, либо ни одного.
+    // Раньше пропускались те, что уже прозвучали в вопросе, и получалось
+    // полбеды хуже беды: у задания «что дальше: блок, факел, блок, факел»
+    // озвучивался один-единственный вариант — тот, которого в вопросе нет.
+    // Ребёнку это прямо подсказывало ответ, а остальные кнопки оставались
+    // неназванными.
     const said = prompt.toLowerCase();
-    for (const c of scene.choices) {
-      if (skipped()) break;
-      if (said.includes(c.label.toLowerCase())) continue;
-      await sleep(180);
-      if (my !== token) return;
-      await speak(c.label, 'question', 'narrator');
-      if (my !== token) return;
+    const allNamed = scene.choices.every(c => said.includes(c.label.toLowerCase()));
+
+    if (!allNamed) {
+      for (const c of scene.choices) {
+        if (skipped()) break;
+        await sleep(180);
+        if (my !== token) return;
+        await speak(c.label, 'question', 'narrator');
+        if (my !== token) return;
+      }
     }
   }
 
@@ -493,10 +501,11 @@ function listen(my) {
 
   listener = createListener({
     windowMs: LISTEN_WINDOW_MS,
-    onInterim: (t) => { state.heard = true; el.heard.textContent = t; },
+    onInterim: (t) => { state.heard = true; state.lastHeardAt = Date.now(); el.heard.textContent = t; },
     onResult: (text, alternatives) => {
       if (my !== token) return;
       state.heard = true;
+      state.lastHeardAt = Date.now();
       const hit = alternatives.map(a => matchChoice(a, scene.choices)).find(Boolean);
       if (hit) pick(hit.choice);
       else miss(my);
@@ -540,16 +549,23 @@ async function miss(my) {
 
   if (state.misses >= MAX_MISSES) { giveUpToButtons(); return; }
 
-  if (state.misses === NUDGE_AFTER) {
-    // Подсказку произносим с выключенным микрофоном, иначе рассказчика
-    // услышит он сам: звук идёт на телевизор и возвращается в телефон.
-    stopListening();
-    setChoicesEnabled(false);
-    await speak('Скажи ещё раз, только погромче. Или нажми ответ внизу.', 'hint', 'narrator');
-    if (my !== token) return;
-    setChoicesEnabled(true);
-    listen(my);
-  }
+  if (state.misses !== NUDGE_AFTER) return;
+
+  // Ребёнок часто отвечает не сразу: «ну-у-у… пять». Если подсказать сразу
+  // после неподошедшей фразы, мы перебьём его на полуслове и не услышим
+  // настоящий ответ. Поэтому ждём тишины.
+  await sleep(2500);
+  if (my !== token) return;
+  if (Date.now() - state.lastHeardAt < 2000) return;   // всё ещё говорит
+
+  // Подсказку произносим с выключенным микрофоном, иначе рассказчика
+  // услышит он сам: звук идёт на телевизор и возвращается в телефон.
+  stopListening();
+  setChoicesEnabled(false);
+  await speak('Скажи ещё раз, только погромче. Или нажми ответ внизу.', 'hint', 'narrator');
+  if (my !== token) return;
+  setChoicesEnabled(true);
+  listen(my);
 }
 
 async function giveUpToButtons() {

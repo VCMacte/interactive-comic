@@ -99,6 +99,11 @@ const THEMES = {
       ['кружок', 'квадратик', 'треугольник'],
       ['ёжик', 'зайчик', 'лисичка'],
       ['яблоко', 'груша', 'слива'],
+      ['утро', 'вечер', 'полдень'],
+      ['берёза', 'ёлка', 'дуб'],
+      ['белка', 'мышка', 'барсук'],
+      ['дождик', 'солнышко', 'радуга'],
+      ['шишка', 'жёлудь', 'орешек'],
     ],
     homes: [
       { who: 'рыбка', where: 'река', wrong: ['небо', 'нора'] },
@@ -106,6 +111,11 @@ const THEMES = {
       { who: 'медведь', where: 'берлога', wrong: ['гнездо', 'река'] },
       { who: 'ёжик', where: 'нора', wrong: ['небо', 'гнездо'] },
       { who: 'пчела', where: 'улей', wrong: ['нора', 'река'] },
+      { who: 'лиса', where: 'нора', wrong: ['гнездо', 'улей'] },
+      { who: 'белка', where: 'дупло', wrong: ['река', 'берлога'] },
+      { who: 'бобёр', where: 'река', wrong: ['гнездо', 'дупло'] },
+      { who: 'сова', where: 'дупло', wrong: ['нора', 'река'] },
+      { who: 'муравей', where: 'муравейник', wrong: ['река', 'гнездо'] },
     ],
   },
 
@@ -139,6 +149,11 @@ const THEMES = {
       ['алмаз', 'изумруд', 'золото'],
       ['крипер', 'зомби', 'скелет'],
       ['доска', 'бревно', 'палка'],
+      ['день', 'ночь', 'рассвет'],
+      ['кирка', 'лопата', 'топор'],
+      ['вода', 'лава', 'лёд'],
+      ['свинья', 'корова', 'курица'],
+      ['уголёк', 'слиток', 'самоцвет'],
     ],
     homes: [
       { who: 'крипер', where: 'пещера', wrong: ['облако', 'сундук'] },
@@ -146,6 +161,11 @@ const THEMES = {
       { who: 'рыба', where: 'река', wrong: ['пещера', 'дерево'] },
       { who: 'летучая мышь', where: 'пещера', wrong: ['река', 'луг'] },
       { who: 'курица', where: 'двор', wrong: ['лава', 'пещера'] },
+      { who: 'овца', where: 'луг', wrong: ['пещера', 'лава'] },
+      { who: 'свинья', where: 'двор', wrong: ['река', 'пещера'] },
+      { who: 'лошадь', where: 'луг', wrong: ['пещера', 'река'] },
+      { who: 'скелет', where: 'пещера', wrong: ['луг', 'двор'] },
+      { who: 'осьминог', where: 'река', wrong: ['пещера', 'двор'] },
     ],
   },
 };
@@ -206,7 +226,15 @@ function taskNext(t, max) {
   };
 }
 
-const MATH = [taskAddition, taskSubtraction, taskCompare, taskNext];
+// Вид задания помечается явно: сцена может потребовать только подходящие
+// по смыслу. Загадка про антоним посреди сцены с крипером и стеной выглядит
+// вставленной наугад — потому что так и было.
+const MATH = [
+  { type: 'addition', make: taskAddition },
+  { type: 'subtraction', make: taskSubtraction },
+  { type: 'compare', make: taskCompare },
+  { type: 'next', make: taskNext },
+];
 
 /* ---------------- логика того же уровня ---------------- */
 
@@ -265,7 +293,12 @@ function taskHome(t) {
   };
 }
 
-const LOGIC = [taskOddOneOut, taskOpposite, taskPattern, taskHome];
+const LOGIC = [
+  { type: 'oddOneOut', make: taskOddOneOut },
+  { type: 'opposite', make: taskOpposite },
+  { type: 'pattern', make: taskPattern },
+  { type: 'home', make: taskHome },
+];
 
 /* ---------------- выдача ---------------- */
 
@@ -286,23 +319,37 @@ export function usePool(data) { pool = data || null; }
  *        чтобы сложность росла по ходу истории
  * @returns {{question:string, hint:string, choices:Array<{label:string,keywords:string[],correct:boolean}>}}
  */
+export const TASK_TYPES = {
+  math: MATH.map(g => g.type),
+  logic: LOGIC.map(g => g.type),
+};
+
 export function makeTask(kind = 'any', opts = {}) {
   const themeName = opts.theme ?? 'forest';
   const theme = THEMES[themeName] ?? THEMES.forest;
   const max = Math.min(Math.max(opts.max ?? 10, 5), 20);
+  const wanted = opts.types?.length ? opts.types : null;
 
   const ready = pool?.[`${themeName}|${kind}|${max}`];
-  if (ready && ready.length) return fromPool(ready);
+  if (ready && ready.length) {
+    const fit = wanted ? ready.filter(t => wanted.includes(t.type)) : ready;
+    if (fit.length) return fromPool(fit);
+  }
 
-  const generators = kind === 'math' ? MATH : kind === 'logic' ? LOGIC : [...MATH, ...LOGIC];
+  let generators = kind === 'math' ? MATH : kind === 'logic' ? LOGIC : [...MATH, ...LOGIC];
+  if (wanted) {
+    const fit = generators.filter(g => wanted.includes(g.type));
+    if (fit.length) generators = fit;
+  }
 
-  let task;
+  let task, gen;
   for (let attempt = 0; attempt < 6; attempt++) {
-    task = pickOne(generators)(theme, max);
+    gen = pickOne(generators);
+    task = gen.make(theme, max);
     if (!recent.includes(task.question)) break;
   }
 
-  return remember(task);
+  return remember({ ...task, type: gen.type });
 }
 
 function fromPool(ready) {

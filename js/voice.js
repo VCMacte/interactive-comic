@@ -276,6 +276,21 @@ export const voiceSupported = Boolean(SR);
 // версии. Поэтому за ответ принимаем только то, где есть настоящее слово.
 const looksLikeWord = (s) => /[а-яёa-z]{2,}|\d/i.test(s || '');
 
+// Ребёнок думает вслух: «э-э-э», «ну-у-у», «м-м-м» — и только потом отвечает.
+// Распознаватель исправно присылает это как готовую фразу. Раньше она шла
+// за ответ: засчитывался промах, звучала подсказка, и настоящий ответ,
+// сказанный следом, слушать было уже некому. Такие звуки пропускаем мимо.
+const HESITATION = /^(?:[аэоуыиеёюяaeiou]+|м+|мм+|хм+|н?у+|э+м*|ээ+|ну+|вот|это|значит|как|бы)$/i;
+
+const isHesitation = (phrase) => {
+  const words = String(phrase || '')
+    .toLowerCase()
+    .replace(/[^а-яёa-z\s-]/gi, ' ')
+    .split(/[\s-]+/)
+    .filter(Boolean);
+  return words.length > 0 && words.every(w => HESITATION.test(w));
+};
+
 /**
  * Прослушивание живёт целым окном, а не одной попыткой: движок на Android
  * сам обрывается после паузы, и его нужно молча перезапускать, пока окно
@@ -304,9 +319,11 @@ export function createListener({ onInterim, onResult, onEnd, windowMs = 30000 })
       const text = last[0].transcript;
       if (!last.isFinal) { onInterim?.(text); return; }
 
-      const all = Array.from(last).map(alt => alt.transcript).filter(looksLikeWord);
+      const all = Array.from(last)
+        .map(alt => alt.transcript)
+        .filter(t => looksLikeWord(t) && !isHesitation(t));
       if (all.length) onResult?.(text, all);
-      // Обрывок без слов — просто шум: молчим и продолжаем слушать.
+      // Обрывок без слов или задумчивое «э-э-э» — не ответ: молчим и слушаем дальше.
     };
 
     rec.onerror = (e) => {

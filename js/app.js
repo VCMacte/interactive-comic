@@ -29,6 +29,8 @@ const state = {
   started: false,   // первую сцену не из чего «выводить»
   narrating: false, // пока рассказчик говорит, отвечать рано
   misses: 0,        // подряд не распознанных ответов
+  heard: false,     // донёсся ли хоть какой-то звук в текущем окне
+  deafWindows: 0,   // окон подряд, в которые микрофон не услышал вообще ничего
   useVoice: true,
   focus: 0,
 };
@@ -44,6 +46,7 @@ let listener = null;
 const LISTEN_WINDOW_MS = 30000;   // сколько держим микрофон открытым
 const NUDGE_AFTER = 2;            // после скольких промахов мягко подсказать
 const MAX_MISSES = 4;             // после скольких — перейти на кнопки
+const DEAF_WINDOWS = 2;           // после скольких немых окон признать микрофон глухим
 
 /* ---------------- где мы остановились ---------------- */
 
@@ -51,6 +54,7 @@ const MAX_MISSES = 4;             // после скольких — перей�
 // на пульте открывает системный поиск. Перехватить её веб-страница не может,
 // но может запомнить место, чтобы возвращение стоило одного нажатия.
 const PROGRESS_KEY = 'comic-progress';
+const VOICE_KEY = 'comic-voice';
 let catalogue = [];     // список историй нужен и после возврата на главный экран
 
 function saveProgress(sceneId) {
@@ -82,8 +86,19 @@ function renderResume() {
 
 /* ---------------- запуск ---------------- */
 
+restoreVoicePreference();
 loadCatalogue();
 loadTaskPool();
+
+function restoreVoicePreference() {
+  try {
+    const saved = localStorage.getItem(VOICE_KEY);
+    if (saved !== null) el.voiceToggle.checked = saved === '1';
+  } catch {}
+  el.voiceToggle.addEventListener('change', () => {
+    try { localStorage.setItem(VOICE_KEY, el.voiceToggle.checked ? '1' : '0'); } catch {}
+  });
+}
 lockOrientation('portrait');
 checkVoiceSupport();
 
@@ -478,9 +493,10 @@ function listen(my) {
 
   listener = createListener({
     windowMs: LISTEN_WINDOW_MS,
-    onInterim: (t) => { el.heard.textContent = t; },
+    onInterim: (t) => { state.heard = true; el.heard.textContent = t; },
     onResult: (text, alternatives) => {
       if (my !== token) return;
+      state.heard = true;
       const hit = alternatives.map(a => matchChoice(a, scene.choices)).find(Boolean);
       if (hit) pick(hit.choice);
       else miss(my);
@@ -492,8 +508,17 @@ function listen(my) {
         stopListening();
         return;
       }
-      // Окно кончилось — ребёнок молчит или отвлёкся. Не наказываем промахом,
-      // просто предлагаем кнопки и замолкаем.
+      // Окно кончилось. Если за всё это время микрофон не услышал вообще
+      // ничего — скорее всего он и не слышит: на телевизоре звук попадает
+      // в браузер только при удержании кнопки на пульте, а её удержание
+      // уводит на системный поиск. Ждать по тридцать секунд на каждом
+      // вопросе бессмысленно, поэтому после двух немых окон выключаем голос.
+      state.deafWindows = state.heard ? 0 : state.deafWindows + 1;
+      if (state.deafWindows >= DEAF_WINDOWS) {
+        state.useVoice = false;
+        stopListening();
+        return;
+      }
       giveUpToButtons();
     },
   });

@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0b0d14">
+<title>Интерактивный комикс</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="assets/icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- Стартовый экран: нужен обязательно — без жеста пользователя браузер
+     не даст ни полноэкранный режим, ни микрофон, ни синтез речи. -->
+<div id="gate" class="gate">
+  <h1>Интерактивный комикс</h1>
+  <p>Включите трансляцию экрана на телевизор, затем нажмите кнопку.<br>
+     Телефон положите горизонтально.</p>
+  <button id="startBtn" class="big-btn">Начать историю</button>
+  <label class="toggle"><input type="checkbox" id="voiceToggle" checked> отвечать голосом</label>
+</div>
+
+<!-- Сцена 16:9. Всё содержимое живёт внутри, чтобы зеркалирование легло без полей. -->
+<main id="stage" class="stage" hidden>
+  <div class="frame">
+    <!-- Сцена собрана из слоёв: при переходе они едут с разной скоростью,
+         и получается глубина вместо плоской смены картинки. -->
+    <div class="scenery" id="scenery">
+      <img class="layer sky"  id="laySky"  alt="">
+      <img class="layer stars" id="layStars" alt="">
+      <img class="layer far"  id="layFar"  alt="">
+      <img class="layer near" id="layNear" alt="">
+      <div class="cast" id="cast"></div>
+    </div>
+    <div class="fx" id="fx" aria-hidden="true"></div>
+    <div class="vignette"></div>
+
+    <div class="panel">
+      <p id="text" class="text"></p>
+      <div id="choices" class="choices"></div>
+    </div>
+
+    <div id="mic" class="mic" hidden>
+      <span class="dot"></span><span id="heard">слушаю…</span>
+    </div>
+
+    <button id="replayBtn" class="icon-btn" title="Повторить вопрос">⟲</button>
+  </div>
+</main>
+
+<script type="module" src="js/app.js"></script>
+</body>
+</html>

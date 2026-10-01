@@ -1,0 +1,107 @@
+{
+  "title": "Ёжик и лунная тропа",
+  "start": "start",
+  "scenes": {
+    "start": {
+      "bg": {
+        "sky": "assets/bg/sky.webp",
+        "stars": "assets/bg/stars.svg",
+        "far": "assets/bg/far-forest.webp",
+        "near": "assets/bg/near-forest.svg"
+      },
+      "cast": [
+        { "src": "assets/char/hedgehog.svg", "x": 40, "y": 28, "w": 16 }
+      ],
+      "text": "Поздним вечером ёжик Тимка вышел из норки и увидел: тропинка впереди светится лунным светом и разделяется надвое.",
+      "prompt": "Куда пойдём: налево, к реке, или направо, к старому дубу?",
+      "choices": [
+        { "label": "Налево, к реке", "keywords": ["налево", "лево", "река", "речка"], "dir": "left", "next": "river" },
+        { "label": "Направо, к дубу", "keywords": ["направо", "право", "дуб", "дерево"], "dir": "right", "next": "oak" }
+      ]
+    },
+
+    "river": {
+      "bg": {
+        "sky": "assets/bg/sky.webp",
+        "stars": "assets/bg/stars.svg",
+        "far": "assets/bg/far-forest.webp",
+        "near": "assets/bg/near-river.svg"
+      },
+      "cast": [
+        { "src": "assets/char/hedgehog.svg", "x": 16, "y": 28, "w": 16 },
+        { "src": "assets/char/beaver.svg", "x": 58, "y": 27, "w": 17 }
+      ],
+      "text": "У реки сидел бобёр и чинил плотину. «Помоги мне сосчитать!» — попросил он.",
+      "task": "math",
+      "next": "gift"
+    },
+
+    "oak": {
+      "bg": {
+        "sky": "assets/bg/sky.webp",
+        "stars": "assets/bg/stars.svg",
+        "far": "assets/bg/far-forest.webp",
+        "near": "assets/bg/near-oak.svg"
+      },
+      "cast": [
+        { "src": "assets/char/hedgehog.svg", "x": 22, "y": 28, "w": 16 },
+        { "src": "assets/char/owl.svg", "x": 62, "y": 49, "w": 11 }
+      ],
+      "text": "Под старым дубом дремала сова. Она приоткрыла один глаз: «Я потеряла ключик от дупла. Он упал в траву или застрял в коре?»",
+      "prompt": "Где поищем: в траве или в коре?",
+      "choices": [
+        { "label": "В траве", "keywords": ["трава", "траве", "внизу", "земля"], "say": "В траве блеснуло что-то серебряное. Это он!", "next": "owl" },
+        { "label": "В коре", "keywords": ["кора", "коре", "ствол"], "say": "В коре только спящий жучок. Он сердито зашевелился.", "next": "oak" }
+      ]
+    },
+
+    "owl": {
+      "bg": {
+        "sky": "assets/bg/sky.webp",
+        "stars": "assets/bg/stars.svg",
+        "far": "assets/bg/far-forest.webp",
+        "near": "assets/bg/near-oak.svg"
+      },
+      "cast": [
+        { "src": "assets/char/hedgehog.svg", "x": 24, "y": 28, "w": 16 },
+        { "src": "assets/char/owl.svg", "x": 60, "y": 49, "w": 11 }
+      ],
+      "text": "Сова обрадовалась и говорит: «За ключик я загадаю тебе загадку».",
+      "task": "logic",
+      "next": "gift"
+    },
+
+    "gift": {
+      "bg": {
+        "sky": "assets/bg/sky.webp",
+        "stars": "assets/bg/stars.svg",
+        "far": "assets/bg/far-forest.webp",
+        "near": "assets/bg/near-glade.svg"
+      },
+      "cast": [
+        { "src": "assets/char/hedgehog.svg", "x": 36, "y": 28, "w": 16 },
+        { "src": "assets/char/firefly.svg", "x": 58, "y": 45, "w": 9 }
+      ],
+      "text": "В благодарность Тимке подарили фонарик из светлячка. Теперь тропинка видна до самого дома.",
+      "prompt": "Пойдём домой или погуляем ещё?",
+      "choices": [
+        { "label": "Домой", "keywords": ["домой", "дом", "спать"], "dir": "right", "next": "home" },
+        { "label": "Погулять ещё", "keywords": ["погулять", "гулять", "ещё", "еще", "дальше"], "dir": "left", "next": "start" }
+      ]
+    },
+
+    "home": {
+      "bg": {
+        "sky": "assets/bg/sky.webp",
+        "stars": "assets/bg/stars.svg",
+        "far": "assets/bg/far-hills.webp",
+        "near": "assets/bg/near-burrow.svg"
+      },
+      "cast": [
+        { "src": "assets/char/hedgehog.svg", "x": 38, "y": 28, "w": 16 },
+        { "src": "assets/char/firefly.svg", "x": 60, "y": 45, "w": 9 }
+      ],
+      "text": "Тимка свернулся клубочком в норке, а светлячок остался светить у входа. Спокойной ночи!"
+    }
+  }
+}

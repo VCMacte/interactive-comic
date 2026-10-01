@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="96 128 208 258" width="208" height="258">
+<style>
+  .idle { animation: idle 3.4s ease-in-out infinite; transform-origin: 200px 340px; }
+  @keyframes idle { 0%,100% { transform: translateY(0) scaleY(1) } 50% { transform: translateY(-5px) scaleY(1.015) } }
+  .blink { animation: blink 5.2s ease-in-out infinite; transform-origin: center; }
+  @keyframes blink { 0%,94%,100% { transform: scaleY(1) } 97% { transform: scaleY(0.08) } }
+  @media (prefers-reduced-motion: reduce) { .idle, .blink { animation: none } }
+  
+</style>
+<g class="idle">
+
+<ellipse cx="200" cy="262" rx="104" ry="118" fill="#6d5742"/>
+<ellipse cx="200" cy="262" rx="104" ry="118" fill="none" stroke="#9cc0f0" stroke-width="3" opacity="0.25"/>
+<path d="M118 196 L104 136 L152 170 Z" fill="#4a3a2b"/>
+<path d="M282 196 L296 136 L248 170 Z" fill="#4a3a2b"/>
+<ellipse cx="200" cy="300" rx="66" ry="72" fill="#f0e4cc" opacity="0.28"/>
+
+<g class="blink" style="transform-origin:200px 222px">
+  <circle cx="160" cy="222" r="42" fill="#f7f1e3"/>
+  <circle cx="240" cy="222" r="42" fill="#f7f1e3"/>
+  <circle cx="166" cy="224" r="21" fill="#15111f"/>
+  <circle cx="234" cy="224" r="21" fill="#15111f"/>
+  <circle cx="173" cy="216" r="7" fill="#f7f1e3"/>
+  <circle cx="241" cy="216" r="7" fill="#f7f1e3"/>
+</g>
+
+<path d="M200 240 L216 262 L200 276 L184 262 Z" fill="#ffc247"/>
+<path d="M176 352 l-14 26 M200 352 l0 28 M224 352 l14 26" stroke="#ffc247" stroke-width="7" stroke-linecap="round" opacity="0.85"/>
+</g>
+</svg>

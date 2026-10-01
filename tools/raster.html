@@ -1,0 +1,100 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Растеризация слоёв</title>
+<style>body{font:14px/1.6 system-ui;background:#111;color:#eee;padding:2rem}pre{white-space:pre-wrap}</style>
+<h1>Растеризация слоёв</h1>
+<pre id="log">готов</pre>
+
+<script type="module">
+// На машине нет ни ImageMagick, ни Inkscape, ни cairosvg, а SVG нужно
+// превращать в растр дважды: до генерации (init-картинка для img2img)
+// и после неё (возврат прозрачности и сборка в рабочий размер).
+// Браузер — единственный доступный растеризатор, поэтому вся работа здесь.
+
+const log = (m) => { document.getElementById('log').textContent += '\n' + m; };
+
+const load = (src) => new Promise((resolve, reject) => {
+  const img = new Image();
+  img.onload = () => resolve(img);
+  img.onerror = () => reject(new Error('не загрузилось: ' + src));
+  img.src = src;
+});
+
+async function save(path, canvas, type = 'image/png', quality) {
+  const res = await fetch('/save', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ path, dataUrl: canvas.toDataURL(type, quality) }),
+  });
+  const out = await res.json();
+  if (out.error) throw new Error(out.error);
+  return out.bytes;
+}
+
+function canvasOf(w, h) {
+  const c = document.createElement('canvas');
+  c.width = w; c.height = h;
+  return c;
+}
+
+/**
+ * Пасс 1 — init-картинки для img2img.
+ * Прозрачные слои кладём на тёмный фон: генератору нужен непрозрачный вход,
+ * а чёрная подложка ближе всего к нашей ночной палитре и меньше всего
+ * сбивает его с композиции.
+ */
+window.rasterInit = async (jobs, w, h) => {
+  const done = [];
+  for (const job of jobs) {
+    const img = await load(job.src);
+    const c = canvasOf(w, h);
+    const ctx = c.getContext('2d');
+    ctx.fillStyle = job.bg || '#0a1430';
+    ctx.fillRect(0, 0, w, h);
+    ctx.drawImage(img, 0, 0, w, h);
+    done.push(`${job.out}  ${await save(job.out, c)} байт`);
+    log('init: ' + job.out);
+  }
+  return done;
+};
+
+/**
+ * Пасс 2 — сборка результата.
+ * Генератор возвращает непрозрачный прямоугольник, а слою нужна исходная
+ * прозрачность, иначе дальний план закроет небо. Поэтому поверх рисунка
+ * применяем маску из того же SVG: destination-in оставляет только то,
+ * что попадает в силуэт.
+ */
+window.composeLayer = async ({ painted, mask, out, w, h, keepAlpha, softMask, type, quality }) => {
+  const img = await load(painted);
+  const c = canvasOf(w, h);
+  const ctx = c.getContext('2d');
+  ctx.drawImage(img, 0, 0, w, h);
+
+  if (keepAlpha) {
+    const m = await load(mask);
+    ctx.globalCompositeOperation = 'destination-in';
+    ctx.drawImage(m, 0, 0, w, h);
+    ctx.globalCompositeOperation = 'source-over';
+  }
+
+  // Мягкая маска для дальнего плана. Жёсткий силуэт срезает написанную
+  // дымку над лесом, и слой становится плоским набором тонких фигур.
+  // Градиент оставляет атмосферу и при этом не закрывает небо.
+  if (softMask) {
+    const g = ctx.createLinearGradient(0, h * softMask[0], 0, h * softMask[1]);
+    g.addColorStop(0, 'rgba(0,0,0,0)');
+    g.addColorStop(1, 'rgba(0,0,0,1)');
+    ctx.globalCompositeOperation = 'destination-in';
+    ctx.fillStyle = g;
+    ctx.fillRect(0, 0, w, h);
+    ctx.globalCompositeOperation = 'source-over';
+  }
+
+  // WebP вместо PNG: фотографические градиенты в PNG весят в разы больше,
+  // а комплект слоёв целиком уходит в офлайн-кэш приложения.
+  const bytes = await save(out, c, type || 'image/png', quality);
+  log('готово: ' + out + ' — ' + bytes + ' байт');
+  return bytes;
+};
+</script>

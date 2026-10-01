@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="80 88 240 242" width="240" height="242">
+<defs><radialGradient id="ff">
+      <stop offset="0" stop-color="#ffc247" stop-opacity="0.5"/>
+      <stop offset="1" stop-color="#ffc247" stop-opacity="0"/>
+    </radialGradient></defs>
+<style>
+  .idle { animation: idle 3.4s ease-in-out infinite; transform-origin: 200px 340px; }
+  @keyframes idle { 0%,100% { transform: translateY(0) scaleY(1) } 50% { transform: translateY(-5px) scaleY(1.015) } }
+  .blink { animation: blink 5.2s ease-in-out infinite; transform-origin: center; }
+  @keyframes blink { 0%,94%,100% { transform: scaleY(1) } 97% { transform: scaleY(0.08) } }
+  @media (prefers-reduced-motion: reduce) { .idle, .blink { animation: none } }
+  .wing { animation: flap .45s ease-in-out infinite; }
+  @keyframes flap { 0%,100% { transform: scaleY(1) } 50% { transform: scaleY(0.55) } }
+  @media (prefers-reduced-motion: reduce) { .wing { animation: none } }
+</style>
+<g class="idle">
+
+<circle cx="200" cy="210" r="120" fill="url(#ff)"/>
+<g class="wing" style="transform-origin:200px 200px">
+  <ellipse cx="166" cy="178" rx="40" ry="22" fill="#f7f1e3" opacity="0.45" transform="rotate(-24 166 178)"/>
+  <ellipse cx="234" cy="178" rx="40" ry="22" fill="#f7f1e3" opacity="0.45" transform="rotate(24 234 178)"/>
+</g>
+<ellipse cx="200" cy="212" rx="30" ry="38" fill="#3a2f1a"/>
+<circle cx="200" cy="238" r="22" fill="#ffc247"/>
+<circle cx="200" cy="238" r="12" fill="#fff6d8"/>
+<circle cx="192" cy="196" r="5" fill="#f7f1e3"/>
+<circle cx="208" cy="196" r="5" fill="#f7f1e3"/>
+</g>
+</svg>

@@ -1,0 +1,196 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Что умеет этот браузер</title>
+<style>
+/* Крупно и контрастно: страницу смотрят с дивана, а не с расстояния вытянутой руки. */
+:root{ --ok:#5ad67d; --no:#ff6b6b; --warn:#ffc247; }
+*{box-sizing:border-box}
+body{
+  margin:0; padding:3vmin 4vmin 6vmin; background:#0b0d14; color:#f6f1e4;
+  font:400 2.6vmin/1.5 "Segoe UI",system-ui,sans-serif;
+}
+h1{font-size:4.2vmin; margin:0 0 .4em}
+p.lead{opacity:.75; margin:0 0 1.2em; max-width:60ch}
+ul{list-style:none; margin:0 0 1.2em; padding:0}
+li{display:flex; gap:1.2vmin; align-items:baseline; padding:.45em 0; border-bottom:1px solid #1d2232}
+li .mark{width:2.4vmin; flex:none; font-weight:700}
+li .name{flex:1}
+li .val{opacity:.75; text-align:right; max-width:55%}
+.ok{color:var(--ok)} .no{color:var(--no)} .warn{color:var(--warn)}
+.buttons{display:flex; flex-wrap:wrap; gap:1.5vmin; margin:1.5em 0}
+button{
+  font:700 2.6vmin/1 inherit; padding:1.1em 1.8em; border-radius:999px;
+  border:.3vmin solid #39405a; background:#161a26; color:#f6f1e4; cursor:pointer;
+}
+button:focus{outline:none; background:var(--warn); color:#2a1c00; border-color:var(--warn)}
+#log{
+  white-space:pre-wrap; background:#11141f; border-radius:1vmin;
+  padding:1.2em; min-height:6em; font-size:2.4vmin;
+}
+.verdict{font-size:3vmin; font-weight:700; padding:1em 0}
+</style>
+</head>
+<body>
+
+<h1>Что умеет этот браузер</h1>
+<p class="lead">Откройте эту страницу там, где собираетесь запускать комикс.
+Стрелки пульта переключают кнопки, центральная — нажимает.</p>
+
+<ul id="list"></ul>
+
+<div class="buttons">
+  <button id="btnMic">Проверить микрофон</button>
+  <button id="btnVoice">Проверить озвучку</button>
+  <button id="btnRec">Проверить распознавание речи</button>
+</div>
+
+<div id="log">Нажмите кнопку, чтобы проверить.</div>
+<div class="verdict" id="verdict"></div>
+
+<script>
+// Намеренно без модулей и без современного синтаксиса: страница должна
+// открыться даже в старом браузере телевизора, иначе она не ответит
+// на свой же вопрос.
+(function () {
+  var list = document.getElementById('list');
+  var log = document.getElementById('log');
+
+  var rows = {};
+
+  function row(name, state, value, key) {
+    var li = document.createElement('li');
+    var cls = state === true ? 'ok' : state === false ? 'no' : 'warn';
+    var mark = state === true ? '✓' : state === false ? '✗' : '?';
+    li.innerHTML = '<span class="mark ' + cls + '">' + mark + '</span>' +
+                   '<span class="name">' + name + '</span>' +
+                   '<span class="val">' + (value || '') + '</span>';
+    list.appendChild(li);
+    if (key) rows[key] = li;
+  }
+
+  function update(key, state, value) {
+    var li = rows[key];
+    if (!li) return;
+    var cls = state === true ? 'ok' : state === false ? 'no' : 'warn';
+    li.querySelector('.mark').className = 'mark ' + cls;
+    li.querySelector('.mark').textContent = state === true ? '✓' : state === false ? '✗' : '?';
+    li.querySelector('.val').textContent = value || '';
+  }
+
+  var hasRec = !!(window.SpeechRecognition || window.webkitSpeechRecognition);
+  var hasMic = !!(navigator.mediaDevices && navigator.mediaDevices.getUserMedia);
+  var hasTts = 'speechSynthesis' in window;
+
+  var ruVoices = [];
+  if (hasTts) {
+    try {
+      ruVoices = (speechSynthesis.getVoices() || []).filter(function (v) {
+        return (v.lang || '').toLowerCase().indexOf('ru') === 0;
+      });
+    } catch (e) {}
+  }
+
+  row('Защищённое соединение', !!window.isSecureContext,
+      window.isSecureContext ? 'да (' + location.protocol.replace(':', '') + ')'
+                             : 'нет — микрофон будет заблокирован');
+  row('Распознавание речи (Web Speech API)', hasRec, hasRec ? 'есть' : 'нет');
+  row('Доступ к микрофону (getUserMedia)', hasMic, hasMic ? 'есть' : 'нет');
+  row('Синтез речи', hasTts, hasTts ? 'голосов: ' + (speechSynthesis.getVoices() || []).length : 'нет', 'tts');
+  row('Русский голос', hasTts ? ruVoices.length > 0 : null,
+      ruVoices.length ? ruVoices[0].name : 'ищу…', 'ru');
+
+  function recheckVoices() {
+    if (!hasTts) return;
+    var all = speechSynthesis.getVoices() || [];
+    var ru = all.filter(function (v) { return (v.lang || '').toLowerCase().indexOf('ru') === 0; });
+    update('tts', all.length > 0, 'голосов: ' + all.length);
+    update('ru', ru.length > 0, ru.length ? ru[0].name : 'не найден');
+  }
+  if (hasTts) {
+    try { speechSynthesis.addEventListener('voiceschanged', recheckVoices); } catch (e) {}
+    setTimeout(recheckVoices, 1200);   // часть движков событие не присылает
+  }
+  row('Анимации (Web Animations API)', 'animate' in Element.prototype);
+  row('Пропорции кадра (aspect-ratio)', !!(window.CSS && CSS.supports && CSS.supports('aspect-ratio', '16/9')));
+  row('Полноэкранный режим', !!document.documentElement.requestFullscreen);
+  row('Удержание экрана (Wake Lock)', !!navigator.wakeLock);
+  row('Экран', null, screen.width + '×' + screen.height);
+  row('Браузер', null, navigator.userAgent.slice(0, 90));
+
+  // Картинки у нас в WebP — если формат не поддержан, сцены будут пустыми.
+  var probe = new Image();
+  probe.onload = function () { row('Картинки WebP', probe.width === 1); verdict(); };
+  probe.onerror = function () { row('Картинки WebP', false); verdict(); };
+  probe.src = 'data:image/webp;base64,UklGRhoAAABXRUJQVlA4TA0AAAAvAAAAEAcQERGIiP4HAA==';
+
+  function verdict() {
+    var v = document.getElementById('verdict');
+    if (hasRec && hasMic && window.isSecureContext) {
+      v.className = 'verdict ok';
+      v.textContent = 'Голосовые ответы здесь работать должны.';
+    } else {
+      v.className = 'verdict no';
+      v.textContent = 'Голосовые ответы здесь работать не будут — остаются кнопки и стрелки пульта.';
+    }
+  }
+
+  document.getElementById('btnMic').onclick = function () {
+    if (!hasMic) { log.textContent = 'Этот браузер вообще не умеет запрашивать микрофон.'; return; }
+    log.textContent = 'Запрашиваю микрофон…';
+    navigator.mediaDevices.getUserMedia({ audio: true }).then(function (s) {
+      var names = s.getAudioTracks().map(function (t) { return t.label || 'без названия'; });
+      s.getTracks().forEach(function (t) { t.stop(); });
+      log.textContent = 'Микрофон доступен. Устройства: ' + names.join(', ');
+    }).catch(function (e) {
+      log.textContent = 'Микрофон недоступен: ' + e.name + ' — ' + e.message;
+    });
+  };
+
+  document.getElementById('btnVoice').onclick = function () {
+    if (!hasTts) { log.textContent = 'Синтеза речи здесь нет.'; return; }
+    try {
+      var u = new SpeechSynthesisUtterance('Проверка. Если ты это слышишь, озвучка работает.');
+      u.lang = 'ru-RU';
+      u.onstart = function () { log.textContent = 'Говорю…'; };
+      u.onend = function () { log.textContent = 'Озвучка отработала.'; };
+      u.onerror = function (e) { log.textContent = 'Ошибка озвучки: ' + e.error; };
+      speechSynthesis.speak(u);
+      log.textContent = 'Отправил на озвучку.';
+    } catch (e) { log.textContent = 'Озвучка не запустилась: ' + e.message; }
+  };
+
+  document.getElementById('btnRec').onclick = function () {
+    if (!hasRec) { log.textContent = 'Распознавания речи в этом браузере нет.'; return; }
+    var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+    var rec = new SR();
+    rec.lang = 'ru-RU';
+    rec.interimResults = true;
+    rec.onresult = function (e) {
+      var r = e.results[e.results.length - 1];
+      log.textContent = (r.isFinal ? 'Услышал: ' : 'слышу… ') + r[0].transcript;
+    };
+    rec.onerror = function (e) { log.textContent = 'Ошибка распознавания: ' + e.error; };
+    rec.onend = function () { log.textContent += '\n(прослушивание завершилось)'; };
+    try { rec.start(); log.textContent = 'Говорите…'; }
+    catch (e) { log.textContent = 'Не удалось начать: ' + e.message; }
+  };
+
+  // Пульт телевизора шлёт стрелки. Переводим фокус между кнопками руками:
+  // полагаться на то, что браузер ТВ сделает это сам, нельзя.
+  var buttons = [].slice.call(document.querySelectorAll('button'));
+  var focus = 0;
+  try { buttons[0].focus({ preventScroll: true }); } catch (e) { buttons[0].focus(); }
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') focus = (focus + 1) % buttons.length;
+    else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') focus = (focus - 1 + buttons.length) % buttons.length;
+    else return;
+    try { buttons[focus].focus({ preventScroll: true }); } catch (err) { buttons[focus].focus(); }
+    e.preventDefault();
+  });
+})();
+</script>
+</body>
+</html>

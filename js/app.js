@@ -189,8 +189,11 @@ async function goFullscreenLandscape() {
 // как внезапно выехавшая адресная строка посреди сказки. Возвращаем его
 // первым же касанием экрана — касание даёт то самое разрешение пользователя,
 // без которого браузер полноэкранный режим не включит.
+let fullscreenGuardArmed = false;
+
 function keepFullscreen() {
-  if (installedApp) return;
+  if (installedApp || fullscreenGuardArmed) return;
+  fullscreenGuardArmed = true;
 
   const restore = () => {
     if (document.fullscreenElement) return;
@@ -201,7 +204,11 @@ function keepFullscreen() {
   el.stage.addEventListener('pointerdown', restore);
 }
 
+let wakeLockArmed = false;
+
 async function keepScreenAwake() {
+  if (wakeLockArmed) return;
+  wakeLockArmed = true;
   try {
     let lock = await navigator.wakeLock?.request('screen');
     document.addEventListener('visibilitychange', async () => {
@@ -410,10 +417,8 @@ async function miss(my) {
 }
 
 async function giveUpToButtons() {
-  const my = token;
   stopListening();
   await speak('Не расслышал. Нажми на нужный ответ внизу.', 'hint', 'narrator');
-  if (my !== token) return;
 }
 
 /* ---------------- выбор ---------------- */

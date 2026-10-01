@@ -205,11 +205,15 @@ export async function speakDialogue(text, { character = 'hero', mood = 'story' }
     if (!clean) continue;
 
     const opts = tone(seg.role, mood);
-    for (const chunk of toChunks(clean)) {
+    const chunks = toChunks(clean);
+    for (let c = 0; c < chunks.length; c++) {
       if (my !== speechToken) return;
-      await speakChunk(chunk, opts);
+      await speakChunk(chunks[c], opts);
       if (my !== speechToken) return;
-      await sleep(opts.gap);
+      // После последнего куска паузу не держим: её добавит либо смена
+      // говорящего ниже, либо переход к вопросу. Иначе перед вопросом
+      // к ребёнку набегала лишняя тишина.
+      if (c < chunks.length - 1) await sleep(opts.gap);
     }
 
     // На смене говорящего пауза заметно длиннее: иначе рассказчик и герой

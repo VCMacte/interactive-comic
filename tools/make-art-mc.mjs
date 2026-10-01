@@ -92,11 +92,6 @@ function clouds(seed, fill, opacity) {
   return out.join('\n');
 }
 
-function squareSun(x, y, size, core, glow) {
-  return `<rect x="${x - size}" y="${y - size}" width="${size * 2}" height="${size * 2}" fill="${glow}" opacity="0.35"/>
-<rect x="${n(x - size * 0.62)}" y="${n(y - size * 0.62)}" width="${n(size * 1.24)}" height="${n(size * 1.24)}" fill="${core}"/>`;
-}
-
 // Светило живёт отдельным прозрачным слоем и НЕ попадает в img2img:
 // проверено — яркий квадрат солнца нейросеть перерисовывает в пятно.
 function celestial(x, y, size, core, halo, stars = 0) {

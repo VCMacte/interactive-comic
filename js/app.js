@@ -44,6 +44,13 @@ let listener = null;
 
 // Подобрано по жалобе из реальной эксплуатации: посторонний шум принимался
 // за попытку ответить, и прослушивание обрывалось почти сразу.
+function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+// Картинка появляется сразу, а голос раньше ждал, пока доедут все слои
+// и персонажи, — почти секунда тишины на каждой сцене. Начинаем рассказ,
+// не дожидаясь конца анимации: она доигрывает уже под голос.
+const SCENE_LEAD_MS = 420;
+
 const LISTEN_WINDOW_MS = 30000;   // сколько держим микрофон открытым
 const NUDGE_AFTER = 2;            // после скольких промахов мягко подсказать
 const MAX_MISSES = 4;             // после скольких — перейти на кнопки
@@ -351,7 +358,8 @@ async function show(id, dir = 'forward') {
   renderChoices(scene);
   preloadNext(scene);
 
-  await enter(dir);
+  const entering = enter(dir);
+  await Promise.race([entering, sleep(SCENE_LEAD_MS)]);
   if (my !== token) return;
 
   narrate(scene, my);
@@ -438,7 +446,6 @@ el.skip.addEventListener('click', skipNarration);
 
 /* ---------------- рассказчик ---------------- */
 
-const sleep = (ms) => new Promise(r => setTimeout(r, ms));
 
 async function narrate(scene, my) {
   const skipAt = skipToken;
@@ -601,7 +608,7 @@ async function pick(choice, btn) {
 
   if (choice.say) {
     setChoicesEnabled(false);
-    await speakDialogue(choice.say, { character: voiceOf(state.scene), mood: 'praise' });
+    await speakDialogue(choice.say, { character: choice.voice ?? voiceOf(state.scene), mood: 'praise' });
     if (my !== token) return;
   }
   show(choice.next, choice.dir ?? 'forward');

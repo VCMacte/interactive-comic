@@ -29,6 +29,7 @@ SPEAKERS = {
     'friend': 'xenia',
     'kid': 'kseniya',
     'villain': 'eugene',
+    'beast': 'eugene',
 }
 
 # Темп у ролей разный, как и в браузерной озвучке: рассказчик спокойнее,
@@ -41,6 +42,7 @@ RATE_SCALE = {
     'friend': 1.03,
     'kid': 1.08,
     'villain': 0.92,
+    'beast': 0.88,
 }
 
 

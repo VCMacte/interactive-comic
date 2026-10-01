@@ -1,6 +1,6 @@
 // Офлайн-кэш: история и картинки доступны без сети.
 // Распознавание речи сетью всё равно пользуется — оно идёт через серверы Google.
-const CACHE = 'comic-v19';
+const CACHE = 'comic-v20';
 const ASSETS = [
   './',
   './index.html',
@@ -92,6 +92,7 @@ const ASSETS = [
   './assets/audio/1e932f83.mp3',
   './assets/audio/1ea38870.mp3',
   './assets/audio/1f101467.mp3',
+  './assets/audio/1fd0361b.mp3',
   './assets/audio/20224b00.mp3',
   './assets/audio/2129049d.mp3',
   './assets/audio/212a56fe.mp3',
@@ -164,6 +165,8 @@ const ASSETS = [
   './assets/audio/41710076.mp3',
   './assets/audio/4208d6a1.mp3',
   './assets/audio/4345ad26.mp3',
+  './assets/audio/43701933.mp3',
+  './assets/audio/43a62251.mp3',
   './assets/audio/44497dae.mp3',
   './assets/audio/44beb28d.mp3',
   './assets/audio/45dad347.mp3',
@@ -493,7 +496,6 @@ const ASSETS = [
   './assets/audio/e3f86f3e.mp3',
   './assets/audio/e45b58ee.mp3',
   './assets/audio/e4fbbf6b.mp3',
-  './assets/audio/e64ab981.mp3',
   './assets/audio/e65be4f6.mp3',
   './assets/audio/e6c89c83.mp3',
   './assets/audio/e79d2f11.mp3',

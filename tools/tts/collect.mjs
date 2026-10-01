@@ -98,7 +98,7 @@ for (const file of stories) {
     if (scene.prompt) add(fill(scene.prompt), 'narrator');
 
     for (const c of scene.choices || []) {
-      if (c.say) for (const part of splitDialogue(fill(c.say), character)) add(part.text, part.role);
+      if (c.say) for (const part of splitDialogue(fill(c.say), c.voice ?? character)) add(part.text, part.role);
       if (c.hint) add(fill(c.hint), 'narrator');
       // Подписи на кнопках проговариваются вслух: мелкий текст с дивана
       // не прочесть, а выбирать ребёнок должен на слух.

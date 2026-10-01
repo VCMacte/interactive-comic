@@ -16,6 +16,7 @@ export const ROLES = {
   friend:   { rate: 0.95, pitch: 1.34, gap: 260 },
   kid:      { rate: 1.00, pitch: 1.42, gap: 240 },
   villain:  { rate: 0.82, pitch: 0.68, gap: 340 },
+  beast:    { rate: 0.80, pitch: 0.62, gap: 320 },
 };
 
 // Настроение — поправка поверх роли: вопрос медленнее и выше, похвала живее.

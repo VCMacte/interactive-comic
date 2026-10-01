@@ -54,6 +54,15 @@ export function hasClip(text, role) {
   return !!index && index.has(clipId(text, role));
 }
 
+/**
+ * Прозвучала ли запись на самом деле. Длительность может быть неизвестна
+ * (Infinity) — тогда верим самому событию конца: позиция всё равно сдвинулась.
+ */
+function enough(el) {
+  if (!Number.isFinite(el.duration) || el.duration < 1) return el.currentTime > 0.3;
+  return el.currentTime >= el.duration * 0.5;
+}
+
 export function stopAudio() {
   token++;
   for (const [el, finish] of playing) {
@@ -77,14 +86,21 @@ export async function playClip(text, role) {
   el.preload = 'auto';
 
   const played = await new Promise((resolve) => {
-    let done = false;
-    const finish = (ok) => {
-      if (done) return;
-      done = true;
+    let settled = false;
+    let guard = null;
+
+    // Закрыть ожидание. Отдельно от «забыть элемент»: ожидание может
+    // завершиться раньше самой записи, и тогда остановка сцены — последнее,
+    // что способно её заглушить. Элемент покидает список только когда
+    // действительно смолк.
+    const done = (ok) => {
+      if (settled) return;
+      settled = true;
       clearTimeout(cap);
-      playing.delete(el);
+      clearTimeout(guard);
       resolve(ok);
     };
+    const finish = (ok) => { done(ok); playing.delete(el); };
     playing.set(el, finish);
 
     // Жёсткий предел на случай, если файл завис на загрузке и событий
@@ -95,12 +111,24 @@ export async function playClip(text, role) {
     // звук или автовоспроизведение запретили, событие приходит мгновенно
     // с нулевой позицией. Считать это успехом нельзя — иначе история пойдёт
     // в тишине, так и не позвав запасной синтез.
-    el.onended = () => finish(el.duration < 1 || el.currentTime >= el.duration * 0.5);
+    el.onended = () => finish(enough(el));
     el.onerror = () => finish(false);
-    // Длительность заранее неизвестна, а зависнуть на битом файле нельзя.
-    el.onloadedmetadata = () => {
-      setTimeout(() => finish(true), (el.duration || 10) * 1000 + 1500);
+
+    // Страховка на случай потерянного «закончилось».
+    //
+    // Длительность бывает неизвестна: MP3 от lamejs идут без заголовка
+    // с продолжительностью, и браузер до конца загрузки отдаёт Infinity.
+    // Прежний расчёт `(duration || 10) * 1000 + 1500` давал тогда Infinity,
+    // а setTimeout с таким значением срабатывает **немедленно**. Ожидание
+    // закрывалось мгновенно, рассказ уходил к следующей реплике, и две
+    // фразы звучали разом — ровно та накладка, на которую жаловались.
+    const arm = () => {
+      clearTimeout(guard);
+      const d = Number.isFinite(el.duration) && el.duration > 0 ? el.duration : 30;
+      guard = setTimeout(() => done(true), d * 1000 + 1500);
     };
+    el.onloadedmetadata = arm;
+    el.ondurationchange = arm;   // Infinity нередко уточняется уже по ходу
 
     el.play().catch(() => finish(false));
   });

@@ -378,7 +378,9 @@ function withTask(raw) {
   // Сцена может задать вид задания строкой ("math") или объектом с пределом
   // счёта: {"kind":"math","max":20}. Так сложность растёт по ходу истории.
   const spec = typeof raw.task === 'string' ? { kind: raw.task } : raw.task;
-  const task = makeTask(spec.kind, { theme: state.story.theme, max: spec.max, types: spec.types });
+  const task = makeTask(spec.kind, {
+    theme: state.story.theme, max: spec.max, types: spec.types, topic: spec.topic,
+  });
   const choices = task.choices.map(c => c.correct
     ? { label: c.label, keywords: c.keywords, correct: true, say: PRAISE[Math.floor(Math.random() * PRAISE.length)], next: raw.next }
     : { label: c.label, keywords: c.keywords, hint: task.hint });

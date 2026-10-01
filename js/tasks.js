@@ -7,6 +7,10 @@
 //
 // Тема задаёт предметный мир: что считаем и о ком логические загадки.
 // Предел счёта задаётся сценой, чтобы сложность росла по ходу истории.
+//
+// Сцена сужает набор ещё и по смыслу — полем topic. Одного вида задачи
+// оказалось мало: в шахте спокойно выпадал вопрос про курицу, потому что
+// вид подходил, а предметный мир оставался общим на всю тему.
 
 const NUM = ['ноль', 'один', 'два', 'три', 'четыре', 'пять',
              'шесть', 'семь', 'восемь', 'девять', 'десять',
@@ -68,6 +72,11 @@ const count = (n, forms) => `${NUM[n]} ${plural(n, forms)}`;
 // Тогда «один блок» не превращается в «один доска», а винительный падеж
 // совпадает с именительным: «ветер унёс один блок». С женским родом
 // пришлось бы тащить ещё два набора окончаний ради той же задачи.
+//
+// Поле topic — метка предметной области, по которой сцена сужает набор.
+// Записи без метки в сужение не попадают. Чередования и антонимы метками
+// не размечены: это пары и тройки слов, у них нет места в сюжете, и они
+// проходят любое сужение как есть.
 const THEMES = {
   forest: {
     countable: [
@@ -121,22 +130,31 @@ const THEMES = {
 
   minecraft: {
     countable: [
-      { one: 'блок', few: 'блока', many: 'блоков' },
-      { one: 'слиток', few: 'слитка', many: 'слитков' },
-      { one: 'факел', few: 'факела', many: 'факелов' },
-      { one: 'алмаз', few: 'алмаза', many: 'алмазов' },
-      { one: 'уголёк', few: 'уголька', many: 'угольков' },
-      { one: 'камень', few: 'камня', many: 'камней' },
+      { one: 'блок', few: 'блока', many: 'блоков', topic: 'blocks' },
+      { one: 'камень', few: 'камня', many: 'камней', topic: ['blocks', 'ore'] },
+      { one: 'алмаз', few: 'алмаза', many: 'алмазов', topic: 'ore' },
+      { one: 'слиток', few: 'слитка', many: 'слитков', topic: ['ore', 'fuel'] },
+      { one: 'уголёк', few: 'уголька', many: 'угольков', topic: ['ore', 'fuel'] },
+      { one: 'факел', few: 'факела', many: 'факелов', topic: 'fuel' },
     ],
     actors: ['Стива', 'крипера'],
     lost: 'взорвал крипер',
+    // Как именно пропадает добро — зависит от места. У печки уголь сгорает,
+    // а не взрывается: иначе вычитание в сцене с печкой звучит нелепо.
+    lostBy: {
+      fuel: 'сгорело',
+      ore: 'укатилось в лаву',
+      blocks: 'рассыпалось',
+    },
     oddOneOut: [
       { group: ['крипер', 'зомби', 'скелет'], odd: 'морковка', why: 'мобы' },
-      { group: ['алмаз', 'золото', 'изумруд'], odd: 'облако', why: 'руда' },
+      { group: ['алмаз', 'золото', 'изумруд'], odd: 'облако', why: 'руда', topic: 'ore' },
       { group: ['кирка', 'лопата', 'топор'], odd: 'курица', why: 'инструменты' },
-      { group: ['факел', 'свеча', 'костёр'], odd: 'камень', why: 'они светят' },
-      { group: ['корова', 'свинья', 'курица'], odd: 'сундук', why: 'животные' },
-      { group: ['доска', 'палка', 'бревно'], odd: 'алмаз', why: 'из дерева' },
+      { group: ['факел', 'свеча', 'костёр'], odd: 'камень', why: 'они светят', topic: 'fuel' },
+      { group: ['корова', 'свинья', 'курица'], odd: 'сундук', why: 'животные', topic: 'animals' },
+      { group: ['волк', 'лошадь', 'овца'], odd: 'факел', why: 'животные', topic: 'animals' },
+      { group: ['рыба', 'осьминог', 'черепаха'], odd: 'кирка', why: 'живут в воде', topic: 'animals' },
+      { group: ['доска', 'палка', 'бревно'], odd: 'алмаз', why: 'из дерева', topic: 'craft' },
     ],
     opposites: [
       ['день', 'ночь'], ['свет', 'темнота'], ['высоко', 'низко'],
@@ -157,18 +175,73 @@ const THEMES = {
     ],
     homes: [
       { who: 'крипер', where: 'пещера', wrong: ['облако', 'сундук'] },
-      { who: 'корова', where: 'луг', wrong: ['пещера', 'лава'] },
-      { who: 'рыба', where: 'река', wrong: ['пещера', 'дерево'] },
-      { who: 'летучая мышь', where: 'пещера', wrong: ['река', 'луг'] },
-      { who: 'курица', where: 'двор', wrong: ['лава', 'пещера'] },
-      { who: 'овца', where: 'луг', wrong: ['пещера', 'лава'] },
-      { who: 'свинья', where: 'двор', wrong: ['река', 'пещера'] },
-      { who: 'лошадь', where: 'луг', wrong: ['пещера', 'река'] },
       { who: 'скелет', where: 'пещера', wrong: ['луг', 'двор'] },
-      { who: 'осьминог', where: 'река', wrong: ['пещера', 'двор'] },
+      { who: 'корова', where: 'луг', wrong: ['пещера', 'лава'], topic: 'animals' },
+      { who: 'рыба', where: 'река', wrong: ['пещера', 'дерево'], topic: 'animals' },
+      { who: 'летучая мышь', where: 'пещера', wrong: ['река', 'луг'], topic: 'animals' },
+      { who: 'курица', where: 'двор', wrong: ['лава', 'пещера'], topic: 'animals' },
+      { who: 'овца', where: 'луг', wrong: ['пещера', 'лава'], topic: 'animals' },
+      { who: 'свинья', where: 'двор', wrong: ['река', 'пещера'], topic: 'animals' },
+      { who: 'лошадь', where: 'луг', wrong: ['пещера', 'река'], topic: 'animals' },
+      { who: 'осьминог', where: 'река', wrong: ['пещера', 'двор'], topic: 'animals' },
+      { who: 'волк', where: 'лес', wrong: ['река', 'лава'], topic: 'animals' },
+    ],
+    // Рецепты — загадка, которая живёт только в этой теме: у леса таких
+    // данных нет, и генератор там просто не предлагается.
+    //
+    // what — в винительном падеже, чтобы вставать в оборот «сделать …».
+    // Подсказка хранится целиком: вывести её из названия нельзя, у каждого
+    // рецепта своя зацепка.
+    recipes: [
+      { what: 'кровать', need: 'шерсть и доски',
+        wrong: ['алмаз и уголь', 'вода и песок'],
+        hint: 'На кровати спят. Значит, нужно мягкое и деревянное.', topic: 'craft' },
+      { what: 'верстак', need: 'доски',
+        wrong: ['алмазы', 'угольки'],
+        hint: 'Верстак деревянный. Что здесь из дерева?', topic: 'craft' },
+      { what: 'лестницу', need: 'палки',
+        wrong: ['камни', 'слитки'],
+        hint: 'По лестнице лезут наверх, и она тоже деревянная.', topic: 'craft' },
+      { what: 'кирку', need: 'палки и камень',
+        wrong: ['шерсть и вода', 'хлеб и уголь'],
+        hint: 'Киркой бьют по камню. Сама она должна быть твёрдой.', topic: 'craft' },
+      { what: 'факел', need: 'палка и уголёк',
+        wrong: ['шерсть и камень', 'вода и песок'],
+        hint: 'Факел горит. Что из этого может загореться?', topic: ['craft', 'fuel'] },
+      { what: 'хлеб', need: 'пшеница',
+        wrong: ['камень', 'шерсть'],
+        hint: 'Хлеб растёт на грядке. Что здесь растёт?', topic: 'craft' },
     ],
   },
 };
+
+/** Запись подходит теме, если метка совпала. Без метки — не подходит. */
+function inTopic(entry, topic) {
+  const t = entry?.topic;
+  return Array.isArray(t) ? t.includes(topic) : t === topic;
+}
+
+/**
+ * Сужает предметный мир темы до одной области.
+ *
+ * Откат обязателен: опечатка в сценарии иначе оставила бы сцену вообще
+ * без задания, а это тупик — ребёнку некуда нажать.
+ */
+function narrow(theme, topic) {
+  if (!topic) return theme;
+  const pick = (arr) => {
+    const fit = (arr ?? []).filter(e => inTopic(e, topic));
+    return fit.length ? fit : arr;
+  };
+  return {
+    ...theme,
+    countable: pick(theme.countable),
+    oddOneOut: pick(theme.oddOneOut),
+    homes: pick(theme.homes),
+    recipes: pick(theme.recipes),
+    lost: theme.lostBy?.[topic] ?? theme.lost,
+  };
+}
 
 /* ---------------- арифметика ---------------- */
 
@@ -229,11 +302,27 @@ function taskNext(t, max) {
 // Вид задания помечается явно: сцена может потребовать только подходящие
 // по смыслу. Загадка про антоним посреди сцены с крипером и стеной выглядит
 // вставленной наугад — потому что так и было.
+// Пропущенное слагаемое — та же программа первого класса, но считать
+// приходится в другую сторону: не «сложи», а «досчитай до».
+function taskMissing(t, max) {
+  const total = 4 + rnd(Math.max(2, max - 3));
+  // Начинаем с двух, а не с одного: «было один камень» согласуется неверно,
+  // а падежи числительного «один» ради одной задачи тащить незачем.
+  const had = 2 + rnd(total - 3);
+  const thing = pickOne(t.countable);
+  return {
+    question: `Было ${count(had, thing)}, стало ${count(total, thing)}. Сколько прибавилось?`,
+    hint: `Досчитай от ${NUM_GEN[had]} до ${NUM_GEN[total]} и запомни, сколько вышло шагов.`,
+    choices: numberChoices(total - had, max),
+  };
+}
+
 const MATH = [
   { type: 'addition', make: taskAddition },
   { type: 'subtraction', make: taskSubtraction },
   { type: 'compare', make: taskCompare },
   { type: 'next', make: taskNext },
+  { type: 'missing', make: taskMissing },
 ];
 
 /* ---------------- логика того же уровня ---------------- */
@@ -293,11 +382,27 @@ function taskHome(t) {
   };
 }
 
+// Вопрос перечисляет все варианты целиком — тогда правило «всё или ничего»
+// в app.js не станет читать кнопки второй раз. Половинчатая формулировка
+// там же оказалась прямой подсказкой.
+function taskRecipe(t) {
+  const r = pickOne(t.recipes);
+  const opts = shuffle([r.need, ...r.wrong]);
+  return {
+    question: `Что нужно, чтобы сделать ${r.what}: ${opts[0]}, ${opts[1]} или ${opts[2]}?`,
+    hint: r.hint,
+    choices: opts.map(o => ({ label: cap(o), keywords: [o], correct: o === r.need })),
+  };
+}
+
+// needs — какие данные темы нужны генератору. Без этого «logic» у ёжика
+// однажды вытянул бы рецепты, которых в лесу нет.
 const LOGIC = [
   { type: 'oddOneOut', make: taskOddOneOut },
   { type: 'opposite', make: taskOpposite },
   { type: 'pattern', make: taskPattern },
   { type: 'home', make: taskHome },
+  { type: 'recipe', make: taskRecipe, needs: 'recipes' },
 ];
 
 /* ---------------- выдача ---------------- */
@@ -313,30 +418,51 @@ let pool = null;
 
 export function usePool(data) { pool = data || null; }
 
-/**
- * @param {'math'|'logic'|'any'} kind
- * @param {{theme?: string, max?: number}} opts предел счёта задаёт сцена,
- *        чтобы сложность росла по ходу истории
- * @returns {{question:string, hint:string, choices:Array<{label:string,keywords:string[],correct:boolean}>}}
- */
 export const TASK_TYPES = {
   math: MATH.map(g => g.type),
   logic: LOGIC.map(g => g.type),
 };
 
+const groupOf = (kind) => kind === 'math' ? MATH : kind === 'logic' ? LOGIC : [...MATH, ...LOGIC];
+
+/** Генератор годится теме, только если нужные ему данные в ней есть. */
+const supported = (g, theme) => !g.needs || (theme[g.needs]?.length > 0);
+
+/**
+ * Какие виды задач тема вообще умеет. Нужно сборщику озвучки: иначе он
+ * просил бы у леса рецепты и получал вместо них случайную другую загадку.
+ */
+export function typesFor(kind, themeName = 'forest') {
+  const theme = THEMES[themeName] ?? THEMES.forest;
+  return groupOf(kind).filter(g => supported(g, theme)).map(g => g.type);
+}
+
+/** Ключ пула готовой озвучки. Считается здесь и в tools/tts/collect.mjs. */
+export function poolKey(themeName, kind, max, topic) {
+  return `${themeName}|${kind}|${max}|${topic || '-'}`;
+}
+
+/**
+ * @param {'math'|'logic'|'any'} kind
+ * @param {{theme?: string, max?: number, types?: string[], topic?: string}} opts
+ *        предел счёта и предметную область задаёт сцена: сложность растёт
+ *        по ходу истории, а вопрос остаётся про то, что на экране
+ * @returns {{question:string, hint:string, choices:Array<{label:string,keywords:string[],correct:boolean}>}}
+ */
 export function makeTask(kind = 'any', opts = {}) {
   const themeName = opts.theme ?? 'forest';
-  const theme = THEMES[themeName] ?? THEMES.forest;
+  const full = THEMES[themeName] ?? THEMES.forest;
+  const theme = narrow(full, opts.topic);
   const max = Math.min(Math.max(opts.max ?? 10, 5), 20);
   const wanted = opts.types?.length ? opts.types : null;
 
-  const ready = pool?.[`${themeName}|${kind}|${max}`];
+  const ready = pool?.[poolKey(themeName, kind, max, opts.topic)];
   if (ready && ready.length) {
     const fit = wanted ? ready.filter(t => wanted.includes(t.type)) : ready;
     if (fit.length) return fromPool(fit);
   }
 
-  let generators = kind === 'math' ? MATH : kind === 'logic' ? LOGIC : [...MATH, ...LOGIC];
+  let generators = groupOf(kind).filter(g => supported(g, theme));
   if (wanted) {
     const fit = generators.filter(g => wanted.includes(g.type));
     if (fit.length) generators = fit;

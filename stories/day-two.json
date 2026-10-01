@@ -1,0 +1,161 @@
+{
+  "title": "Второй день",
+  "viewer": "Матвей",
+  "theme": "minecraft",
+  "voice": "hero",
+  "start": "morning",
+  "scenes": {
+    "morning": {
+      "bg": {
+        "sky": "assets/mc/sky-dawn.webp",
+        "stars": "assets/mc/sun-dawn.svg",
+        "far": "assets/mc/far-hills.webp",
+        "near": "assets/mc/near-house.svg"
+      },
+      "cast": [
+        { "src": "assets/mc/steve.svg", "x": 38, "y": 28, "w": 8 }
+      ],
+      "text": "Солнце вылезло из-за холма, дом стоит целый, а факел у двери ещё горит. Стив потянулся и обернулся к тебе: «{{имя}}, ты вернулся! Я всю ночь просидел при факеле и придумал кучу дел».",
+      "prompt": "С чего начнём: пойдём на луг за овцами или сперва проверим дом?",
+      "choices": [
+        { "label": "На луг за овцами", "keywords": ["луг", "овцы", "овцами", "овца", "овец"], "dir": "left", "next": "sheep" },
+        { "label": "Проверить дом", "keywords": ["дом", "проверить", "сундук", "внутрь"], "dir": "right", "next": "house" }
+      ]
+    },
+
+    "house": {
+      "bg": {
+        "near": "assets/mc/near-furnace.svg"
+      },
+      "cast": [
+        { "src": "assets/mc/steve.svg", "x": 58, "y": 28, "w": 8 }
+      ],
+      "text": "В сундуке нашлись три яблока и та самая старая карта. «Карту я так и не научился читать, зато яблоки отличные», — Стив захрустел и кивнул на дверь.",
+      "prompt": "Теперь на луг?",
+      "choices": [
+        { "label": "Да, на луг", "keywords": ["да", "луг", "овцы", "пошли", "идём"], "dir": "left", "next": "sheep" }
+      ]
+    },
+
+    "sheep": {
+      "bg": {
+        "sky": "assets/mc/sky-day.webp",
+        "stars": "assets/mc/sun-day.svg",
+        "far": "assets/mc/far-hills.webp",
+        "near": "assets/mc/near-meadow.svg"
+      },
+      "cast": [
+        { "src": "assets/mc/steve.svg", "x": 50, "y": 28, "w": 8 },
+        { "src": "assets/mc/sheep.svg", "x": 68, "y": 28, "w": 8.4 }
+      ],
+      "text": "На лугу пасутся овцы — белые, квадратные и очень лохматые. Стив достал ножницы: «Шерсть будет. А что из чего делается, я вечно путаю. Выручай, {{имя}}».",
+      "task": { "kind": "logic", "types": ["recipe"], "topic": "craft" },
+      "next": "river"
+    },
+
+    "river": {
+      "bg": {
+        "sky": "assets/mc/sky-day.webp",
+        "stars": "assets/mc/sun-day.svg",
+        "far": "assets/mc/far-river.webp",
+        "near": "assets/mc/near-river.svg"
+      },
+      "cast": [
+        { "src": "assets/mc/steve.svg", "x": 40, "y": 28, "w": 8 }
+      ],
+      "text": "За лугом дорогу перерезала речка — широкая, с тёмной водой. На другом берегу поднимается гора, а в горе, если верить Стиву, живут алмазы.",
+      "prompt": "Как переберёмся: построим мост или переплывём?",
+      "choices": [
+        { "label": "Построить мост", "keywords": ["мост", "построить", "строить", "блоки"], "dir": "forward", "next": "bridge" },
+        { "label": "Переплыть", "keywords": ["переплыть", "плыть", "вплавь", "вода", "воду"], "dir": "forward", "next": "swim" }
+      ]
+    },
+
+    "swim": {
+      "bg": {
+        "sky": "assets/mc/sky-day.webp",
+        "stars": "assets/mc/sun-day.svg",
+        "far": "assets/mc/far-river.webp",
+        "near": "assets/mc/near-river.svg"
+      },
+      "cast": [
+        { "src": "assets/mc/steve.svg", "x": 54, "y": 28, "w": 8 }
+      ],
+      "text": "Стив плюхнулся в воду, и его сразу понесло вбок. Он выбрался на берег, отфыркался и вылил воду из ботинка. «Ладно, ладно. Строим мост», — проворчал он.",
+      "prompt": "Строим мост?",
+      "choices": [
+        { "label": "Строить мост", "keywords": ["мост", "строить", "блоки", "да"], "dir": "forward", "next": "bridge" }
+      ]
+    },
+
+    "bridge": {
+      "bg": {
+        "sky": "assets/mc/sky-day.webp",
+        "stars": "assets/mc/sun-day.svg",
+        "far": "assets/mc/far-river.webp",
+        "near": "assets/mc/near-river.svg"
+      },
+      "cast": [
+        { "src": "assets/mc/steve.svg", "x": 46, "y": 28, "w": 8 }
+      ],
+      "text": "Стив начал выкладывать блоки от берега к берегу. «Мост должен дотянуться вон до того камня. Считай внимательно, {{имя}}: лишние блоки я потом не донесу».",
+      "task": { "kind": "math", "max": 20, "types": ["addition"], "topic": "blocks" },
+      "next": "mine"
+    },
+
+    "mine": {
+      "bg": {
+        "far": "assets/mc/far-deep.webp",
+        "near": "assets/mc/near-deep.svg"
+      },
+      "cast": [
+        { "src": "assets/mc/steve.svg", "x": 58, "y": 28, "w": 8 }
+      ],
+      "text": "В горе Стив прорубил ход и расставил факелы. В стене блеснула жила алмазов. Он прикрыл рот рукой и зашептал: «Тихо, {{имя}}, не говори рассказчику. Он сразу придумает нам крипера».",
+      "task": { "kind": "math", "max": 10, "types": ["missing"], "topic": "ore" },
+      "next": "furnace"
+    },
+
+    "furnace": {
+      "bg": {
+        "near": "assets/mc/near-furnace.svg"
+      },
+      "cast": [
+        { "src": "assets/mc/steve.svg", "x": 50, "y": 28, "w": 8 }
+      ],
+      "text": "Дома Стив разжёг печку, и руда в ней начала плавиться. «Уголь уходит быстро, а сколько его осталось, рассказчик мне не скажет. Он вредный».",
+      "task": { "kind": "math", "max": 10, "types": ["subtraction"], "topic": "fuel" },
+      "next": "wolf"
+    },
+
+    "wolf": {
+      "bg": {
+        "sky": "assets/mc/sky-sunset.webp",
+        "stars": "assets/mc/sun-sunset.svg",
+        "far": "assets/mc/far-pines.webp",
+        "near": "assets/mc/near-pines.svg"
+      },
+      "cast": [
+        { "src": "assets/mc/steve.svg", "x": 46, "y": 28, "w": 8 },
+        { "src": "assets/mc/wolf.svg", "x": 66, "y": 28, "w": 7 }
+      ],
+      "text": "У края леса сидел волк. Он не рычал — поскуливал и вилял хвостом. Стив присел и достал косточку: «Он не злой, он просто один. А ты, {{имя}}, в зверях разбираешься лучше меня».",
+      "task": { "kind": "logic", "types": ["home", "oddOneOut"], "topic": "animals" },
+      "next": "evening"
+    },
+
+    "evening": {
+      "bg": {
+        "sky": "assets/mc/sky-night.webp",
+        "stars": "assets/mc/moon-night.svg",
+        "far": "assets/mc/far-hills.webp",
+        "near": "assets/mc/near-house.svg"
+      },
+      "cast": [
+        { "src": "assets/mc/steve.svg", "x": 40, "y": 28, "w": 8 },
+        { "src": "assets/mc/wolf.svg", "x": 50, "y": 28, "w": 7 }
+      ],
+      "text": "Волк улёгся у порога, печка догорела, а у стены встала новая кровать. Стив зевнул во весь квадратный рот: «Вот это я называю хороший день. Спасибо, {{имя}}. Приходи завтра, я придумаю что-нибудь ещё»."
+    }
+  }
+}

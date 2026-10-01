@@ -1,4 +1,4 @@
-import { makeTask } from './js/tasks.js';
+import { makeTask, typesFor, poolKey } from './js/tasks.js';
 
 let failed = 0;
 const fail = (msg) => { console.log('FAIL: ' + msg); failed++; };
@@ -126,5 +126,87 @@ if (failed) process.exitCode = 1;
   if (!fallback?.question) { console.log('FAIL: неизвестный вид уронил генератор'); bad++; }
 
   console.log(bad ? `\n${bad} провалено в ограничении видов` : '\nограничение вида задания работает');
+  if (bad) process.exitCode = 1;
+}
+
+// ---- сужение по предметной области ----
+{
+  let bad = 0;
+
+  // Сцена в шахте не должна спрашивать про факелы, а у печки — про блоки.
+  const TOPICS = {
+    ore: { allow: /камень|камн|алмаз|слит|уголёк|угольк/, deny: /блок|факел/ },
+    fuel: { allow: /слит|уголёк|угольк|факел/, deny: /алмаз|блок/ },
+    blocks: { allow: /блок|камень|камн/, deny: /алмаз|факел|уголёк/ },
+  };
+  for (const [topic, { allow, deny }] of Object.entries(TOPICS)) {
+    for (let i = 0; i < 120; i++) {
+      const t = makeTask('math', { theme: 'minecraft', max: 10, topic, types: ['addition', 'missing'] });
+      if (!allow.test(t.question)) { console.log('FAIL: тема', topic, 'дала чужое:', t.question); bad++; }
+      if (deny.test(t.question)) { console.log('FAIL: тема', topic, 'не отфильтровала:', t.question); bad++; }
+    }
+  }
+
+  // Логика про зверей не должна приводить крипера и скелета.
+  for (let i = 0; i < 150; i++) {
+    const t = makeTask('logic', { theme: 'minecraft', topic: 'animals', types: ['home', 'oddOneOut'] });
+    if (/крипер|скелет|зомби/.test(t.question)) { console.log('FAIL: моб в загадке про зверей:', t.question); bad++; }
+  }
+
+  // Откат обязателен: незнакомая область не должна оставить сцену без задания.
+  const fb = makeTask('math', { theme: 'minecraft', max: 10, topic: 'выдуманная' });
+  if (!fb?.question || fb.choices.filter(c => c.correct).length !== 1) {
+    console.log('FAIL: незнакомая область оставила сцену без задания'); bad++;
+  }
+  // У леса метки не расставлены — сужение не должно его обнулить.
+  const forest = makeTask('logic', { theme: 'forest', topic: 'animals' });
+  if (!forest?.question) { console.log('FAIL: сужение обнулило тему без меток'); bad++; }
+
+  console.log(bad ? `\n${bad} провалено в сужении по области` : '\nсужение по предметной области работает');
+  if (bad) process.exitCode = 1;
+}
+
+// ---- новые виды заданий ----
+{
+  let bad = 0;
+
+  for (const max of [10, 20]) {
+    for (let i = 0; i < 200; i++) {
+      const t = makeTask('math', { theme: 'minecraft', max, topic: 'ore', types: ['missing'] });
+      const m = t.question.match(/^Было (\S+) .*?, стало (\S+) /);
+      if (!m) { console.log('FAIL: пропущенное слагаемое без разбора:', t.question); bad++; continue; }
+      // «Было один камень» согласуется неверно — начинать можно только с двух.
+      if (m[1] === 'один') { console.log('FAIL: единица после «было»:', t.question); bad++; }
+      const answer = Number(t.choices.find(c => c.correct).keywords[1]);
+      if (!(answer >= 1 && answer <= max)) { console.log('FAIL: ответ вне предела:', t.question, answer); bad++; }
+    }
+  }
+
+  // Рецепт перечисляет все варианты в самом вопросе: иначе app.js прочитает
+  // кнопки второй раз и получится повтор одного и того же другими словами.
+  for (let i = 0; i < 150; i++) {
+    const t = makeTask('logic', { theme: 'minecraft', topic: 'craft', types: ['recipe'] });
+    if (t.type !== 'recipe') { console.log('FAIL: просили рецепт, получили', t.type); bad++; continue; }
+    if (t.choices.filter(c => c.correct).length !== 1) { console.log('FAIL: верных ответов не один:', t.question); bad++; }
+    const said = t.question.toLowerCase();
+    for (const c of t.choices) {
+      if (!said.includes(c.label.toLowerCase())) {
+        console.log('FAIL: вариант не назван в вопросе:', c.label, '—', t.question); bad++;
+      }
+    }
+  }
+
+  // Рецепты есть только у Minecraft: у леса таких данных нет.
+  if (typesFor('logic', 'forest').includes('recipe')) { console.log('FAIL: рецепт предложен лесу'); bad++; }
+  if (!typesFor('logic', 'minecraft').includes('recipe')) { console.log('FAIL: рецепт потерялся у Minecraft'); bad++; }
+  for (let i = 0; i < 100; i++) {
+    if (makeTask('logic', { theme: 'forest' }).type === 'recipe') { console.log('FAIL: лес выдал рецепт'); bad++; break; }
+  }
+
+  // Ключ пула должен совпадать с тем, что считает сборщик озвучки.
+  if (poolKey('minecraft', 'math', 10, 'ore') !== 'minecraft|math|10|ore') { console.log('FAIL: ключ пула'); bad++; }
+  if (poolKey('forest', 'logic', 10) !== 'forest|logic|10|-') { console.log('FAIL: ключ пула без области'); bad++; }
+
+  console.log(bad ? `\n${bad} провалено в новых видах` : '\nпропущенное слагаемое и рецепты в порядке');
   if (bad) process.exitCode = 1;
 }

@@ -1,5 +1,12 @@
 [
   {
+    "id": "day-two",
+    "title": "Второй день",
+    "subtitle": "Продолжение про Стива · пять игр",
+    "cover": "assets/covers/day-two.webp",
+    "story": "stories/day-two.json"
+  },
+  {
     "id": "minecraft",
     "title": "Первая ночь",
     "subtitle": "По мотивам Minecraft · пять игр",

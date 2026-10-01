@@ -92,6 +92,30 @@ const MC_LAYERS = {
     prompt: `underground cave wall of stone cubes with coal and diamond ore blocks, torchlight, ${MC_STYLE}`,
     negative: MC_NEG + ', sky, sun, clouds',
   },
+
+  // ---- второй день ----
+  'mc/sky-dawn': {
+    strength: 0.42,
+    prompt: `early morning sky just after sunrise, pale pink and lilac bands turning to blue, chunky square clouds, ${MC_STYLE}, no ground, no trees`,
+    // Светило лежит отдельным слоем: если дать его генератору, он
+    // перерисовывает квадрат в пятно, и это уже проверено на закате.
+    negative: MC_NEG + ', round clouds, sun, moon, stars',
+  },
+  'mc/far-river': {
+    strength: 0.24,
+    prompt: `distant blocky mountain of stone cubes rising in the centre, grassy blocky hills on both sides, hazy depth, ${MC_STYLE}`,
+    negative: MC_NEG + ', water, river, lake',
+  },
+  'mc/far-pines': {
+    strength: 0.24,
+    prompt: `distant blocky spruce forest, dark green cubic conifers in tiers, evening haze between the trunks, ${MC_STYLE}`,
+    negative: MC_NEG + ', round treetops, sun, moon',
+  },
+  'mc/far-deep': {
+    strength: 0.24,
+    prompt: `deep underground wall of dark stone cubes with coal blocks and a bright diamond ore vein, torchlight glow, ${MC_STYLE}`,
+    negative: MC_NEG + ', sky, sun, clouds, grass',
+  },
 };
 
 Object.assign(LAYERS, MC_LAYERS);

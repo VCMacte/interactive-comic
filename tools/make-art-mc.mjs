@@ -45,6 +45,11 @@ const P = {
   far:    { base: '#5d8f52', dark: '#4a7342', light: '#6fa160' },
   coal:   { base: '#3a3a3a', dark: '#222', light: '#555' },
   diamond:{ base: '#4fd3d6', dark: '#2fa8ab', light: '#8ef0f2' },
+  water:  { base: '#3b6fb5', dark: '#2d589a', light: '#5a8ccd' },
+  sand:   { base: '#ded3a0', dark: '#c4b884', light: '#efe6bb' },
+  pine:   { base: '#2f6b3a', dark: '#23522c', light: '#3d8148' },
+  brick:  { base: '#9d9d9d', dark: '#787878', light: '#b4b4b4' },
+  wool:   { base: '#e9e6de', dark: '#cdc9bf', light: '#f7f5f0' },
 };
 
 /**
@@ -135,6 +140,16 @@ function skyNight() {
 ${clouds(44, '#1b2744', 0.8)}`, defs);
 }
 
+// Рассвет: та же палитра, что у закатного неба, но светлее и прохладнее —
+// иначе второй день начинается картинкой вчерашнего вечера.
+function skyDawn() {
+  const defs = `<defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#3f5fa8"/><stop offset="0.5" stop-color="#9c86c4"/>
+    <stop offset="0.82" stop-color="#f0a97e"/><stop offset="1" stop-color="#ffd9a8"/></linearGradient></defs>`;
+  return svg(`<rect width="${W}" height="${H}" fill="url(#g)"/>
+${clouds(57, '#ffd2b0', 0.7)}`, defs);
+}
+
 /* ---------------- дальний план ---------------- */
 
 // Кубическое дерево: столб ствола и шапка листвы из блоков.
@@ -181,6 +196,76 @@ function farCave(seed = 11) {
       else if (roll < 0.075) pal = P.diamond;
       out.push(block(c * B, r * B, pal, rand));
     }
+  }
+  return svg(out.join('\n'));
+}
+
+// Гора за рекой — та, в которой «живут алмазы». Пик по центру кадра:
+// он задаёт цель второго дня ещё до того, как о ней скажут словами.
+function farRiver(seed = 81) {
+  const rand = rng(seed);
+  const out = [];
+  const peakCol = Math.round((W / B) * 0.56);
+
+  for (let col = 0; col * B < W; col++) {
+    const x = col * B;
+    const d = Math.abs(col - peakCol);
+    // Склон лесенкой от пика: ближе к центру выше, по краям сходит в холмы.
+    const height = Math.max(1, 11 - d - (rand() < 0.35 ? 1 : 0));
+    for (let i = 0; i < height; i++) {
+      const y = GROUND - B - i * B;
+      const top = i === height - 1;
+      out.push(block(x, y, height > 7 && top ? P.stone : top ? P.far : P.dirt, rand));
+    }
+  }
+  return svg(out.join('\n'));
+}
+
+// Еловый лес: конусы вместо шапок. У волка должна быть своя чаща,
+// иначе вечерняя сцена повторяет утренние холмы.
+function farPines(seed = 91) {
+  const rand = rng(seed);
+  const out = [];
+  for (let col = 0; col * B < W; col++) {
+    const x = col * B;
+    for (let i = 0; i < 2; i++) out.push(block(x, GROUND - B - i * B, i === 1 ? P.far : P.dirt, rand));
+  }
+  // Ярусы ели сужаются кверху. Кант не обводкой, а смещённой копией:
+  // обводка рисует и внутренние границы ярусов, получается лестница.
+  for (let t = 0; t < 14; t++) {
+    const x = Math.floor(rand() * (W / B)) * B;
+    const base = GROUND - B * 2;
+    const tiers = 3 + Math.floor(rand() * 2);
+    out.push(block(x, base, P.wood, rand));
+    for (let r = 0; r < tiers; r++) {
+      const wide = tiers - r;
+      for (let c = -wide + 1; c < wide; c++) {
+        out.push(block(x + c * B, base - (r + 1) * B, P.pine, rand));
+      }
+    }
+  }
+  return svg(out.join('\n'));
+}
+
+// Глубокая шахта: тот же приём, что в far-cave, но темнее и с жилой алмазов —
+// по сюжету Стив её как раз и находит.
+function farDeep(seed = 101) {
+  const rand = rng(seed);
+  const out = [`<rect width="${W}" height="${H}" fill="#1f1f25"/>`];
+  for (let r = 0; r * B < H; r++) {
+    for (let c = 0; c * B < W; c++) {
+      let pal = P.deep;
+      const roll = rand();
+      if (roll < 0.1) pal = P.coal;
+      else if (roll < 0.115) pal = P.stone;
+      out.push(block(c * B, r * B, pal, rand));
+    }
+  }
+  // Жила кучкой, а не вразброс: россыпь одиночных алмазов читается как шум.
+  // Правее центра — там, где её не закроет Стив.
+  const vx = Math.round((W / B) * 0.79) * B, vy = Math.round((H / B) * 0.38) * B;
+  for (const [dx, dy] of [[0, 0], [1, 0], [0, 1], [2, 1], [1, 2]]) {
+    out.push(block(vx + dx * B, vy + dy * B, P.diamond, rand));
   }
   return svg(out.join('\n'));
 }
@@ -291,6 +376,138 @@ function nearHouse(seed = 71) {
 ${house.join('\n')}
 ${torch(hx - B, GROUND - B * 2)}
 ${cubeTree(0, GROUND, 4, rand)}`);
+}
+
+function nearMeadow(seed = 111) {
+  const rand = rng(seed);
+  // Луг держим пустым: овца и Стив ставятся сверху как персонажи, а кусты
+  // по краям не дают кадру рассыпаться.
+  const tufts = [];
+  for (let i = 0; i < 22; i++) {
+    const x = Math.floor(rand() * (W / B)) * B;
+    const h = 10 + Math.floor(rand() * 14);
+    tufts.push(`<rect x="${n(x + 14)}" y="${n(GROUND - h)}" width="10" height="${h}" fill="${P.leaves.dark}"/>`);
+    if (rand() < 0.3) {
+      tufts.push(`<rect x="${n(x + 30)}" y="${n(GROUND - 18)}" width="12" height="12" fill="${rand() < 0.5 ? '#e4d04a' : '#d35b8c'}"/>`);
+    }
+  }
+  return svg(`${groundRows(rand)}
+${tufts.join('\n')}
+${cubeTree(0, GROUND, 4, rand)}
+${cubeTree(W - B * 2, GROUND, 3, rand)}`);
+}
+
+/**
+ * Речка идёт полосой НАД линией земли, а берег — во всю ширину кадра.
+ * Иначе персонаж, поставленный в центр, оказывается стоящим на воде:
+ * на бобре у ёжика это уже проходили.
+ */
+function nearRiver(seed = 121) {
+  const rand = rng(seed);
+  const out = [];
+  const top = GROUND - B * 2;
+
+  for (let r = 0; r < 2; r++) {
+    for (let c = 0; c * B < W; c++) out.push(block(c * B, top + r * B, P.water, rand));
+  }
+  // Блики на воде — ряд светлых полос, они же выдают, что вода течёт.
+  for (let i = 0; i < 16; i++) {
+    const x = Math.floor(rand() * (W / B)) * B;
+    out.push(`<rect x="${n(x + 8)}" y="${n(top + B * 0.4)}" width="${B - 16}" height="8" fill="${P.water.light}" opacity="0.7"/>`);
+  }
+  // Начатый мост: два блока от берега. Остальное ребёнок «достроит» в задании.
+  const bx = Math.round((W / B) * 0.46) * B;
+  out.push(block(bx, top, P.plank, rand));
+  out.push(block(bx + B, top, P.plank, rand));
+
+  return svg(`${out.join('\n')}
+${groundRows(rand, P.grass, P.sand)}
+${cubeTree(0, GROUND, 3, rand)}
+${cubeTree(W - B, GROUND, 3, rand)}`);
+}
+
+function nearDeep(seed = 131) {
+  const rand = rng(seed);
+  const floor = [];
+  for (let r = 0; GROUND + r * B < H; r++) {
+    for (let c = 0; c * B < W; c++) floor.push(block(c * B, GROUND + r * B, P.stone, rand));
+  }
+  const torches = [B * 3, B * 11, W - B * 5].map(x => torch(x, GROUND - B * 2)).join('\n');
+
+  return svg(`${floor.join('\n')}
+${torches}
+<rect x="0" y="0" width="${B * 2}" height="${H}" fill="#17171c"/>
+<rect x="${W - B * 2}" y="0" width="${B * 2}" height="${H}" fill="#17171c"/>`);
+}
+
+/**
+ * Внутренность дома: печка, сундук и стена. Кадр закрыт целиком, поэтому
+ * сцена обходится одним этим слоем — ни небо, ни дальний план ей не нужны.
+ */
+function nearFurnace(seed = 141) {
+  const rand = rng(seed);
+  const out = [];
+
+  for (let r = 0; r * B < H; r++) {
+    for (let c = 0; c * B < W; c++) {
+      out.push(block(c * B, r * B, r * B >= GROUND ? P.plank : P.brick, rand));
+    }
+  }
+  // Швы между досками: без них пол сливается с земляным и перестаёт
+  // читаться как «внутри дома».
+  for (let r = 0; GROUND + r * B < H; r++) {
+    out.push(`<rect x="0" y="${n(GROUND + r * B)}" width="${W}" height="5" fill="#8e6c3c" opacity="0.8"/>`);
+  }
+  // Окно с вечерним небом: глухая серая стена во весь кадр читается
+  // как сбой загрузки, а не как комната.
+  const wx = Math.round((W / B) * 0.12) * B, wy = GROUND - B * 4;
+  for (let r = 0; r < 2; r++) {
+    for (let c = 0; c < 3; c++) out.push(block(wx + c * B, wy + r * B, P.wood, rand));
+  }
+  out.push(`<rect x="${n(wx + 8)}" y="${n(wy + 8)}" width="${n(B * 3 - 16)}" height="${n(B * 2 - 16)}" fill="#2c4a7a"/>`);
+  out.push(`<rect x="${n(wx + B * 1.5 - 4)}" y="${n(wy + 8)}" width="8" height="${n(B * 2 - 16)}" fill="#7a5630"/>`);
+
+  // Печка: два блока в ширину и два в высоту, с тёмной рамой и устьем.
+  const fx = Math.round((W / B) * 0.33) * B, fy = GROUND - B * 2;
+  for (let r = 0; r < 2; r++) {
+    for (let c = 0; c < 2; c++) out.push(block(fx + c * B, fy + r * B, P.stone, rand));
+  }
+  out.push(`<rect x="${n(fx - 4)}" y="${n(fy - 4)}" width="${n(B * 2 + 8)}" height="${n(B * 2 + 8)}" fill="none" stroke="#4a4a4a" stroke-width="8"/>`);
+  out.push(`<rect x="${n(fx + 12)}" y="${n(fy + B + 10)}" width="${n(B * 2 - 24)}" height="${n(B - 18)}" fill="#20150a"/>`);
+  out.push(`<rect x="${n(fx + 22)}" y="${n(fy + B + 22)}" width="${n(B * 2 - 44)}" height="${n(B - 34)}" fill="#ff9b22"/>`);
+  out.push(`<rect x="${n(fx + 34)}" y="${n(fy + B + 30)}" width="${n(B * 2 - 68)}" height="12" fill="#fff0b0"/>`);
+  // Слитки на полу у печки — то, что в этой сцене и считают.
+  for (let i = 0; i < 3; i++) {
+    out.push(`<rect x="${n(fx + B * 2.3 + i * 30)}" y="${n(GROUND - 20)}" width="24" height="16" fill="${P.sand.light}" stroke="#a09060" stroke-width="3"/>`);
+  }
+
+  const cx = Math.round((W / B) * 0.74) * B;
+  out.push(block(cx, GROUND - B, P.wood, rand));
+  out.push(`<rect x="${n(cx)}" y="${n(GROUND - B + B * 0.45)}" width="${B}" height="8" fill="#5a3f22"/>`);
+  out.push(`<rect x="${n(cx + B * 0.42)}" y="${n(GROUND - B + B * 0.38)}" width="10" height="16" fill="#e8c35a"/>`);
+
+  return svg(`${out.join('\n')}
+${torch(B, GROUND - B * 3)}
+${torch(W - B * 2, GROUND - B * 3)}`);
+}
+
+function nearPines(seed = 151) {
+  const rand = rng(seed);
+  const trees = [];
+  // Ели кулисами по краям: центр кадра остаётся под Стива и волка.
+  // Не вплотную к краю — у обрезанной ели ярусы не читаются, и она
+  // превращается в полосу живой изгороди.
+  for (const [x, tiers] of [[B, 5], [B * 4, 4], [W - B * 2, 5], [W - B * 5, 4]]) {
+    trees.push(block(x, GROUND - B, P.wood, rand));
+    for (let r = 0; r < tiers; r++) {
+      const wide = tiers - r;
+      for (let c = -wide + 1; c < wide; c++) {
+        trees.push(block(x + c * B, GROUND - B * 2 - r * B, P.pine, rand));
+      }
+    }
+  }
+  return svg(`${groundRows(rand)}
+${trees.join('\n')}`);
 }
 
 /* ---------------- персонажи ---------------- */
@@ -404,19 +621,79 @@ ${px(9 * U, 8 * U, 2.5 * U, 5 * U, dark)}`;
   return charSvg(body, 17 * U, 13 * U);
 }
 
+function sheep() {
+  const U = 20;
+  const skin = '#d9c9b4', eye = '#1d1d1d';
+
+  // Шерсть крупными блоками: овцу стригут, и это должно быть видно
+  // с дивана через сжатие трансляции.
+  const body = `
+${px(0, 0, 11 * U, 8 * U, P.wool.base)}
+${px(1 * U, 0, 3 * U, 3 * U, P.wool.light)}
+${px(6 * U, 1 * U, 3 * U, 3 * U, P.wool.light)}
+${px(3 * U, 5 * U, 4 * U, 3 * U, P.wool.dark)}
+
+<!-- голова -->
+${px(11 * U, 2 * U, 4 * U, 5 * U, skin)}
+${px(11 * U, 1 * U, 4 * U, 2 * U, P.wool.base)}
+${px(12 * U, 4 * U, 0.9 * U, 0.9 * U, eye)}
+${px(13.6 * U, 4 * U, 0.9 * U, 0.9 * U, eye)}
+${px(11 * U, 2 * U, 0.8 * U, 1.6 * U, '#c4b3a0')}
+
+<!-- ноги -->
+${px(1 * U, 8 * U, 2.2 * U, 4 * U, skin)}
+${px(5 * U, 8 * U, 2.2 * U, 4 * U, skin)}
+${px(8.5 * U, 8 * U, 2.2 * U, 4 * U, skin)}`;
+
+  return charSvg(body, 15 * U, 12 * U);
+}
+
+function wolf() {
+  const U = 20;
+  const grey = '#a8aab0', dark = '#6f737a', light = '#d6d8dc', eye = '#2b2b2b';
+
+  // Волк сидит и виляет хвостом: по сюжету он не угроза, и поза должна
+  // говорить это раньше, чем рассказчик.
+  const body = `
+${px(0, 3 * U, 8 * U, 6 * U, grey)}
+${px(1 * U, 4 * U, 3 * U, 3 * U, dark)}
+
+<!-- голова -->
+${px(7 * U, 1 * U, 5 * U, 5 * U, grey)}
+${px(10 * U, 3 * U, 3 * U, 2.4 * U, light)}
+${px(12 * U, 3.6 * U, 1 * U, 1 * U, eye)}
+${px(8.6 * U, 2.6 * U, 0.9 * U, 0.9 * U, eye)}
+${px(10.6 * U, 2.6 * U, 0.9 * U, 0.9 * U, eye)}
+${px(7 * U, 0, 1.4 * U, 1.4 * U, dark)}
+${px(10 * U, 0, 1.4 * U, 1.4 * U, dark)}
+
+<!-- хвост и лапы -->
+${px(0, 1.4 * U, 1.6 * U, 2.4 * U, dark)}
+${px(1.4 * U, 9 * U, 2 * U, 2.4 * U, grey)}
+${px(5.4 * U, 9 * U, 2 * U, 2.4 * U, light)}
+${px(8.6 * U, 6 * U, 2 * U, 5.4 * U, grey)}`;
+
+  return charSvg(body, 13 * U, 12 * U);
+}
+
 /* ---------------- сборка ---------------- */
 
 console.log('Небо:');
 write('assets/mc/sky-day.svg', skyDay());
 write('assets/mc/sky-sunset.svg', skySunset());
 write('assets/mc/sky-night.svg', skyNight());
+write('assets/mc/sky-dawn.svg', skyDawn());
 write('assets/mc/sun-day.svg', celestial(1500, 220, 88, '#ffe873', '#fff3b0'));
 write('assets/mc/sun-sunset.svg', celestial(1420, 600, 86, '#ffc24d', '#ff9d5c'));
 write('assets/mc/moon-night.svg', celestial(1500, 230, 74, '#f2f5fb', '#c9d8f2', 90));
+write('assets/mc/sun-dawn.svg', celestial(430, 640, 80, '#ffd98a', '#ffb878'));
 
 console.log('Дальний план:');
 write('assets/mc/far-hills.svg', farHills());
 write('assets/mc/far-cave.svg', farCave());
+write('assets/mc/far-river.svg', farRiver());
+write('assets/mc/far-pines.svg', farPines());
+write('assets/mc/far-deep.svg', farDeep());
 
 console.log('Ближний план:');
 write('assets/mc/near-forest.svg', nearForest());
@@ -424,10 +701,17 @@ write('assets/mc/near-craft.svg', nearCraft());
 write('assets/mc/near-cave.svg', nearCave());
 write('assets/mc/near-build.svg', nearBuild());
 write('assets/mc/near-house.svg', nearHouse());
+write('assets/mc/near-meadow.svg', nearMeadow());
+write('assets/mc/near-river.svg', nearRiver());
+write('assets/mc/near-deep.svg', nearDeep());
+write('assets/mc/near-furnace.svg', nearFurnace());
+write('assets/mc/near-pines.svg', nearPines());
 
 console.log('Персонажи:');
 write('assets/mc/steve.svg', steve());
 write('assets/mc/creeper.svg', creeper());
 write('assets/mc/cow.svg', cow());
+write('assets/mc/sheep.svg', sheep());
+write('assets/mc/wolf.svg', wolf());
 
 console.log('\nГотово.');

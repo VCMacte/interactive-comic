@@ -10,7 +10,7 @@
 import { readFileSync, writeFileSync, readdirSync, mkdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { makeTask, TASK_TYPES } from '../../js/tasks.js';
+import { makeTask, typesFor, poolKey } from '../../js/tasks.js';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 // Вариантов поровну на каждый вид задачи. Раньше генератор выбирал вид
@@ -20,8 +20,13 @@ const PER_TYPE = 10;
 
 // Генератор заданий берёт числа из Math.random, поэтому каждый запуск
 // коллектора давал бы новый пул, и вся озвучка устаревала целиком.
-// Подменяем источник случайности на воспроизводимый: тот же VARIANTS —
+// Подменяем источник случайности на воспроизводимый: тот же набор данных —
 // тот же набор вопросов, и пересобирать нужно только то, что добавилось.
+//
+// Семя считается от ключа пула, а не одно на весь прогон. С общим семенем
+// новая история сдвигала поток случайных чисел и переписывала вопросы всех
+// прежних сцен — а значит, и всю их озвучку. Теперь ключи независимы:
+// добавление комикса не трогает ни один готовый файл.
 function seedRandom(seed) {
   let s = seed >>> 0;
   return () => {
@@ -107,8 +112,22 @@ for (const file of stories) {
 
     if (scene.task) {
       const spec = typeof scene.task === 'string' ? { kind: scene.task } : scene.task;
-      const key = `${story.theme ?? 'forest'}|${spec.kind}|${spec.max ?? 10}`;
-      taskSpecs.set(key, { theme: story.theme ?? 'forest', kind: spec.kind, max: spec.max ?? 10 });
+      const theme = story.theme ?? 'forest';
+      const max = spec.max ?? 10;
+      const key = poolKey(theme, spec.kind, max, spec.topic);
+
+      // Озвучиваем только те виды, которые сцены действительно просят.
+      // Раньше пул набирался по всем видам сразу, и четыре пятых записей
+      // никогда не звучали — просто лежали в офлайн-кэше.
+      //
+      // Один ключ могут делить несколько сцен с разными types, поэтому
+      // виды складываются. Сцена без types (короткая запись "task": "math")
+      // означает «любой», и тогда сужать нельзя вовсе.
+      const prev = taskSpecs.get(key);
+      const types = prev?.types === null || !spec.types?.length
+        ? null
+        : [...new Set([...(prev?.types ?? []), ...spec.types])];
+      taskSpecs.set(key, { theme, kind: spec.kind, max, topic: spec.topic, types });
     }
   }
 }
@@ -130,15 +149,30 @@ add('Выбирай:', 'narrator');
 const pool = {};
 
 const realRandom = Math.random;
-Math.random = seedRandom(20260101);
+
+/** Семя от строки ключа — чтобы ключи не влияли друг на друга. */
+function seedOf(key) {
+  let h = 0x811c9dc5;
+  for (let i = 0; i < key.length; i++) {
+    h ^= key.charCodeAt(i);
+    h = Math.imul(h, 0x01000193) >>> 0;
+  }
+  return h;
+}
 
 for (const [key, spec] of taskSpecs) {
+  Math.random = seedRandom(seedOf(key));
   const seen = new Map();
 
-  for (const type of TASK_TYPES[spec.kind] ?? []) {
+  const available = typesFor(spec.kind, spec.theme);
+  const types = spec.types ? available.filter(t => spec.types.includes(t)) : available;
+
+  for (const type of types) {
     let made = 0;
     for (let i = 0; i < PER_TYPE * 60 && made < PER_TYPE; i++) {
-      const t = makeTask(spec.kind, { theme: spec.theme, max: spec.max, types: [type] });
+      const t = makeTask(spec.kind, {
+        theme: spec.theme, max: spec.max, topic: spec.topic, types: [type],
+      });
       if (seen.has(t.question)) continue;
       seen.set(t.question, {
         type: t.type,

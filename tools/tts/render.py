@@ -4,8 +4,13 @@
 Модель грузим из файла в проекте, а не через torch.hub: кэш torch лежит
 в профиле пользователя, в пути есть кириллица, и загрузчик на ней падает.
 
-Запуск: python tools/tts/render.py
+Ударения расставляются по accents.json: Silero ошибается на омографах
+(«в горе» читает как «г+оре»). Имена файлов считаются от чистого текста,
+поэтому правило не ломает ни одной посторонней записи.
+
+Запуск: python tools/tts/render.py [--restress]
 Уже готовые файлы пропускаются, так что прогон можно прерывать и повторять.
+С --restress заново озвучиваются реплики, которых касаются правила ударения.
 """
 import json
 import os
@@ -14,6 +19,9 @@ import wave
 
 import torch
 from torch.package import PackageImporter
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from accents import load_rules, apply_rules
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 MODEL = os.path.join(HERE, 'models', 'v3_1_ru.pt')
@@ -54,10 +62,28 @@ def main():
         items = json.load(f)
 
     os.makedirs(WAV_DIR, exist_ok=True)
+    rules = load_rules()
+
+    # --restress: правила ударения изменились, и надо переозвучить ровно те
+    # реплики, которых они касаются. Имена файлов от этого не меняются —
+    # они считаются от чистого текста, — поэтому достаточно убрать WAV.
+    if '--restress' in sys.argv:
+        dropped = 0
+        for i in items:
+            if apply_rules(i['text'], rules) == i['text']:
+                continue
+            wav = os.path.join(WAV_DIR, i['id'] + '.wav')
+            if os.path.exists(wav):
+                os.remove(wav)
+                dropped += 1
+        print('под правила ударения попало реплик: %d' % dropped, flush=True)
+
     todo = [i for i in items if not os.path.exists(os.path.join(WAV_DIR, i['id'] + '.wav'))]
     print('всего реплик: %d, осталось озвучить: %d' % (len(items), len(todo)), flush=True)
     if not todo:
         return
+
+    print('правил ударения: %d' % len(rules), flush=True)
 
     torch.set_num_threads(4)
     imp = PackageImporter(MODEL)
@@ -69,7 +95,7 @@ def main():
         speaker = SPEAKERS.get(item['role'], SPEAKERS['narrator'])
         try:
             audio = model.apply_tts(
-                text=item['text'],
+                text=apply_rules(item['text'], rules),
                 speaker=speaker,
                 sample_rate=RATE,
                 put_accent=True,   # без ударений русская речь звучит чужой

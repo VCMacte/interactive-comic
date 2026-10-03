@@ -116,6 +116,13 @@ const MC_LAYERS = {
     prompt: `deep underground wall of dark stone cubes with coal blocks and a bright diamond ore vein, torchlight glow, ${MC_STYLE}`,
     negative: MC_NEG + ', sky, sun, clouds, grass',
   },
+
+  // ---- третий день ----
+  'mc/far-lava': {
+    strength: 0.24,
+    prompt: `huge underground cavern of dark red netherrack cubes, a wide river of glowing orange lava across the middle, lava falls from the ceiling, black obsidian bank below the stream, hot haze and glow, ${MC_STYLE}`,
+    negative: MC_NEG + ', sky, sun, clouds, grass, water, trees',
+  },
 };
 
 Object.assign(LAYERS, MC_LAYERS);

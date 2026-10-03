@@ -32,33 +32,33 @@
   },
   {
    "type": "recipe",
-   "question": "Что нужно, чтобы сделать факел: шерсть и камень, вода и песок или палка и уголёк?",
-   "hint": "Факел горит. Что из этого может загореться?",
+   "question": "Что нужно, чтобы сделать хлеб: камень, шерсть или пшеница?",
+   "hint": "Хлеб растёт на грядке. Что здесь растёт?",
    "choices": [
     {
-     "label": "Шерсть и камень",
+     "label": "Камень",
      "keywords": [
-      "шерсть и камень"
+      "камень"
      ],
      "correct": false
     },
     {
-     "label": "Вода и песок",
+     "label": "Шерсть",
      "keywords": [
-      "вода и песок"
+      "шерсть"
      ],
      "correct": false
     },
     {
-     "label": "Палка и уголёк",
+     "label": "Пшеница",
      "keywords": [
-      "палка и уголёк"
+      "пшеница"
      ],
      "correct": true
     }
    ],
-   "audio": "3d49e333",
-   "hintAudio": "632cb0be"
+   "audio": "fd12747d",
+   "hintAudio": "612673f1"
   },
   {
    "type": "recipe",
@@ -92,33 +92,33 @@
   },
   {
    "type": "recipe",
-   "question": "Что нужно, чтобы сделать верстак: угольки, доски или алмазы?",
-   "hint": "Верстак деревянный. Что здесь из дерева?",
+   "question": "Что нужно, чтобы сделать лестницу: слитки, палки или камни?",
+   "hint": "По лестнице лезут наверх, и она тоже деревянная.",
    "choices": [
     {
-     "label": "Угольки",
+     "label": "Слитки",
      "keywords": [
-      "угольки"
+      "слитки"
      ],
      "correct": false
     },
     {
-     "label": "Доски",
+     "label": "Палки",
      "keywords": [
-      "доски"
+      "палки"
      ],
      "correct": true
     },
     {
-     "label": "Алмазы",
+     "label": "Камни",
      "keywords": [
-      "алмазы"
+      "камни"
      ],
      "correct": false
     }
    ],
-   "audio": "5378dadb",
-   "hintAudio": "676fb9cd"
+   "audio": "937d8f14",
+   "hintAudio": "67a10bc5"
   },
   {
    "type": "recipe",
@@ -182,33 +182,33 @@
   },
   {
    "type": "recipe",
-   "question": "Что нужно, чтобы сделать хлеб: пшеница, шерсть или камень?",
-   "hint": "Хлеб растёт на грядке. Что здесь растёт?",
+   "question": "Что нужно, чтобы сделать доспехи: железные слитки, палки и уголёк или шерсть и вода?",
+   "hint": "Доспехи должны держать удар. Что здесь самое твёрдое?",
    "choices": [
     {
-     "label": "Пшеница",
+     "label": "Железные слитки",
      "keywords": [
-      "пшеница"
+      "железные слитки"
      ],
      "correct": true
     },
     {
-     "label": "Шерсть",
+     "label": "Палки и уголёк",
      "keywords": [
-      "шерсть"
+      "палки и уголёк"
      ],
      "correct": false
     },
     {
-     "label": "Камень",
+     "label": "Шерсть и вода",
      "keywords": [
-      "камень"
+      "шерсть и вода"
      ],
      "correct": false
     }
    ],
-   "audio": "cf4bba11",
-   "hintAudio": "612673f1"
+   "audio": "919ccbd5",
+   "hintAudio": "f79d8ba0"
   },
   {
    "type": "recipe",
@@ -242,63 +242,63 @@
   },
   {
    "type": "recipe",
-   "question": "Что нужно, чтобы сделать верстак: алмазы, доски или угольки?",
-   "hint": "Верстак деревянный. Что здесь из дерева?",
+   "question": "Что нужно, чтобы сделать лестницу: камни, палки или слитки?",
+   "hint": "По лестнице лезут наверх, и она тоже деревянная.",
    "choices": [
     {
-     "label": "Алмазы",
+     "label": "Камни",
      "keywords": [
-      "алмазы"
+      "камни"
      ],
      "correct": false
     },
     {
-     "label": "Доски",
+     "label": "Палки",
      "keywords": [
-      "доски"
+      "палки"
      ],
      "correct": true
     },
     {
-     "label": "Угольки",
+     "label": "Слитки",
      "keywords": [
-      "угольки"
+      "слитки"
      ],
      "correct": false
     }
    ],
-   "audio": "6fc5b831",
-   "hintAudio": "676fb9cd"
+   "audio": "922d2436",
+   "hintAudio": "67a10bc5"
   },
   {
    "type": "recipe",
-   "question": "Что нужно, чтобы сделать хлеб: шерсть, пшеница или камень?",
-   "hint": "Хлеб растёт на грядке. Что здесь растёт?",
+   "question": "Что нужно, чтобы сделать кирку: хлеб и уголь, шерсть и вода или палки и камень?",
+   "hint": "Киркой бьют по камню. Сама она должна быть твёрдой.",
    "choices": [
     {
-     "label": "Шерсть",
+     "label": "Хлеб и уголь",
      "keywords": [
-      "шерсть"
+      "хлеб и уголь"
      ],
      "correct": false
     },
     {
-     "label": "Пшеница",
+     "label": "Шерсть и вода",
      "keywords": [
-      "пшеница"
+      "шерсть и вода"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Палки и камень",
+     "keywords": [
+      "палки и камень"
      ],
      "correct": true
-    },
-    {
-     "label": "Камень",
-     "keywords": [
-      "камень"
-     ],
-     "correct": false
     }
    ],
-   "audio": "942be86d",
-   "hintAudio": "612673f1"
+   "audio": "5e62447c",
+   "hintAudio": "73064fb6"
   }
  ],
  "minecraft|math|20|blocks": [
@@ -635,42 +635,42 @@
  ],
  "minecraft|math|10|ore": [
   {
-   "type": "missing",
-   "question": "Было два слитка, стало семь слитков. Сколько прибавилось?",
-   "hint": "Досчитай от двух до семи и запомни, сколько вышло шагов.",
+   "type": "addition",
+   "question": "Сколько будет три слитка и ещё один слиток?",
+   "hint": "Посчитаем вместе: три слитка, и прибавим ещё один.",
    "choices": [
+    {
+     "label": "Четыре",
+     "keywords": [
+      "четыре",
+      "4"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Два",
+     "keywords": [
+      "два",
+      "2"
+     ],
+     "correct": false
+    },
     {
      "label": "Пять",
      "keywords": [
       "пять",
       "5"
      ],
-     "correct": true
-    },
-    {
-     "label": "Три",
-     "keywords": [
-      "три",
-      "3"
-     ],
-     "correct": false
-    },
-    {
-     "label": "Шесть",
-     "keywords": [
-      "шесть",
-      "6"
-     ],
      "correct": false
     }
    ],
-   "audio": "1b9f8eee",
-   "hintAudio": "678c4b23"
+   "audio": "510ae2d0",
+   "hintAudio": "2ab0899f"
   },
   {
-   "type": "missing",
-   "question": "Было три алмаза, стало десять алмазов. Сколько прибавилось?",
-   "hint": "Досчитай от трёх до десяти и запомни, сколько вышло шагов.",
+   "type": "addition",
+   "question": "Сколько будет пять алмазов и ещё два алмаза?",
+   "hint": "Посчитаем вместе: пять алмазов, и прибавим ещё два.",
    "choices": [
     {
      "label": "Семь",
@@ -697,79 +697,46 @@
      "correct": false
     }
    ],
-   "audio": "385fa5ad",
-   "hintAudio": "fea2a212"
+   "audio": "80b6da7f",
+   "hintAudio": "8e1f2d3e"
   },
   {
-   "type": "missing",
-   "question": "Было три слитка, стало пять слитков. Сколько прибавилось?",
-   "hint": "Досчитай от трёх до пяти и запомни, сколько вышло шагов.",
+   "type": "addition",
+   "question": "Сколько будет два слитка и ещё пять слитков?",
+   "hint": "Посчитаем вместе: два слитка, и прибавим ещё пять.",
    "choices": [
     {
-     "label": "Два",
+     "label": "Семь",
      "keywords": [
-      "два",
-      "2"
+      "семь",
+      "7"
      ],
      "correct": true
     },
     {
-     "label": "Один",
+     "label": "Шесть",
      "keywords": [
-      "один",
-      "1"
+      "шесть",
+      "6"
      ],
      "correct": false
     },
     {
-     "label": "Четыре",
+     "label": "Девять",
      "keywords": [
-      "четыре",
-      "4"
+      "девять",
+      "9"
      ],
      "correct": false
     }
    ],
-   "audio": "4f36c0dc",
-   "hintAudio": "6db6c1ab"
+   "audio": "a12a3c53",
+   "hintAudio": "c9defea8"
   },
   {
-   "type": "missing",
-   "question": "Было три уголька, стало пять угольков. Сколько прибавилось?",
-   "hint": "Досчитай от трёх до пяти и запомни, сколько вышло шагов.",
-   "choices": [
-    {
-     "label": "Ноль",
-     "keywords": [
-      "ноль",
-      "0"
-     ],
-     "correct": false
-    },
-    {
-     "label": "Два",
-     "keywords": [
-      "два",
-      "2"
-     ],
-     "correct": true
-    },
-    {
-     "label": "Три",
-     "keywords": [
-      "три",
-      "3"
-     ],
-     "correct": false
-    }
-   ],
-   "audio": "e280e1f0",
-   "hintAudio": "6db6c1ab"
-  },
-  {
-   "type": "missing",
-   "question": "Было четыре уголька, стало восемь угольков. Сколько прибавилось?",
-   "hint": "Досчитай от четырёх до восьми и запомни, сколько вышло шагов.",
+   "type": "addition",
+   "question": "Сколько будет один уголёк и ещё четыре уголька?",
+   "hint": "Посчитаем вместе: один уголёк, и прибавим ещё четыре.",
    "choices": [
     {
      "label": "Три",
@@ -780,10 +747,10 @@
      "correct": false
     },
     {
-     "label": "Четыре",
+     "label": "Пять",
      "keywords": [
-      "четыре",
-      "4"
+      "пять",
+      "5"
      ],
      "correct": true
     },
@@ -796,46 +763,46 @@
      "correct": false
     }
    ],
-   "audio": "83d468a6",
-   "hintAudio": "d2a532cb"
+   "audio": "b0574359",
+   "hintAudio": "6d3795ed"
   },
   {
-   "type": "missing",
-   "question": "Было четыре алмаза, стало семь алмазов. Сколько прибавилось?",
-   "hint": "Досчитай от четырёх до семи и запомни, сколько вышло шагов.",
+   "type": "addition",
+   "question": "Сколько будет четыре уголька и ещё три уголька?",
+   "hint": "Посчитаем вместе: четыре уголька, и прибавим ещё три.",
    "choices": [
     {
-     "label": "Один",
+     "label": "Шесть",
      "keywords": [
-      "один",
-      "1"
+      "шесть",
+      "6"
      ],
      "correct": false
     },
     {
-     "label": "Три",
+     "label": "Семь",
      "keywords": [
-      "три",
-      "3"
+      "семь",
+      "7"
      ],
      "correct": true
     },
     {
-     "label": "Пять",
+     "label": "Девять",
      "keywords": [
-      "пять",
-      "5"
+      "девять",
+      "9"
      ],
      "correct": false
     }
    ],
-   "audio": "cca7aa82",
-   "hintAudio": "9a16cc48"
+   "audio": "515c9847",
+   "hintAudio": "eb7a0663"
   },
   {
-   "type": "missing",
-   "question": "Было четыре камня, стало десять камней. Сколько прибавилось?",
-   "hint": "Досчитай от четырёх до десяти и запомни, сколько вышло шагов.",
+   "type": "addition",
+   "question": "Сколько будет три алмаза и ещё три алмаза?",
+   "hint": "Посчитаем вместе: три алмаза, и прибавим ещё три.",
    "choices": [
     {
      "label": "Четыре",
@@ -844,6 +811,14 @@
       "4"
      ],
      "correct": false
+    },
+    {
+     "label": "Шесть",
+     "keywords": [
+      "шесть",
+      "6"
+     ],
+     "correct": true
     },
     {
      "label": "Восемь",
@@ -852,89 +827,15 @@
       "8"
      ],
      "correct": false
-    },
-    {
-     "label": "Шесть",
-     "keywords": [
-      "шесть",
-      "6"
-     ],
-     "correct": true
     }
    ],
-   "audio": "3b9d0c9a",
-   "hintAudio": "3020b753"
+   "audio": "7bb7bcc1",
+   "hintAudio": "c56f235c"
   },
   {
-   "type": "missing",
-   "question": "Было шесть алмазов, стало восемь алмазов. Сколько прибавилось?",
-   "hint": "Досчитай от шести до восьми и запомни, сколько вышло шагов.",
-   "choices": [
-    {
-     "label": "Два",
-     "keywords": [
-      "два",
-      "2"
-     ],
-     "correct": true
-    },
-    {
-     "label": "Ноль",
-     "keywords": [
-      "ноль",
-      "0"
-     ],
-     "correct": false
-    },
-    {
-     "label": "Четыре",
-     "keywords": [
-      "четыре",
-      "4"
-     ],
-     "correct": false
-    }
-   ],
-   "audio": "94c46eba",
-   "hintAudio": "a5e81864"
-  },
-  {
-   "type": "missing",
-   "question": "Было пять алмазов, стало восемь алмазов. Сколько прибавилось?",
-   "hint": "Досчитай от пяти до восьми и запомни, сколько вышло шагов.",
-   "choices": [
-    {
-     "label": "Четыре",
-     "keywords": [
-      "четыре",
-      "4"
-     ],
-     "correct": false
-    },
-    {
-     "label": "Два",
-     "keywords": [
-      "два",
-      "2"
-     ],
-     "correct": false
-    },
-    {
-     "label": "Три",
-     "keywords": [
-      "три",
-      "3"
-     ],
-     "correct": true
-    }
-   ],
-   "audio": "5ec66d48",
-   "hintAudio": "60758fbe"
-  },
-  {
-   "type": "missing",
-   "question": "Было два алмаза, стало шесть алмазов. Сколько прибавилось?",
-   "hint": "Досчитай от двух до шести и запомни, сколько вышло шагов.",
+   "type": "addition",
+   "question": "Сколько будет пять камней и ещё два камня?",
+   "hint": "Посчитаем вместе: пять камней, и прибавим ещё два.",
    "choices": [
     {
      "label": "Пять",
@@ -945,6 +846,295 @@
      "correct": false
     },
     {
+     "label": "Девять",
+     "keywords": [
+      "девять",
+      "9"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Семь",
+     "keywords": [
+      "семь",
+      "7"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "01b095a6",
+   "hintAudio": "d3d37b8b"
+  },
+  {
+   "type": "addition",
+   "question": "Сколько будет четыре алмаза и ещё пять алмазов?",
+   "hint": "Посчитаем вместе: четыре алмаза, и прибавим ещё пять.",
+   "choices": [
+    {
+     "label": "Девять",
+     "keywords": [
+      "девять",
+      "9"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Десять",
+     "keywords": [
+      "десять",
+      "10"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Семь",
+     "keywords": [
+      "семь",
+      "7"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "0b000593",
+   "hintAudio": "261d41ca"
+  },
+  {
+   "type": "addition",
+   "question": "Сколько будет четыре алмаза и ещё два алмаза?",
+   "hint": "Посчитаем вместе: четыре алмаза, и прибавим ещё два.",
+   "choices": [
+    {
+     "label": "Семь",
+     "keywords": [
+      "семь",
+      "7"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Шесть",
+     "keywords": [
+      "шесть",
+      "6"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Пять",
+     "keywords": [
+      "пять",
+      "5"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "d308dc59",
+   "hintAudio": "ba684560"
+  },
+  {
+   "type": "addition",
+   "question": "Сколько будет три камня и ещё пять камней?",
+   "hint": "Посчитаем вместе: три камня, и прибавим ещё пять.",
+   "choices": [
+    {
+     "label": "Восемь",
+     "keywords": [
+      "восемь",
+      "8"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Семь",
+     "keywords": [
+      "семь",
+      "7"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Десять",
+     "keywords": [
+      "десять",
+      "10"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "6924da82",
+   "hintAudio": "fb424948"
+  },
+  {
+   "type": "missing",
+   "question": "Было два алмаза, стало четыре алмаза. Сколько прибавилось?",
+   "hint": "Досчитай от двух до четырёх и запомни, сколько вышло шагов.",
+   "choices": [
+    {
+     "label": "Ноль",
+     "keywords": [
+      "ноль",
+      "0"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Два",
+     "keywords": [
+      "два",
+      "2"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Три",
+     "keywords": [
+      "три",
+      "3"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "32883866",
+   "hintAudio": "74c487b0"
+  },
+  {
+   "type": "missing",
+   "question": "Было два камня, стало восемь камней. Сколько прибавилось?",
+   "hint": "Досчитай от двух до восьми и запомни, сколько вышло шагов.",
+   "choices": [
+    {
+     "label": "Пять",
+     "keywords": [
+      "пять",
+      "5"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Шесть",
+     "keywords": [
+      "шесть",
+      "6"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Семь",
+     "keywords": [
+      "семь",
+      "7"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "6e7dcc1f",
+   "hintAudio": "bcf0b7a4"
+  },
+  {
+   "type": "missing",
+   "question": "Было три камня, стало шесть камней. Сколько прибавилось?",
+   "hint": "Досчитай от трёх до шести и запомни, сколько вышло шагов.",
+   "choices": [
+    {
+     "label": "Два",
+     "keywords": [
+      "два",
+      "2"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Три",
+     "keywords": [
+      "три",
+      "3"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Один",
+     "keywords": [
+      "один",
+      "1"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "f5d38f37",
+   "hintAudio": "96fec221"
+  },
+  {
+   "type": "missing",
+   "question": "Было два уголька, стало пять угольков. Сколько прибавилось?",
+   "hint": "Досчитай от двух до пяти и запомни, сколько вышло шагов.",
+   "choices": [
+    {
+     "label": "Пять",
+     "keywords": [
+      "пять",
+      "5"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Один",
+     "keywords": [
+      "один",
+      "1"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Три",
+     "keywords": [
+      "три",
+      "3"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "7f2db8f4",
+   "hintAudio": "e3e2cd61"
+  },
+  {
+   "type": "missing",
+   "question": "Было два алмаза, стало шесть алмазов. Сколько прибавилось?",
+   "hint": "Досчитай от двух до шести и запомни, сколько вышло шагов.",
+   "choices": [
+    {
+     "label": "Два",
+     "keywords": [
+      "два",
+      "2"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Шесть",
+     "keywords": [
+      "шесть",
+      "6"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Четыре",
+     "keywords": [
+      "четыре",
+      "4"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "53853742",
+   "hintAudio": "5eb482a3"
+  },
+  {
+   "type": "missing",
+   "question": "Было четыре алмаза, стало восемь алмазов. Сколько прибавилось?",
+   "hint": "Досчитай от четырёх до восьми и запомни, сколько вышло шагов.",
+   "choices": [
+    {
      "label": "Четыре",
      "keywords": [
       "четыре",
@@ -959,10 +1149,150 @@
       "3"
      ],
      "correct": false
+    },
+    {
+     "label": "Два",
+     "keywords": [
+      "два",
+      "2"
+     ],
+     "correct": false
     }
    ],
-   "audio": "53853742",
-   "hintAudio": "5eb482a3"
+   "audio": "8b3dc1c6",
+   "hintAudio": "d2a532cb"
+  },
+  {
+   "type": "missing",
+   "question": "Было семь камней, стало девять камней. Сколько прибавилось?",
+   "hint": "Досчитай от семи до девяти и запомни, сколько вышло шагов.",
+   "choices": [
+    {
+     "label": "Один",
+     "keywords": [
+      "один",
+      "1"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Четыре",
+     "keywords": [
+      "четыре",
+      "4"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Два",
+     "keywords": [
+      "два",
+      "2"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "b6e832b4",
+   "hintAudio": "6ea15c3f"
+  },
+  {
+   "type": "missing",
+   "question": "Было пять угольков, стало девять угольков. Сколько прибавилось?",
+   "hint": "Досчитай от пяти до девяти и запомни, сколько вышло шагов.",
+   "choices": [
+    {
+     "label": "Два",
+     "keywords": [
+      "два",
+      "2"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Четыре",
+     "keywords": [
+      "четыре",
+      "4"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Пять",
+     "keywords": [
+      "пять",
+      "5"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "0482ec36",
+   "hintAudio": "3185498d"
+  },
+  {
+   "type": "missing",
+   "question": "Было три слитка, стало пять слитков. Сколько прибавилось?",
+   "hint": "Досчитай от трёх до пяти и запомни, сколько вышло шагов.",
+   "choices": [
+    {
+     "label": "Один",
+     "keywords": [
+      "один",
+      "1"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Три",
+     "keywords": [
+      "три",
+      "3"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Два",
+     "keywords": [
+      "два",
+      "2"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "4f36c0dc",
+   "hintAudio": "6db6c1ab"
+  },
+  {
+   "type": "missing",
+   "question": "Было два алмаза, стало пять алмазов. Сколько прибавилось?",
+   "hint": "Досчитай от двух до пяти и запомни, сколько вышло шагов.",
+   "choices": [
+    {
+     "label": "Два",
+     "keywords": [
+      "два",
+      "2"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Три",
+     "keywords": [
+      "три",
+      "3"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Пять",
+     "keywords": [
+      "пять",
+      "5"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "9f988a44",
+   "hintAudio": "e3e2cd61"
   }
  ],
  "minecraft|math|10|fuel": [
@@ -1001,7 +1331,7 @@
   },
   {
    "type": "subtraction",
-   "question": "Было десять угольков, сгорело три уголька. Сколько осталось?",
+   "question": "Было десять факелов, сгорело три факела. Сколько осталось?",
    "hint": "Было десять, пропало три. Отними и скажи, сколько стало.",
    "choices": [
     {
@@ -1029,7 +1359,7 @@
      "correct": true
     }
    ],
-   "audio": "f8525272",
+   "audio": "fe275e82",
    "hintAudio": "c13e2973"
   },
   {
@@ -1133,7 +1463,7 @@
   },
   {
    "type": "subtraction",
-   "question": "Было пять слитков, сгорело три слитка. Сколько осталось?",
+   "question": "Было пять угольков, сгорело три уголька. Сколько осталось?",
    "hint": "Было пять, пропало три. Отними и скажи, сколько стало.",
    "choices": [
     {
@@ -1161,7 +1491,7 @@
      "correct": true
     }
    ],
-   "audio": "f797b1d1",
+   "audio": "5a8a0089",
    "hintAudio": "8f9a9a4c"
   },
   {
@@ -4408,33 +4738,33 @@
   },
   {
    "type": "oddOneOut",
-   "question": "Что здесь лишнее: крипер, скелет или морковка?",
-   "hint": "Подумай: два из них — это мобы. А третий?",
+   "question": "Что здесь лишнее: алмаз, изумруд или облако?",
+   "hint": "Подумай: два из них — это руда. А третий?",
    "choices": [
     {
-     "label": "Скелет",
+     "label": "Изумруд",
      "keywords": [
-      "скелет"
+      "изумруд"
      ],
      "correct": false
     },
     {
-     "label": "Крипер",
+     "label": "Алмаз",
      "keywords": [
-      "крипер"
+      "алмаз"
      ],
      "correct": false
     },
     {
-     "label": "Морковка",
+     "label": "Облако",
      "keywords": [
-      "морковка"
+      "облако"
      ],
      "correct": true
     }
    ],
-   "audio": "834d88dc",
-   "hintAudio": "8ab406c2"
+   "audio": "9055b66d",
+   "hintAudio": "7c8e15f3"
   },
   {
    "type": "oddOneOut",
@@ -4468,63 +4798,63 @@
   },
   {
    "type": "oddOneOut",
-   "question": "Что здесь лишнее: лопата, кирка или курица?",
-   "hint": "Подумай: два из них — это инструменты. А третий?",
+   "question": "Что здесь лишнее: свеча, факел или камень?",
+   "hint": "Подумай: два из них — это они светят. А третий?",
    "choices": [
     {
-     "label": "Лопата",
+     "label": "Свеча",
      "keywords": [
-      "лопата"
+      "свеча"
      ],
      "correct": false
     },
     {
-     "label": "Кирка",
+     "label": "Факел",
      "keywords": [
-      "кирка"
+      "факел"
      ],
      "correct": false
     },
+    {
+     "label": "Камень",
+     "keywords": [
+      "камень"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "28b86ab1",
+   "hintAudio": "6bc03520"
+  },
+  {
+   "type": "oddOneOut",
+   "question": "Что здесь лишнее: обсидиан, песок или курица?",
+   "hint": "Подумай: два из них — это блоки. А третий?",
+   "choices": [
     {
      "label": "Курица",
      "keywords": [
       "курица"
      ],
      "correct": true
-    }
-   ],
-   "audio": "87278407",
-   "hintAudio": "04c0185c"
-  },
-  {
-   "type": "oddOneOut",
-   "question": "Что здесь лишнее: рыба, черепаха или кирка?",
-   "hint": "Подумай: два из них — это живут в воде. А третий?",
-   "choices": [
-    {
-     "label": "Кирка",
-     "keywords": [
-      "кирка"
-     ],
-     "correct": true
     },
     {
-     "label": "Рыба",
+     "label": "Обсидиан",
      "keywords": [
-      "рыба"
+      "обсидиан"
      ],
      "correct": false
     },
     {
-     "label": "Черепаха",
+     "label": "Песок",
      "keywords": [
-      "черепаха"
+      "песок"
      ],
      "correct": false
     }
    ],
-   "audio": "ef22301d",
-   "hintAudio": "48cbeb16"
+   "audio": "eda6df95",
+   "hintAudio": "53c9f3ba"
   },
   {
    "type": "oddOneOut",
@@ -4558,7 +4888,37 @@
   },
   {
    "type": "oddOneOut",
-   "question": "Что здесь лишнее: осьминог, рыба или кирка?",
+   "question": "Что здесь лишнее: булыжник, обсидиан или курица?",
+   "hint": "Подумай: два из них — это блоки. А третий?",
+   "choices": [
+    {
+     "label": "Курица",
+     "keywords": [
+      "курица"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Обсидиан",
+     "keywords": [
+      "обсидиан"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Булыжник",
+     "keywords": [
+      "булыжник"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "e04ad959",
+   "hintAudio": "53c9f3ba"
+  },
+  {
+   "type": "oddOneOut",
+   "question": "Что здесь лишнее: черепаха, рыба или кирка?",
    "hint": "Подумай: два из них — это живут в воде. А третий?",
    "choices": [
     {
@@ -4569,11 +4929,41 @@
      "correct": true
     },
     {
+     "label": "Черепаха",
+     "keywords": [
+      "черепаха"
+     ],
+     "correct": false
+    },
+    {
      "label": "Рыба",
      "keywords": [
       "рыба"
      ],
      "correct": false
+    }
+   ],
+   "audio": "34e67b9d",
+   "hintAudio": "48cbeb16"
+  },
+  {
+   "type": "oddOneOut",
+   "question": "Что здесь лишнее: рыба, осьминог или кирка?",
+   "hint": "Подумай: два из них — это живут в воде. А третий?",
+   "choices": [
+    {
+     "label": "Рыба",
+     "keywords": [
+      "рыба"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Кирка",
+     "keywords": [
+      "кирка"
+     ],
+     "correct": true
     },
     {
      "label": "Осьминог",
@@ -4583,68 +4973,8 @@
      "correct": false
     }
    ],
-   "audio": "219470c9",
+   "audio": "4d9cb0c1",
    "hintAudio": "48cbeb16"
-  },
-  {
-   "type": "oddOneOut",
-   "question": "Что здесь лишнее: овца, волк или факел?",
-   "hint": "Подумай: два из них — это животные. А третий?",
-   "choices": [
-    {
-     "label": "Факел",
-     "keywords": [
-      "факел"
-     ],
-     "correct": true
-    },
-    {
-     "label": "Овца",
-     "keywords": [
-      "овца"
-     ],
-     "correct": false
-    },
-    {
-     "label": "Волк",
-     "keywords": [
-      "волк"
-     ],
-     "correct": false
-    }
-   ],
-   "audio": "c2d95c91",
-   "hintAudio": "2ca49f65"
-  },
-  {
-   "type": "oddOneOut",
-   "question": "Что здесь лишнее: корова, свинья или сундук?",
-   "hint": "Подумай: два из них — это животные. А третий?",
-   "choices": [
-    {
-     "label": "Корова",
-     "keywords": [
-      "корова"
-     ],
-     "correct": false
-    },
-    {
-     "label": "Сундук",
-     "keywords": [
-      "сундук"
-     ],
-     "correct": true
-    },
-    {
-     "label": "Свинья",
-     "keywords": [
-      "свинья"
-     ],
-     "correct": false
-    }
-   ],
-   "audio": "952b58f1",
-   "hintAudio": "2ca49f65"
   },
   {
    "type": "home",
@@ -5277,6 +5607,640 @@
    ],
    "audio": "15bcf3bd",
    "hintAudio": "9f9b3ffc"
+  }
+ ],
+ "minecraft|math|10|blocks": [
+  {
+   "type": "missing",
+   "question": "Было пять блоков, стало семь блоков. Сколько прибавилось?",
+   "hint": "Досчитай от пяти до семи и запомни, сколько вышло шагов.",
+   "choices": [
+    {
+     "label": "Ноль",
+     "keywords": [
+      "ноль",
+      "0"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Один",
+     "keywords": [
+      "один",
+      "1"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Два",
+     "keywords": [
+      "два",
+      "2"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "65afbbec",
+   "hintAudio": "c3fac05d"
+  },
+  {
+   "type": "missing",
+   "question": "Было три блока, стало девять блоков. Сколько прибавилось?",
+   "hint": "Досчитай от трёх до девяти и запомни, сколько вышло шагов.",
+   "choices": [
+    {
+     "label": "Шесть",
+     "keywords": [
+      "шесть",
+      "6"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Восемь",
+     "keywords": [
+      "восемь",
+      "8"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Пять",
+     "keywords": [
+      "пять",
+      "5"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "ce39630a",
+   "hintAudio": "adb0cdf9"
+  },
+  {
+   "type": "missing",
+   "question": "Было два камня, стало шесть камней. Сколько прибавилось?",
+   "hint": "Досчитай от двух до шести и запомни, сколько вышло шагов.",
+   "choices": [
+    {
+     "label": "Шесть",
+     "keywords": [
+      "шесть",
+      "6"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Четыре",
+     "keywords": [
+      "четыре",
+      "4"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Три",
+     "keywords": [
+      "три",
+      "3"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "1dca52e3",
+   "hintAudio": "5eb482a3"
+  },
+  {
+   "type": "missing",
+   "question": "Было четыре камня, стало семь камней. Сколько прибавилось?",
+   "hint": "Досчитай от четырёх до семи и запомни, сколько вышло шагов.",
+   "choices": [
+    {
+     "label": "Три",
+     "keywords": [
+      "три",
+      "3"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Один",
+     "keywords": [
+      "один",
+      "1"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Пять",
+     "keywords": [
+      "пять",
+      "5"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "784a0ec3",
+   "hintAudio": "9a16cc48"
+  },
+  {
+   "type": "missing",
+   "question": "Было два камня, стало девять камней. Сколько прибавилось?",
+   "hint": "Досчитай от двух до девяти и запомни, сколько вышло шагов.",
+   "choices": [
+    {
+     "label": "Шесть",
+     "keywords": [
+      "шесть",
+      "6"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Семь",
+     "keywords": [
+      "семь",
+      "7"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Пять",
+     "keywords": [
+      "пять",
+      "5"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "7f1fdae3",
+   "hintAudio": "9eb0a97f"
+  },
+  {
+   "type": "missing",
+   "question": "Было три блока, стало семь блоков. Сколько прибавилось?",
+   "hint": "Досчитай от трёх до семи и запомни, сколько вышло шагов.",
+   "choices": [
+    {
+     "label": "Пять",
+     "keywords": [
+      "пять",
+      "5"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Три",
+     "keywords": [
+      "три",
+      "3"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Четыре",
+     "keywords": [
+      "четыре",
+      "4"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "f7527a86",
+   "hintAudio": "973bfb41"
+  },
+  {
+   "type": "missing",
+   "question": "Было два камня, стало четыре камня. Сколько прибавилось?",
+   "hint": "Досчитай от двух до четырёх и запомни, сколько вышло шагов.",
+   "choices": [
+    {
+     "label": "Три",
+     "keywords": [
+      "три",
+      "3"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Четыре",
+     "keywords": [
+      "четыре",
+      "4"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Два",
+     "keywords": [
+      "два",
+      "2"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "85cf2fea",
+   "hintAudio": "74c487b0"
+  },
+  {
+   "type": "missing",
+   "question": "Было два камня, стало пять камней. Сколько прибавилось?",
+   "hint": "Досчитай от двух до пяти и запомни, сколько вышло шагов.",
+   "choices": [
+    {
+     "label": "Пять",
+     "keywords": [
+      "пять",
+      "5"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Три",
+     "keywords": [
+      "три",
+      "3"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Два",
+     "keywords": [
+      "два",
+      "2"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "bbc65911",
+   "hintAudio": "e3e2cd61"
+  },
+  {
+   "type": "missing",
+   "question": "Было шесть камней, стало восемь камней. Сколько прибавилось?",
+   "hint": "Досчитай от шести до восьми и запомни, сколько вышло шагов.",
+   "choices": [
+    {
+     "label": "Один",
+     "keywords": [
+      "один",
+      "1"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Два",
+     "keywords": [
+      "два",
+      "2"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Ноль",
+     "keywords": [
+      "ноль",
+      "0"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "15d0eaac",
+   "hintAudio": "a5e81864"
+  },
+  {
+   "type": "missing",
+   "question": "Было два блока, стало четыре блока. Сколько прибавилось?",
+   "hint": "Досчитай от двух до четырёх и запомни, сколько вышло шагов.",
+   "choices": [
+    {
+     "label": "Один",
+     "keywords": [
+      "один",
+      "1"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Два",
+     "keywords": [
+      "два",
+      "2"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Ноль",
+     "keywords": [
+      "ноль",
+      "0"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "74a76d4e",
+   "hintAudio": "74c487b0"
+  }
+ ],
+ "minecraft|logic|10|blocks": [
+  {
+   "type": "oddOneOut",
+   "question": "Что здесь лишнее: песок, булыжник или курица?",
+   "hint": "Подумай: два из них — это блоки. А третий?",
+   "choices": [
+    {
+     "label": "Песок",
+     "keywords": [
+      "песок"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Курица",
+     "keywords": [
+      "курица"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Булыжник",
+     "keywords": [
+      "булыжник"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "8ee03f15",
+   "hintAudio": "53c9f3ba"
+  },
+  {
+   "type": "oddOneOut",
+   "question": "Что здесь лишнее: обсидиан, булыжник или курица?",
+   "hint": "Подумай: два из них — это блоки. А третий?",
+   "choices": [
+    {
+     "label": "Обсидиан",
+     "keywords": [
+      "обсидиан"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Булыжник",
+     "keywords": [
+      "булыжник"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Курица",
+     "keywords": [
+      "курица"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "dcb595cd",
+   "hintAudio": "53c9f3ba"
+  },
+  {
+   "type": "oddOneOut",
+   "question": "Что здесь лишнее: кирпич, доска или облако?",
+   "hint": "Подумай: два из них — это из них строят. А третий?",
+   "choices": [
+    {
+     "label": "Кирпич",
+     "keywords": [
+      "кирпич"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Доска",
+     "keywords": [
+      "доска"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Облако",
+     "keywords": [
+      "облако"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "87325e9f",
+   "hintAudio": "5b354a43"
+  },
+  {
+   "type": "oddOneOut",
+   "question": "Что здесь лишнее: камень, кирпич или облако?",
+   "hint": "Подумай: два из них — это из них строят. А третий?",
+   "choices": [
+    {
+     "label": "Кирпич",
+     "keywords": [
+      "кирпич"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Облако",
+     "keywords": [
+      "облако"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Камень",
+     "keywords": [
+      "камень"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "2e993688",
+   "hintAudio": "5b354a43"
+  },
+  {
+   "type": "oddOneOut",
+   "question": "Что здесь лишнее: булыжник, песок или курица?",
+   "hint": "Подумай: два из них — это блоки. А третий?",
+   "choices": [
+    {
+     "label": "Песок",
+     "keywords": [
+      "песок"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Булыжник",
+     "keywords": [
+      "булыжник"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Курица",
+     "keywords": [
+      "курица"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "92a285ab",
+   "hintAudio": "53c9f3ba"
+  },
+  {
+   "type": "oddOneOut",
+   "question": "Что здесь лишнее: булыжник, обсидиан или курица?",
+   "hint": "Подумай: два из них — это блоки. А третий?",
+   "choices": [
+    {
+     "label": "Обсидиан",
+     "keywords": [
+      "обсидиан"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Курица",
+     "keywords": [
+      "курица"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Булыжник",
+     "keywords": [
+      "булыжник"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "e04ad959",
+   "hintAudio": "53c9f3ba"
+  },
+  {
+   "type": "oddOneOut",
+   "question": "Что здесь лишнее: доска, камень или облако?",
+   "hint": "Подумай: два из них — это из них строят. А третий?",
+   "choices": [
+    {
+     "label": "Камень",
+     "keywords": [
+      "камень"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Доска",
+     "keywords": [
+      "доска"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Облако",
+     "keywords": [
+      "облако"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "c17a029d",
+   "hintAudio": "5b354a43"
+  },
+  {
+   "type": "oddOneOut",
+   "question": "Что здесь лишнее: доска, кирпич или облако?",
+   "hint": "Подумай: два из них — это из них строят. А третий?",
+   "choices": [
+    {
+     "label": "Кирпич",
+     "keywords": [
+      "кирпич"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Доска",
+     "keywords": [
+      "доска"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Облако",
+     "keywords": [
+      "облако"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "4dbd5607",
+   "hintAudio": "5b354a43"
+  },
+  {
+   "type": "oddOneOut",
+   "question": "Что здесь лишнее: камень, доска или облако?",
+   "hint": "Подумай: два из них — это из них строят. А третий?",
+   "choices": [
+    {
+     "label": "Доска",
+     "keywords": [
+      "доска"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Камень",
+     "keywords": [
+      "камень"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Облако",
+     "keywords": [
+      "облако"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "70b4fd65",
+   "hintAudio": "5b354a43"
+  },
+  {
+   "type": "oddOneOut",
+   "question": "Что здесь лишнее: кирпич, камень или облако?",
+   "hint": "Подумай: два из них — это из них строят. А третий?",
+   "choices": [
+    {
+     "label": "Кирпич",
+     "keywords": [
+      "кирпич"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Камень",
+     "keywords": [
+      "камень"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Облако",
+     "keywords": [
+      "облако"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "ed135944",
+   "hintAudio": "5b354a43"
   }
  ]
 }

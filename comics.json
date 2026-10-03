@@ -1,5 +1,12 @@
 [
   {
+    "id": "nether",
+    "title": "Дорога в Нижний мир",
+    "subtitle": "Третий день Стива · пять игр",
+    "cover": "assets/covers/nether.webp",
+    "story": "stories/nether.json"
+  },
+  {
     "id": "day-two",
     "title": "Второй день",
     "subtitle": "Продолжение про Стива · пять игр",

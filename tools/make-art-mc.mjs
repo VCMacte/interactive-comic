@@ -50,6 +50,12 @@ const P = {
   pine:   { base: '#2f6b3a', dark: '#23522c', light: '#3d8148' },
   brick:  { base: '#9d9d9d', dark: '#787878', light: '#b4b4b4' },
   wool:   { base: '#e9e6de', dark: '#cdc9bf', light: '#f7f5f0' },
+  nether: { base: '#6b3a3a', dark: '#4e2a2c', light: '#834a46' },
+  lava:   { base: '#e2561a', dark: '#b23a10', light: '#ffa534' },
+  obsidian:{ base: '#2a2140', dark: '#1a1430', light: '#3f3260' },
+  portal: { base: '#6a2bb5', dark: '#4a1b85', light: '#a05ce0' },
+  iron:   { base: '#d2d2d8', dark: '#9ea0a8', light: '#eff0f4' },
+  anvil:  { base: '#4a4a52', dark: '#33333a', light: '#6a6a74' },
 };
 
 /**
@@ -266,6 +272,51 @@ function farDeep(seed = 101) {
   const vx = Math.round((W / B) * 0.79) * B, vy = Math.round((H / B) * 0.38) * B;
   for (const [dx, dy] of [[0, 0], [1, 0], [0, 1], [2, 1], [1, 2]]) {
     out.push(block(vx + dx * B, vy + dy * B, P.diamond, rand));
+  }
+  return svg(out.join('\n'));
+}
+
+// Берег огненной реки. Этот слой уходит в img2img, поэтому важна геометрия:
+// река идёт ВЫСОКО, за спиной у героев. На уровне ног она читалась так,
+// будто Стив стоит прямо в лаве — проверено на снимке сцены.
+function farLava(seed = 161) {
+  const rand = rng(seed);
+  const out = [`<rect width="${W}" height="${H}" fill="#1d1418"/>`];
+
+  // Стена пещеры: та же сетка, что в far-deep, но в тёплых тонах —
+  // рядом лава, и холодный камень возле неё читается как ошибка цвета.
+  for (let r = 0; r * B < H; r++) {
+    for (let c = 0; c * B < W; c++) {
+      let pal = P.nether;
+      const roll = rand();
+      if (roll < 0.09) pal = P.coal;
+      else if (roll < 0.12) pal = P.obsidian;
+      out.push(block(c * B, r * B, pal, rand));
+    }
+  }
+
+  // Река: две полосы лавы и тёмный берег под ними. Берег отделяет реку
+  // от пола ближнего слоя, иначе огонь смыкается с землёй под ногами.
+  const top = GROUND - B * 7;
+  for (let r = 0; r < 2; r++) {
+    for (let c = 0; c * B < W; c++) out.push(block(c * B, top + r * B, P.lava, rand));
+  }
+  for (let c = 0; c * B < W; c++) {
+    out.push(block(c * B, top + B * 2, P.obsidian, rand));
+    out.push(block(c * B, top + B * 3, P.nether, rand));
+  }
+  // Блики на потоке и зарево на стене над ним.
+  for (let i = 0; i < 18; i++) {
+    const x = Math.floor(rand() * (W / B)) * B;
+    out.push(`<rect x="${n(x + 6)}" y="${n(top + B * 0.35)}" width="${B - 12}" height="10" fill="${P.lava.light}" opacity="0.85"/>`);
+    out.push(`<rect x="${n(x)}" y="${n(top - B * 2)}" width="${B}" height="${B * 2}" fill="${P.lava.light}" opacity="0.12"/>`);
+  }
+  // Лавопады идут от самого потолка до реки. Короткие «капли» над потоком
+  // читались как оранжевые столбы, висящие в воздухе.
+  for (let i = 0; i < 4; i++) {
+    const x = Math.floor(rand() * (W / B)) * B;
+    out.push(`<rect x="${n(x + B * 0.25)}" y="0" width="${n(B * 0.5)}" height="${n(top)}" fill="${P.lava.base}" opacity="0.92"/>`);
+    out.push(`<rect x="${n(x + B * 0.38)}" y="0" width="${n(B * 0.24)}" height="${n(top)}" fill="${P.lava.light}" opacity="0.8"/>`);
   }
   return svg(out.join('\n'));
 }
@@ -510,6 +561,259 @@ function nearPines(seed = 151) {
 ${trees.join('\n')}`);
 }
 
+/**
+ * Окно 3×2 с куском неба. Нужно обеим комнатам третьего дня: глухая стена
+ * во весь кадр читается как сбой загрузки, а не как комната. Тот же приём
+ * уже стоит в near-furnace, здесь он вынесен в общую функцию.
+ */
+function woodWindow(x, y, rand, tint = '#2c4a7a') {
+  const out = [];
+  for (let r = 0; r < 2; r++) {
+    for (let c = 0; c < 3; c++) out.push(block(x + c * B, y + r * B, P.wood, rand));
+  }
+  out.push(`<rect x="${n(x + 8)}" y="${n(y + 8)}" width="${n(B * 3 - 16)}" height="${n(B * 2 - 16)}" fill="${tint}"/>`);
+  out.push(`<rect x="${n(x + B * 1.5 - 4)}" y="${n(y + 8)}" width="8" height="${n(B * 2 - 16)}" fill="#7a5630"/>`);
+  out.push(`<rect x="${n(x + 8)}" y="${n(y + B - 4)}" width="${n(B * 3 - 16)}" height="8" fill="#7a5630"/>`);
+  return out.join('\n');
+}
+
+/**
+ * Кузница. Кадр закрыт целиком: горн, наковальня, стойка с доспехами.
+ * Середина оставлена Стиву — он встаёт сюда персонажем (x = 54).
+ *
+ * Предметы нарочно крупные, в два-три блока. Первая версия рисовала их
+ * «в натуральную величину», по одному блоку, и на снимке сцены кадр
+ * оказался пустой серой стеной с мелкими значками по углам.
+ */
+function nearAnvil(seed = 171) {
+  const rand = rng(seed);
+  const out = [];
+
+  for (let r = 0; r * B < H; r++) {
+    for (let c = 0; c * B < W; c++) {
+      out.push(block(c * B, r * B, r * B >= GROUND ? P.plank : P.brick, rand));
+    }
+  }
+  // Швы между досками: тот же приём, что в near-furnace, иначе пол
+  // не читается как пол внутри дома.
+  for (let r = 0; GROUND + r * B < H; r++) {
+    out.push(`<rect x="0" y="${n(GROUND + r * B)}" width="${W}" height="5" fill="#8e6c3c" opacity="0.8"/>`);
+  }
+
+  // Утреннее небо в окне: оно же связывает кузницу с остальным домом.
+  out.push(woodWindow(Math.round((W / B) * 0.46) * B, GROUND - B * 7, rand, '#5b6f9a'));
+
+  // Горн: 4×3 блока с широким устьем. Он же объясняет, почему тут жарко,
+  // поэтому вокруг идёт зарево — без него огонь выглядит картинкой на стене.
+  const hx = Math.round((W / B) * 0.08) * B, hy = GROUND - B * 3;
+  for (let r = 0; r < 3; r++) {
+    for (let c = 0; c < 4; c++) out.push(block(hx + c * B, hy + r * B, P.brick, rand));
+  }
+  out.push(`<rect x="${n(hx - B * 0.6)}" y="${n(hy - B * 0.6)}" width="${n(B * 5.2)}" height="${n(B * 4.2)}" fill="#ff8c1a" opacity="0.12"/>`);
+  out.push(`<rect x="${n(hx + B * 0.4)}" y="${n(hy + B * 0.6)}" width="${n(B * 3.2)}" height="${n(B * 2.4)}" fill="#20150a"/>`);
+  // Огонь языками разной высоты, а не ровной полосой: ровная читается
+  // как картина в раме, что и вышло в первой версии кузницы.
+  const flames = [[0.2, 1.1], [0.8, 1.6], [1.5, 2.0], [2.2, 1.5], [2.7, 1.0]];
+  for (const [dx, fh] of flames) {
+    out.push(`<rect x="${n(hx + B * (0.45 + dx))}" y="${n(hy + B * (3 - fh))}" width="${n(B * 0.5)}" height="${n(B * fh)}" fill="#ff8c1a"/>`);
+    out.push(`<rect x="${n(hx + B * (0.55 + dx))}" y="${n(hy + B * (3 - fh * 0.6))}" width="${n(B * 0.3)}" height="${n(B * fh * 0.6)}" fill="#ffd36b"/>`);
+  }
+  out.push(`<rect x="${n(hx + B * 0.4)}" y="${n(hy + B * 2.7)}" width="${n(B * 3.2)}" height="${n(B * 0.3)}" fill="#fff0b0"/>`);
+
+  // Наковальня: широкий верх, перехват, тяжёлое основание. Узнаётся
+  // силуэтом, поэтому собрана из полос разной ширины, а не из блоков.
+  const ax = Math.round((W / B) * 0.28) * B;
+  out.push(`<rect x="${n(ax - B * 0.3)}" y="${n(GROUND - B * 2)}" width="${n(B * 2.6)}" height="${n(B * 0.7)}" fill="${P.anvil.base}"/>`);
+  out.push(`<rect x="${n(ax - B * 0.3)}" y="${n(GROUND - B * 2)}" width="${n(B * 2.6)}" height="${n(B * 0.18)}" fill="${P.anvil.light}"/>`);
+  out.push(`<rect x="${n(ax + B * 0.5)}" y="${n(GROUND - B * 1.3)}" width="${n(B)}" height="${n(B * 0.6)}" fill="${P.anvil.dark}"/>`);
+  out.push(`<rect x="${n(ax)}" y="${n(GROUND - B * 0.7)}" width="${n(B * 2)}" height="${n(B * 0.7)}" fill="${P.anvil.base}"/>`);
+  out.push(`<rect x="${n(ax)}" y="${n(GROUND - B * 0.7)}" width="${n(B * 2)}" height="${n(B * 0.14)}" fill="${P.anvil.light}"/>`);
+  // Слитки на наковальне — то, что в этой сцене и считают.
+  for (let i = 0; i < 4; i++) {
+    out.push(`<rect x="${n(ax + B * 0.1 + i * B * 0.56)}" y="${n(GROUND - B * 2.34)}" width="${n(B * 0.42)}" height="${n(B * 0.34)}" fill="${P.iron.light}" stroke="${P.iron.dark}" stroke-width="5"/>`);
+  }
+  // Молот прислонён к наковальне: без него кузница — просто мебель.
+  out.push(`<rect x="${n(ax + B * 2.4)}" y="${n(GROUND - B * 1.9)}" width="${n(B * 0.22)}" height="${n(B * 1.9)}" fill="${P.wood.base}"/>`);
+  out.push(`<rect x="${n(ax + B * 2.1)}" y="${n(GROUND - B * 2.3)}" width="${n(B * 0.8)}" height="${n(B * 0.5)}" fill="${P.anvil.base}"/>`);
+
+  // Стойка с доспехами: столб, перекладина и нагрудник во всю её ширину.
+  const sx = Math.round((W / B) * 0.76) * B;
+  out.push(`<rect x="${n(sx + B * 0.9)}" y="${n(GROUND - B * 4)}" width="${n(B * 0.3)}" height="${n(B * 4)}" fill="${P.wood.base}"/>`);
+  out.push(`<rect x="${n(sx)}" y="${n(GROUND - B * 4)}" width="${n(B * 3)}" height="${n(B * 0.3)}" fill="${P.wood.dark}"/>`);
+  // Плечи шире туловища, у шеи вырез: силуэт доспеха держится на этом,
+  // ровная плита железа читалась как белый шкаф.
+  out.push(`<rect x="${n(sx + B * 0.3)}" y="${n(GROUND - B * 3.7)}" width="${n(B * 2.4)}" height="${n(B * 0.7)}" fill="${P.iron.base}" stroke="${P.iron.dark}" stroke-width="6"/>`);
+  out.push(`<rect x="${n(sx + B * 0.65)}" y="${n(GROUND - B * 3.1)}" width="${n(B * 1.7)}" height="${n(B * 1.6)}" fill="${P.iron.base}" stroke="${P.iron.dark}" stroke-width="6"/>`);
+  out.push(`<rect x="${n(sx + B * 1.2)}" y="${n(GROUND - B * 3.74)}" width="${n(B * 0.6)}" height="${n(B * 0.3)}" fill="${P.brick.base}"/>`);
+  out.push(`<rect x="${n(sx + B * 0.4)}" y="${n(GROUND - B * 3.6)}" width="${n(B * 0.6)}" height="${n(B * 0.22)}" fill="${P.iron.light}"/>`);
+  out.push(`<rect x="${n(sx + B * 2)}" y="${n(GROUND - B * 3.6)}" width="${n(B * 0.6)}" height="${n(B * 0.22)}" fill="${P.iron.light}"/>`);
+  out.push(`<rect x="${n(sx + B * 1.4)}" y="${n(GROUND - B * 3)}" width="${n(B * 0.2)}" height="${n(B * 1.4)}" fill="${P.iron.dark}" opacity="0.65"/>`);
+  // Поножи ниже нагрудника, с просветом между ними: комплект должен
+  // читаться как доспехи целиком, а не как одна глухая плита.
+  out.push(`<rect x="${n(sx + B * 0.45)}" y="${n(GROUND - B * 1.4)}" width="${n(B * 0.85)}" height="${n(B * 1.4)}" fill="${P.iron.base}" stroke="${P.iron.dark}" stroke-width="6"/>`);
+  out.push(`<rect x="${n(sx + B * 1.7)}" y="${n(GROUND - B * 1.4)}" width="${n(B * 0.85)}" height="${n(B * 1.4)}" fill="${P.iron.base}" stroke="${P.iron.dark}" stroke-width="6"/>`);
+
+  // Сундук у стены — такой же, как в доме, чтобы место узнавалось.
+  const cx = Math.round((W / B) * 0.92) * B;
+  for (let c = 0; c < 2; c++) out.push(block(cx + c * B, GROUND - B, P.wood, rand));
+  out.push(`<rect x="${n(cx)}" y="${n(GROUND - B * 0.55)}" width="${n(B * 2)}" height="12" fill="#5a3f22"/>`);
+  out.push(`<rect x="${n(cx + B * 0.85)}" y="${n(GROUND - B * 0.62)}" width="${n(B * 0.3)}" height="${n(B * 0.4)}" fill="#e8c35a"/>`);
+
+  return svg(`${out.join('\n')}
+${torch(B * 8, GROUND - B * 4)}
+${torch(W - B * 2, GROUND - B * 4)}`);
+}
+
+/**
+ * Варочная: стойка с бутылками, котёл и полка. Тоже закрытый кадр.
+ * Стив встаёт левее середины (x = 46), поэтому стойка уходит направо.
+ */
+function nearBrew(seed = 181) {
+  const rand = rng(seed);
+  const out = [];
+
+  for (let r = 0; r * B < H; r++) {
+    for (let c = 0; c * B < W; c++) {
+      out.push(block(c * B, r * B, r * B >= GROUND ? P.plank : P.brick, rand));
+    }
+  }
+  for (let r = 0; GROUND + r * B < H; r++) {
+    out.push(`<rect x="0" y="${n(GROUND + r * B)}" width="${W}" height="5" fill="#8e6c3c" opacity="0.8"/>`);
+  }
+
+  out.push(woodWindow(Math.round((W / B) * 0.38) * B, GROUND - B * 7, rand, '#5b6f9a'));
+
+  // Полка с бутылками на стене: цветные стёкла сразу говорят, что здесь варят.
+  const shx = Math.round((W / B) * 0.06) * B, shy = GROUND - B * 3.6;
+  out.push(`<rect x="${n(shx)}" y="${n(shy)}" width="${n(B * 6)}" height="${n(B * 0.3)}" fill="${P.wood.dark}"/>`);
+  const tints = ['#c0457f', '#4a9ad6', '#e2a33a', '#6fc04a', '#9a5ad6', '#d6584a'];
+  for (let i = 0; i < tints.length; i++) {
+    const bx = shx + B * 0.4 + i * B * 0.92;
+    out.push(`<rect x="${n(bx)}" y="${n(shy - B * 0.9)}" width="${n(B * 0.56)}" height="${n(B * 0.9)}" fill="${tints[i]}"/>`);
+    out.push(`<rect x="${n(bx + B * 0.18)}" y="${n(shy - B * 1.26)}" width="${n(B * 0.2)}" height="${n(B * 0.36)}" fill="${tints[i]}" opacity="0.8"/>`);
+    out.push(`<rect x="${n(bx + B * 0.08)}" y="${n(shy - B * 0.8)}" width="${n(B * 0.14)}" height="${n(B * 0.6)}" fill="#ffffff" opacity="0.35"/>`);
+  }
+
+  // Котёл: два блока в ширину, с тёмной водой и светлым ободом.
+  // Тёмный чугун, а не камень: каменные блоки на каменной стене пропадали
+  // вовсе — на снимке сцены от котла осталась одна тёмная полоска.
+  const kx = Math.round((W / B) * 0.2) * B;
+  for (let r = 0; r < 2; r++) {
+    for (let c = 0; c < 2; c++) out.push(block(kx + c * B, GROUND - B * 2 + r * B, P.anvil, rand));
+  }
+  out.push(`<rect x="${n(kx + B * 0.2)}" y="${n(GROUND - B * 1.9)}" width="${n(B * 1.6)}" height="${n(B * 0.9)}" fill="#1e2a33"/>`);
+  out.push(`<rect x="${n(kx + B * 0.2)}" y="${n(GROUND - B * 1.9)}" width="${n(B * 1.6)}" height="${n(B * 0.2)}" fill="#2f4a5a"/>`);
+  out.push(`<rect x="${n(kx + B * 0.5)}" y="${n(GROUND - B * 1.78)}" width="${n(B * 0.5)}" height="${n(B * 0.12)}" fill="#6a93a8"/>`);
+
+  // Варочная стойка: каменная тумба, столб с огнём и три крупные бутылки.
+  // Тумба тоже чугунная: кирпичная сливалась с кирпичной стеной, и
+  // бутылки висели в воздухе сами по себе.
+  const bx0 = Math.round((W / B) * 0.68) * B;
+  for (let c = 0; c < 3; c++) out.push(block(bx0 + c * B, GROUND - B, P.anvil, rand));
+  out.push(`<rect x="${n(bx0 - B * 0.15)}" y="${n(GROUND - B * 1.1)}" width="${n(B * 3.3)}" height="${n(B * 0.2)}" fill="${P.anvil.light}"/>`);
+  out.push(`<rect x="${n(bx0 + B * 1.3)}" y="${n(GROUND - B * 3.2)}" width="${n(B * 0.4)}" height="${n(B * 2.1)}" fill="${P.anvil.dark}"/>`);
+  out.push(`<rect x="${n(bx0 + B * 0.9)}" y="${n(GROUND - B * 3.6)}" width="${n(B * 1.2)}" height="${n(B * 0.5)}" fill="${P.anvil.light}"/>`);
+  // Огонь под стойкой — на тёмной тумбе его видно, на кирпиче не было.
+  out.push(`<rect x="${n(bx0 + B * 1.15)}" y="${n(GROUND - B * 0.72)}" width="${n(B * 0.7)}" height="${n(B * 0.42)}" fill="#ff9b22"/>`);
+  out.push(`<rect x="${n(bx0 + B * 1.32)}" y="${n(GROUND - B * 0.58)}" width="${n(B * 0.36)}" height="${n(B * 0.28)}" fill="#fff0b0"/>`);
+  // Бутылки стоят НА тумбе, а не висят рядом с ней.
+  for (const [dx, tint] of [[0.05, '#c0457f'], [1.05, '#6fc04a'], [2.05, '#4a9ad6']]) {
+    const bx = bx0 + dx * B;
+    out.push(`<rect x="${n(bx)}" y="${n(GROUND - B * 2.2)}" width="${n(B * 0.9)}" height="${n(B * 1.1)}" fill="${tint}"/>`);
+    out.push(`<rect x="${n(bx + B * 0.28)}" y="${n(GROUND - B * 2.66)}" width="${n(B * 0.34)}" height="${n(B * 0.46)}" fill="${tint}" opacity="0.8"/>`);
+    out.push(`<rect x="${n(bx + B * 0.1)}" y="${n(GROUND - B * 2.1)}" width="${n(B * 0.2)}" height="${n(B * 0.9)}" fill="#ffffff" opacity="0.35"/>`);
+  }
+  // Пар над стойкой: три квадрата вверх, иначе зелье выглядит остывшим.
+  for (let i = 0; i < 3; i++) {
+    out.push(`<rect x="${n(bx0 + B * 1.1 + i * 18)}" y="${n(GROUND - B * 4.4 + i * B * 0.32)}" width="22" height="22" fill="#e8f0ff" opacity="${n(0.32 - i * 0.08)}"/>`);
+  }
+
+  return svg(`${out.join('\n')}
+${torch(B * 9, GROUND - B * 4)}
+${torch(W - B * 2, GROUND - B * 4)}`);
+}
+
+/**
+ * Берег лавы с жилой обсидиана. Слой НЕ закрывает кадр целиком: сквозь
+ * него виден дальний план с огненной рекой, поэтому маска при сборке —
+ * силуэт из этого же SVG.
+ */
+function nearObsidian(seed = 191) {
+  const rand = rng(seed);
+  const floor = [];
+  for (let r = 0; GROUND + r * B < H; r++) {
+    for (let c = 0; c * B < W; c++) {
+      floor.push(block(c * B, GROUND + r * B, r === 0 ? P.nether : P.deep, rand));
+    }
+  }
+  // Жила стоит стеной в четыре блока: низкая кучка на тёмной стене
+  // пещеры не читалась вовсе — проверено на снимке сцены.
+  const vein = [];
+  const vx = Math.round((W / B) * 0.68) * B;
+  const shape = [[0, 0], [1, 0], [2, 0], [3, 0], [4, 0], [0, 1], [1, 1], [2, 1], [3, 1],
+                 [1, 2], [2, 2], [3, 2], [2, 3]];
+  for (const [dx, dy] of shape) {
+    vein.push(block(vx + dx * B, GROUND - B - dy * B, P.obsidian, rand));
+  }
+  // Фиолетовые блики по верхней кромке: обсидиан чёрный, и без искры
+  // он сливается со стеной в одно пятно.
+  for (const [dx, dy] of shape) {
+    if (rand() < 0.55) continue;
+    vein.push(`<rect x="${n(vx + dx * B + 12)}" y="${n(GROUND - B - dy * B + 10)}" width="${n(B * 0.36)}" height="${n(B * 0.36)}" fill="${P.portal.light}" opacity="0.75"/>`);
+  }
+  // Кирка воткнута рядом: видно, чем этот камень берут.
+  vein.push(`<rect x="${n(vx - B * 0.8)}" y="${n(GROUND - B * 2.2)}" width="${n(B * 0.22)}" height="${n(B * 2.2)}" fill="${P.wood.base}"/>`);
+  vein.push(`<rect x="${n(vx - B * 1.3)}" y="${n(GROUND - B * 2.5)}" width="${n(B * 1.2)}" height="${n(B * 0.3)}" fill="${P.diamond.base}"/>`);
+
+  return svg(`${floor.join('\n')}
+${vein.join('\n')}
+${torch(B * 3, GROUND - B * 2)}
+<rect x="0" y="0" width="${B * 2}" height="${H}" fill="#191016"/>
+<rect x="${W - B}" y="0" width="${B}" height="${H}" fill="#191016"/>`);
+}
+
+/**
+ * Рамка портала: обсидиановый проём с фиолетовым свечением внутри.
+ * Стоит правее середины — Стив и волк встают слева (x = 34 и 24).
+ */
+function nearPortal(seed = 201) {
+  const rand = rng(seed);
+  const floor = [];
+  for (let r = 0; GROUND + r * B < H; r++) {
+    for (let c = 0; c * B < W; c++) {
+      floor.push(block(c * B, GROUND + r * B, r === 0 ? P.nether : P.deep, rand));
+    }
+  }
+
+  // Рамка 5×7 блоков: это главный предмет истории, он должен быть выше
+  // Стива и читаться с дивана через сжатие трансляции.
+  const fx = Math.round((W / B) * 0.56) * B, fy = GROUND - B * 7;
+  const frame = [];
+  for (let r = 0; r < 7; r++) {
+    for (let c = 0; c < 5; c++) {
+      const edge = c === 0 || c === 4 || r === 0 || r === 6;
+      if (edge) frame.push(block(fx + c * B, fy + r * B, P.obsidian, rand));
+    }
+  }
+  const gx = fx + B, gy = fy + B;
+  frame.push(`<rect x="${n(gx)}" y="${n(gy)}" width="${n(B * 3)}" height="${n(B * 5)}" fill="${P.portal.base}"/>`);
+  for (let i = 0; i < 26; i++) {
+    const x = gx + Math.floor(rand() * 3) * B + Math.floor(rand() * 3) * 20;
+    const y = gy + Math.floor(rand() * 5) * B + Math.floor(rand() * 3) * 20;
+    frame.push(`<rect x="${n(x)}" y="${n(y)}" width="20" height="20" fill="${rand() < 0.5 ? P.portal.light : P.portal.dark}" opacity="0.8"/>`);
+  }
+  // Свет портала: ореол вокруг рамки и отсвет на полу. Без них портал
+  // висит сам по себе и со сценой не связан.
+  frame.push(`<rect x="${n(fx - B)}" y="${n(fy - B)}" width="${n(B * 7)}" height="${n(B * 9)}" fill="${P.portal.light}" opacity="0.1"/>`);
+  frame.push(`<rect x="${n(fx - B * 1.5)}" y="${n(GROUND)}" width="${n(B * 8)}" height="${n(B * 0.6)}" fill="${P.portal.light}" opacity="0.25"/>`);
+
+  return svg(`${floor.join('\n')}
+${frame.join('\n')}
+${torch(B * 3, GROUND - B * 2)}
+<rect x="0" y="0" width="${B}" height="${H}" fill="#191016"/>
+<rect x="${W - B}" y="0" width="${B}" height="${H}" fill="#191016"/>`);
+}
+
 /* ---------------- персонажи ---------------- */
 
 // width/height обязаны совпадать с viewBox: иначе браузер берёт пропорции
@@ -676,6 +980,44 @@ ${px(8.6 * U, 6 * U, 2 * U, 5.4 * U, grey)}`;
   return charSvg(body, 13 * U, 12 * U);
 }
 
+function villager() {
+  const U = 20;
+  const robe = '#7b5f3a', robeDark = '#5e482b', trim = '#9a7a4e';
+  const skin = '#c6996f', nose = '#b3855d', brow = '#3b2a18', eye = '#ffffff', iris = '#4a6a8a';
+
+  // Жителя выдают нос и сложенные на животе руки. И то и другое должно
+  // читаться после сжатия при зеркалировании, поэтому они крупные.
+  const body = `
+<!-- голова -->
+${px(4 * U, 0, 8 * U, 8 * U, skin)}
+${px(4 * U, 0, 8 * U, 1.4 * U, brow)}
+${px(5 * U, 2.6 * U, 6 * U, 0.8 * U, brow)}
+${px(5.4 * U, 3.6 * U, 1.6 * U, 1.2 * U, eye)}
+${px(9 * U, 3.6 * U, 1.6 * U, 1.2 * U, eye)}
+${px(6 * U, 3.8 * U, 0.8 * U, 0.8 * U, iris)}
+${px(9.6 * U, 3.8 * U, 0.8 * U, 0.8 * U, iris)}
+${px(7 * U, 3.6 * U, 2 * U, 4 * U, nose)}
+
+<!-- балахон -->
+${px(3.4 * U, 8 * U, 9.2 * U, 13 * U, robe)}
+${px(3.4 * U, 8 * U, 9.2 * U, 1 * U, trim)}
+${px(7.6 * U, 9 * U, 0.8 * U, 12 * U, robeDark)}
+
+<!-- сложенные руки -->
+${px(2.4 * U, 11 * U, 2.4 * U, 6 * U, robe)}
+${px(11.2 * U, 11 * U, 2.4 * U, 6 * U, robe)}
+${px(4.4 * U, 15 * U, 7.2 * U, 2.6 * U, skin)}
+${px(4.4 * U, 15 * U, 7.2 * U, 0.6 * U, trim)}
+
+<!-- ноги -->
+${px(4.4 * U, 21 * U, 3.2 * U, 9 * U, robeDark)}
+${px(8.4 * U, 21 * U, 3.2 * U, 9 * U, robeDark)}
+${px(4.4 * U, 30 * U, 3.2 * U, 2 * U, '#4a3a28')}
+${px(8.4 * U, 30 * U, 3.2 * U, 2 * U, '#4a3a28')}`;
+
+  return charSvg(body, 16 * U, 32 * U);
+}
+
 /* ---------------- сборка ---------------- */
 
 console.log('Небо:');
@@ -694,6 +1036,7 @@ write('assets/mc/far-cave.svg', farCave());
 write('assets/mc/far-river.svg', farRiver());
 write('assets/mc/far-pines.svg', farPines());
 write('assets/mc/far-deep.svg', farDeep());
+write('assets/mc/far-lava.svg', farLava());
 
 console.log('Ближний план:');
 write('assets/mc/near-forest.svg', nearForest());
@@ -706,6 +1049,10 @@ write('assets/mc/near-river.svg', nearRiver());
 write('assets/mc/near-deep.svg', nearDeep());
 write('assets/mc/near-furnace.svg', nearFurnace());
 write('assets/mc/near-pines.svg', nearPines());
+write('assets/mc/near-anvil.svg', nearAnvil());
+write('assets/mc/near-brew.svg', nearBrew());
+write('assets/mc/near-obsidian.svg', nearObsidian());
+write('assets/mc/near-portal.svg', nearPortal());
 
 console.log('Персонажи:');
 write('assets/mc/steve.svg', steve());
@@ -713,5 +1060,6 @@ write('assets/mc/creeper.svg', creeper());
 write('assets/mc/cow.svg', cow());
 write('assets/mc/sheep.svg', sheep());
 write('assets/mc/wolf.svg', wolf());
+write('assets/mc/villager.svg', villager());
 
 console.log('\nГотово.');

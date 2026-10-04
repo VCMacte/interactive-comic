@@ -1,5 +1,12 @@
 [
   {
+    "id": "fire-sea",
+    "title": "Огненное море",
+    "subtitle": "Четвёртый день Стива · пять игр",
+    "cover": "assets/covers/fire-sea.webp",
+    "story": "stories/fire-sea.json"
+  },
+  {
     "id": "nether",
     "title": "Дорога в Нижний мир",
     "subtitle": "Третий день Стива · пять игр",

@@ -56,6 +56,12 @@ const P = {
   portal: { base: '#6a2bb5', dark: '#4a1b85', light: '#a05ce0' },
   iron:   { base: '#d2d2d8', dark: '#9ea0a8', light: '#eff0f4' },
   anvil:  { base: '#4a4a52', dark: '#33333a', light: '#6a6a74' },
+  // Нижний мир: песок душ сероват и темнее породы, иначе берег сливается
+  // со стеной; кирпич крепости холоднее и темнее самой породы, иначе
+  // постройка не отличается от пещеры, в которой стоит.
+  soul:   { base: '#4a3a33', dark: '#372b26', light: '#5d4a41' },
+  nbrick: { base: '#43242a', dark: '#2e181d', light: '#5a333c' },
+  quartz: { base: '#e3ddd4', dark: '#c2bbb0', light: '#f4f1ec' },
 };
 
 /**
@@ -317,6 +323,79 @@ function farLava(seed = 161) {
     const x = Math.floor(rand() * (W / B)) * B;
     out.push(`<rect x="${n(x + B * 0.25)}" y="0" width="${n(B * 0.5)}" height="${n(top)}" fill="${P.lava.base}" opacity="0.92"/>`);
     out.push(`<rect x="${n(x + B * 0.38)}" y="0" width="${n(B * 0.24)}" height="${n(top)}" fill="${P.lava.light}" opacity="0.8"/>`);
+  }
+  return svg(out.join('\n'));
+}
+
+/**
+ * Огненное море по ту сторону портала. Неба в этой истории нет вовсе:
+ * сверху свод, снизу море лавы, и слой закрывает кадр целиком — маски
+ * при сборке ему не нужно, как far-cave и far-deep.
+ *
+ * Море стоит выше линии земли: ближний слой кладёт берег поверх, и лава
+ * должна оказаться ЗА ним. Если опустить её до самого низа, получится,
+ * что герои стоят в огне, — на far-lava это уже проверено.
+ */
+function farNetherSea(seed = 221) {
+  const rand = rng(seed);
+  const out = [`<rect width="${W}" height="${H}" fill="#2a1416"/>`];
+
+  // Разметка по высоте. Море стоит ПОЛОСОЙ высоко, выше макушек: ниже
+  // него идёт широкий тёмный берег, и только потом — пол ближнего слоя.
+  // Если опустить лаву до линии земли, Стив читается стоящим в огне —
+  // проверено на предпросмотре сцены, та же грабля, что у far-lava.
+  const seaTop = GROUND - B * 8;
+  const seaBottom = seaTop + B * 4;
+
+  // Свод во всю ширину.
+  for (let r = 0; r * B < seaTop; r++) {
+    for (let c = 0; c * B < W; c++) {
+      out.push(block(c * B, r * B, rand() < 0.14 ? P.obsidian : P.nether, rand));
+    }
+  }
+  // Сталактиты: свод должен читаться низким потолком, а не стеной.
+  for (let i = 0; i < 9; i++) {
+    const x = Math.floor(rand() * (W / B)) * B;
+    const h = 1 + Math.floor(rand() * 3);
+    for (let r = 0; r < h; r++) out.push(block(x, r * B, P.obsidian, rand));
+  }
+
+  // Море: карниз, три ряда лавы, тёмный берег под ними до самого низа.
+  for (let c = 0; c * B < W; c++) out.push(block(c * B, seaTop, P.obsidian, rand));
+  for (let r = 1; r <= 3; r++) {
+    for (let c = 0; c * B < W; c++) out.push(block(c * B, seaTop + r * B, P.lava, rand));
+  }
+  for (let r = 0; seaBottom + r * B < H; r++) {
+    for (let c = 0; c * B < W; c++) out.push(block(c * B, seaBottom + r * B, P.nether, rand));
+  }
+
+  // Крепость стоит на дальнем берегу справа: центр и левая половина
+  // остаются под Стива, волка и свинолюда (x от 24% до 62%).
+  // Зубцы поднимаются в полосу лавы: на тёмном берегу крепость сливалась
+  // с ним в одно пятно, а на огне читается силуэтом с первого взгляда.
+  const fx = Math.round((W / B) * 0.72) * B;
+  for (let c = 0; c < 5; c++) {
+    const h = c % 2 ? 8 : 7;
+    for (let r = 0; r < h; r++) out.push(block(fx + c * B, GROUND - B - r * B, P.nbrick, rand));
+    out.push(block(fx + c * B, GROUND - B * h, P.quartz, rand));
+  }
+  // Проём в стене крепости — через него виден огонь внутри.
+  out.push(`<rect x="${n(fx + B * 2)}" y="${n(GROUND - B * 3)}" width="${n(B * 1.6)}" height="${n(B * 2)}" fill="${P.lava.dark}"/>`);
+
+  // Блики по поверхности и зарево на своде над морем.
+  for (let i = 0; i < 22; i++) {
+    const x = Math.floor(rand() * (W / B)) * B;
+    const y = seaTop + (1 + Math.floor(rand() * 3)) * B;
+    out.push(`<rect x="${n(x + 6)}" y="${n(y + B * 0.3)}" width="${B - 12}" height="10" fill="${P.lava.light}" opacity="0.8"/>`);
+  }
+  out.push(`<rect x="0" y="${n(seaTop - B * 3)}" width="${W}" height="${n(B * 3)}" fill="${P.lava.light}" opacity="0.13"/>`);
+
+  // Лавопады от свода до моря: во всю высоту, иначе читаются как
+  // оранжевые столбы, висящие в воздухе.
+  for (let i = 0; i < 3; i++) {
+    const x = Math.floor(rand() * (W / B)) * B;
+    out.push(`<rect x="${n(x + B * 0.25)}" y="0" width="${n(B * 0.5)}" height="${n(seaTop)}" fill="${P.lava.base}" opacity="0.9"/>`);
+    out.push(`<rect x="${n(x + B * 0.38)}" y="0" width="${n(B * 0.24)}" height="${n(seaTop)}" fill="${P.lava.light}" opacity="0.78"/>`);
   }
   return svg(out.join('\n'));
 }
@@ -814,6 +893,96 @@ ${torch(B * 3, GROUND - B * 2)}
 <rect x="${W - B}" y="0" width="${B}" height="${H}" fill="#191016"/>`);
 }
 
+/**
+ * Берег из песка душ. Слой кадр НЕ закрывает: выше линии земли он
+ * прозрачен, и сквозь него видно огненное море дальнего плана.
+ *
+ * Грибы стоят по краям: центр от x = 27% до 62% занят Стивом, волком
+ * и свинолюдом, а персонаж, налезший на постройку, — это уже было.
+ */
+function nearSoulSand(seed = 231) {
+  const rand = rng(seed);
+  const out = [];
+  for (let r = 0; GROUND + r * B < H; r++) {
+    for (let c = 0; c * B < W; c++) {
+      out.push(block(c * B, GROUND + r * B, r < 2 ? P.soul : P.deep, rand));
+    }
+  }
+  // Ямы: песок душ вязкий, и провалы объясняют, почему в нём тонет волк.
+  for (let i = 0; i < 5; i++) {
+    const x = Math.floor(rand() * (W / B)) * B;
+    out.push(`<rect x="${n(x)}" y="${n(GROUND)}" width="${B}" height="${n(B * 0.45)}" fill="${P.soul.dark}" opacity="0.9"/>`);
+  }
+  // Нижнемирские грибы — то самое счётное слово из области nether,
+  // поэтому они обязаны быть в кадре, а не только в вопросе.
+  const mushroom = (x) => {
+    const h = GROUND - B * 0.9;
+    return `<rect x="${n(x + B * 0.3)}" y="${n(h)}" width="${n(B * 0.4)}" height="${n(B * 0.9)}" fill="#cdbfae"/>
+<rect x="${n(x - B * 0.1)}" y="${n(h - B * 0.5)}" width="${n(B * 1.2)}" height="${n(B * 0.5)}" fill="#8c2f26"/>
+<rect x="${n(x + B * 0.1)}" y="${n(h - B * 0.65)}" width="${n(B * 0.8)}" height="${n(B * 0.2)}" fill="#a83c31"/>`;
+  };
+  const props = [mushroom(B * 2), mushroom(B * 4.2), mushroom(W - B * 4)];
+
+  return svg(`${out.join('\n')}
+${props.join('\n')}
+${torch(B * 6, GROUND - B * 2)}`);
+}
+
+/**
+ * Зал крепости: кирпичные арки, кварцевые колонны, факелы. Интерьер
+ * закрывает кадр целиком — ни небо, ни дальний план ему не нужны,
+ * как у кузницы и варочной третьего дня.
+ */
+function nearFortress(seed = 241) {
+  const rand = rng(seed);
+  const out = [];
+  // Стена во весь кадр.
+  for (let r = 0; r * B < H; r++) {
+    for (let c = 0; c * B < W; c++) {
+      out.push(block(c * B, r * B, rand() < 0.12 ? P.nether : P.nbrick, rand));
+    }
+  }
+  // Два проёма: сквозь них видно зарево, и зал перестаёт быть глухим
+  // мешком. Проёмы по краям — центр остаётся свободным под персонажей.
+  const arch = (ax) => {
+    const parts = [];
+    const top = GROUND - B * 5;
+    parts.push(`<rect x="${n(ax)}" y="${n(top)}" width="${n(B * 3)}" height="${n(GROUND - top)}" fill="${P.lava.dark}"/>`);
+    parts.push(`<rect x="${n(ax)}" y="${n(top)}" width="${n(B * 3)}" height="${n(B * 0.5)}" fill="${P.nbrick.dark}"/>`);
+    for (let i = 0; i < 7; i++) {
+      const gx = ax + rand() * B * 2.4, gy = top + B * 0.6 + rand() * B * 4;
+      parts.push(`<rect x="${n(gx)}" y="${n(gy)}" width="${n(B * 0.5)}" height="${n(B * 0.3)}" fill="${P.lava.light}" opacity="0.55"/>`);
+    }
+    return parts.join('\n');
+  };
+  // Колонны из кварца — единственное светлое в красном зале, по ним
+  // и читается, что это постройка, а не пещера.
+  const column = (cx) => {
+    const parts = [];
+    for (let r = 0; GROUND - B - r * B > B * 1.5; r++) {
+      parts.push(block(cx, GROUND - B - r * B, P.quartz, rand));
+    }
+    parts.push(block(cx, GROUND - B, P.nbrick, rand));
+    return parts.join('\n');
+  };
+
+  const floor = [];
+  for (let r = 0; GROUND + r * B < H; r++) {
+    for (let c = 0; c * B < W; c++) {
+      floor.push(block(c * B, GROUND + r * B, r < 2 ? P.nbrick : P.deep, rand));
+    }
+  }
+
+  return svg(`${out.join('\n')}
+${arch(B * 2)}
+${arch(W - B * 5)}
+${column(Math.round((W / B) * 0.2) * B)}
+${column(Math.round((W / B) * 0.78) * B)}
+${floor.join('\n')}
+${torch(Math.round((W / B) * 0.36) * B, GROUND - B * 3)}
+${torch(Math.round((W / B) * 0.64) * B, GROUND - B * 3)}`);
+}
+
 /* ---------------- персонажи ---------------- */
 
 // width/height обязаны совпадать с viewBox: иначе браузер берёт пропорции
@@ -1018,6 +1187,57 @@ ${px(8.4 * U, 30 * U, 3.2 * U, 2 * U, '#4a3a28')}`;
   return charSvg(body, 16 * U, 32 * U);
 }
 
+/**
+ * Свинолюд-торговец. Узнают его по двум вещам: пятачок и золото.
+ * И то и другое крупное — после сжатия при зеркалировании мелочь
+ * на телевизоре пропадает, это уже проверено на носе жителя.
+ */
+function piglin() {
+  const U = 20;
+  const skin = '#d59a86', skinDark = '#b57a68', snout = '#eab5a2';
+  const tunic = '#5c4a6a', tunicDark = '#453657';
+  const gold = '#e8c04a', goldDark = '#bf9526', eye = '#2b1a16';
+
+  const body = `
+<!-- голова -->
+${px(4 * U, 0, 8 * U, 7.6 * U, skin)}
+${px(2.6 * U, 1.2 * U, 1.4 * U, 2.6 * U, skinDark)}
+${px(12 * U, 1.2 * U, 1.4 * U, 2.6 * U, skinDark)}
+${px(5.4 * U, 3 * U, 1.4 * U, 1 * U, eye)}
+${px(9.2 * U, 3 * U, 1.4 * U, 1 * U, eye)}
+
+<!-- пятачок -->
+${px(5.8 * U, 4.6 * U, 4.4 * U, 2.6 * U, snout)}
+${px(6.8 * U, 5.4 * U, 0.9 * U, 1 * U, skinDark)}
+${px(8.4 * U, 5.4 * U, 0.9 * U, 1 * U, skinDark)}
+
+<!-- золотые бусы -->
+${px(3.8 * U, 7.6 * U, 8.4 * U, 1.2 * U, gold)}
+${px(5 * U, 8.8 * U, 1.2 * U, 1 * U, goldDark)}
+${px(7.4 * U, 8.8 * U, 1.2 * U, 1 * U, goldDark)}
+${px(9.8 * U, 8.8 * U, 1.2 * U, 1 * U, goldDark)}
+
+<!-- туника -->
+${px(3.6 * U, 8.8 * U, 8.8 * U, 12 * U, tunic)}
+${px(7.6 * U, 9.8 * U, 0.8 * U, 11 * U, tunicDark)}
+
+<!-- руки: в одной слиток, который он никому не отдаёт -->
+${px(2.2 * U, 10.6 * U, 2.4 * U, 6.4 * U, tunic)}
+${px(11.4 * U, 10.6 * U, 2.4 * U, 6.4 * U, tunic)}
+${px(2.2 * U, 17 * U, 2.4 * U, 2 * U, skin)}
+${px(11.4 * U, 17 * U, 2.4 * U, 2 * U, skin)}
+${px(11 * U, 18.2 * U, 3.2 * U, 2 * U, gold)}
+${px(11 * U, 18.2 * U, 3.2 * U, 0.6 * U, goldDark)}
+
+<!-- ноги -->
+${px(4.6 * U, 20.8 * U, 3 * U, 9.2 * U, skinDark)}
+${px(8.4 * U, 20.8 * U, 3 * U, 9.2 * U, skinDark)}
+${px(4.6 * U, 30 * U, 3 * U, 2 * U, '#3a2a24')}
+${px(8.4 * U, 30 * U, 3 * U, 2 * U, '#3a2a24')}`;
+
+  return charSvg(body, 16 * U, 32 * U);
+}
+
 /* ---------------- сборка ---------------- */
 
 console.log('Небо:');
@@ -1037,6 +1257,7 @@ write('assets/mc/far-river.svg', farRiver());
 write('assets/mc/far-pines.svg', farPines());
 write('assets/mc/far-deep.svg', farDeep());
 write('assets/mc/far-lava.svg', farLava());
+write('assets/mc/far-nether-sea.svg', farNetherSea());
 
 console.log('Ближний план:');
 write('assets/mc/near-forest.svg', nearForest());
@@ -1053,6 +1274,8 @@ write('assets/mc/near-anvil.svg', nearAnvil());
 write('assets/mc/near-brew.svg', nearBrew());
 write('assets/mc/near-obsidian.svg', nearObsidian());
 write('assets/mc/near-portal.svg', nearPortal());
+write('assets/mc/near-soul-sand.svg', nearSoulSand());
+write('assets/mc/near-fortress.svg', nearFortress());
 
 console.log('Персонажи:');
 write('assets/mc/steve.svg', steve());
@@ -1061,5 +1284,6 @@ write('assets/mc/cow.svg', cow());
 write('assets/mc/sheep.svg', sheep());
 write('assets/mc/wolf.svg', wolf());
 write('assets/mc/villager.svg', villager());
+write('assets/mc/piglin.svg', piglin());
 
 console.log('\nГотово.');

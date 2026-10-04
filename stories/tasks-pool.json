@@ -2199,6 +2199,640 @@
    "hintAudio": "f1803a2a"
   }
  ],
+ "minecraft|math|10|nether": [
+  {
+   "type": "missing",
+   "question": "Было два стержня, стало четыре стержня. Сколько прибавилось?",
+   "hint": "Досчитай от двух до четырёх и запомни, сколько вышло шагов.",
+   "choices": [
+    {
+     "label": "Два",
+     "keywords": [
+      "два",
+      "2"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Один",
+     "keywords": [
+      "один",
+      "1"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Четыре",
+     "keywords": [
+      "четыре",
+      "4"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "2156bef6",
+   "hintAudio": "74c487b0"
+  },
+  {
+   "type": "missing",
+   "question": "Было два стержня, стало семь стержней. Сколько прибавилось?",
+   "hint": "Досчитай от двух до семи и запомни, сколько вышло шагов.",
+   "choices": [
+    {
+     "label": "Семь",
+     "keywords": [
+      "семь",
+      "7"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Три",
+     "keywords": [
+      "три",
+      "3"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Пять",
+     "keywords": [
+      "пять",
+      "5"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "86a7aed7",
+   "hintAudio": "678c4b23"
+  },
+  {
+   "type": "missing",
+   "question": "Было три стержня, стало пять стержней. Сколько прибавилось?",
+   "hint": "Досчитай от трёх до пяти и запомни, сколько вышло шагов.",
+   "choices": [
+    {
+     "label": "Два",
+     "keywords": [
+      "два",
+      "2"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Ноль",
+     "keywords": [
+      "ноль",
+      "0"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Три",
+     "keywords": [
+      "три",
+      "3"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "f7c9d5b9",
+   "hintAudio": "6db6c1ab"
+  },
+  {
+   "type": "missing",
+   "question": "Было два гриба, стало семь грибов. Сколько прибавилось?",
+   "hint": "Досчитай от двух до семи и запомни, сколько вышло шагов.",
+   "choices": [
+    {
+     "label": "Пять",
+     "keywords": [
+      "пять",
+      "5"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Четыре",
+     "keywords": [
+      "четыре",
+      "4"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Три",
+     "keywords": [
+      "три",
+      "3"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "e15b85aa",
+   "hintAudio": "678c4b23"
+  },
+  {
+   "type": "missing",
+   "question": "Было четыре стержня, стало десять стержней. Сколько прибавилось?",
+   "hint": "Досчитай от четырёх до десяти и запомни, сколько вышло шагов.",
+   "choices": [
+    {
+     "label": "Шесть",
+     "keywords": [
+      "шесть",
+      "6"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Четыре",
+     "keywords": [
+      "четыре",
+      "4"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Пять",
+     "keywords": [
+      "пять",
+      "5"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "f75827aa",
+   "hintAudio": "3020b753"
+  },
+  {
+   "type": "missing",
+   "question": "Было два гриба, стало шесть грибов. Сколько прибавилось?",
+   "hint": "Досчитай от двух до шести и запомни, сколько вышло шагов.",
+   "choices": [
+    {
+     "label": "Три",
+     "keywords": [
+      "три",
+      "3"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Четыре",
+     "keywords": [
+      "четыре",
+      "4"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Шесть",
+     "keywords": [
+      "шесть",
+      "6"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "8c8c2c5a",
+   "hintAudio": "5eb482a3"
+  },
+  {
+   "type": "missing",
+   "question": "Было два кирпича, стало четыре кирпича. Сколько прибавилось?",
+   "hint": "Досчитай от двух до четырёх и запомни, сколько вышло шагов.",
+   "choices": [
+    {
+     "label": "Четыре",
+     "keywords": [
+      "четыре",
+      "4"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Три",
+     "keywords": [
+      "три",
+      "3"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Два",
+     "keywords": [
+      "два",
+      "2"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "9ea26c36",
+   "hintAudio": "74c487b0"
+  },
+  {
+   "type": "missing",
+   "question": "Было шесть слитков, стало восемь слитков. Сколько прибавилось?",
+   "hint": "Досчитай от шести до восьми и запомни, сколько вышло шагов.",
+   "choices": [
+    {
+     "label": "Два",
+     "keywords": [
+      "два",
+      "2"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Три",
+     "keywords": [
+      "три",
+      "3"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Ноль",
+     "keywords": [
+      "ноль",
+      "0"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "5818fe9e",
+   "hintAudio": "a5e81864"
+  },
+  {
+   "type": "missing",
+   "question": "Было два кирпича, стало девять кирпичей. Сколько прибавилось?",
+   "hint": "Досчитай от двух до девяти и запомни, сколько вышло шагов.",
+   "choices": [
+    {
+     "label": "Восемь",
+     "keywords": [
+      "восемь",
+      "8"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Девять",
+     "keywords": [
+      "девять",
+      "9"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Семь",
+     "keywords": [
+      "семь",
+      "7"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "b165c6e4",
+   "hintAudio": "9eb0a97f"
+  },
+  {
+   "type": "missing",
+   "question": "Было три слитка, стало пять слитков. Сколько прибавилось?",
+   "hint": "Досчитай от трёх до пяти и запомни, сколько вышло шагов.",
+   "choices": [
+    {
+     "label": "Ноль",
+     "keywords": [
+      "ноль",
+      "0"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Два",
+     "keywords": [
+      "два",
+      "2"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Четыре",
+     "keywords": [
+      "четыре",
+      "4"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "4f36c0dc",
+   "hintAudio": "6db6c1ab"
+  }
+ ],
+ "minecraft|logic|10|nether": [
+  {
+   "type": "oddOneOut",
+   "question": "Что здесь лишнее: кварц, стержень или пшеница?",
+   "hint": "Подумай: два из них — это из Нижнего мира. А третий?",
+   "choices": [
+    {
+     "label": "Стержень",
+     "keywords": [
+      "стержень"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Пшеница",
+     "keywords": [
+      "пшеница"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Кварц",
+     "keywords": [
+      "кварц"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "841864b5",
+   "hintAudio": "30130651"
+  },
+  {
+   "type": "oddOneOut",
+   "question": "Что здесь лишнее: кварц, стержень или доска?",
+   "hint": "Подумай: два из них — это из Нижнего мира. А третий?",
+   "choices": [
+    {
+     "label": "Кварц",
+     "keywords": [
+      "кварц"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Доска",
+     "keywords": [
+      "доска"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Стержень",
+     "keywords": [
+      "стержень"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "08f98b97",
+   "hintAudio": "30130651"
+  },
+  {
+   "type": "oddOneOut",
+   "question": "Что здесь лишнее: обсидиан, кирпич или трава?",
+   "hint": "Подумай: два из них — это из Нижнего мира. А третий?",
+   "choices": [
+    {
+     "label": "Кирпич",
+     "keywords": [
+      "кирпич"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Трава",
+     "keywords": [
+      "трава"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Обсидиан",
+     "keywords": [
+      "обсидиан"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "9b1fb7cd",
+   "hintAudio": "30130651"
+  },
+  {
+   "type": "oddOneOut",
+   "question": "Что здесь лишнее: стержень, гриб или пшеница?",
+   "hint": "Подумай: два из них — это из Нижнего мира. А третий?",
+   "choices": [
+    {
+     "label": "Пшеница",
+     "keywords": [
+      "пшеница"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Стержень",
+     "keywords": [
+      "стержень"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Гриб",
+     "keywords": [
+      "гриб"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "4225a87b",
+   "hintAudio": "30130651"
+  },
+  {
+   "type": "oddOneOut",
+   "question": "Что здесь лишнее: стержень, кирпич или доска?",
+   "hint": "Подумай: два из них — это из Нижнего мира. А третий?",
+   "choices": [
+    {
+     "label": "Кирпич",
+     "keywords": [
+      "кирпич"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Доска",
+     "keywords": [
+      "доска"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Стержень",
+     "keywords": [
+      "стержень"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "4df33203",
+   "hintAudio": "30130651"
+  },
+  {
+   "type": "oddOneOut",
+   "question": "Что здесь лишнее: гриб, стержень или пшеница?",
+   "hint": "Подумай: два из них — это из Нижнего мира. А третий?",
+   "choices": [
+    {
+     "label": "Гриб",
+     "keywords": [
+      "гриб"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Пшеница",
+     "keywords": [
+      "пшеница"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Стержень",
+     "keywords": [
+      "стержень"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "26f8979f",
+   "hintAudio": "30130651"
+  },
+  {
+   "type": "oddOneOut",
+   "question": "Что здесь лишнее: кирпич, лава или трава?",
+   "hint": "Подумай: два из них — это из Нижнего мира. А третий?",
+   "choices": [
+    {
+     "label": "Лава",
+     "keywords": [
+      "лава"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Трава",
+     "keywords": [
+      "трава"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Кирпич",
+     "keywords": [
+      "кирпич"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "690d188f",
+   "hintAudio": "30130651"
+  },
+  {
+   "type": "oddOneOut",
+   "question": "Что здесь лишнее: кварц, гриб или пшеница?",
+   "hint": "Подумай: два из них — это из Нижнего мира. А третий?",
+   "choices": [
+    {
+     "label": "Пшеница",
+     "keywords": [
+      "пшеница"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Кварц",
+     "keywords": [
+      "кварц"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Гриб",
+     "keywords": [
+      "гриб"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "c1ec5b33",
+   "hintAudio": "30130651"
+  },
+  {
+   "type": "oddOneOut",
+   "question": "Что здесь лишнее: лава, кирпич или трава?",
+   "hint": "Подумай: два из них — это из Нижнего мира. А третий?",
+   "choices": [
+    {
+     "label": "Лава",
+     "keywords": [
+      "лава"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Кирпич",
+     "keywords": [
+      "кирпич"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Трава",
+     "keywords": [
+      "трава"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "7059861f",
+   "hintAudio": "30130651"
+  },
+  {
+   "type": "oddOneOut",
+   "question": "Что здесь лишнее: кирпич, обсидиан или трава?",
+   "hint": "Подумай: два из них — это из Нижнего мира. А третий?",
+   "choices": [
+    {
+     "label": "Трава",
+     "keywords": [
+      "трава"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Обсидиан",
+     "keywords": [
+      "обсидиан"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Кирпич",
+     "keywords": [
+      "кирпич"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "44eafdcd",
+   "hintAudio": "30130651"
+  }
+ ],
  "forest|math|10|-": [
   {
    "type": "addition",

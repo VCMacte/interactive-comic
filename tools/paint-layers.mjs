@@ -123,6 +123,16 @@ const MC_LAYERS = {
     prompt: `huge underground cavern of dark red netherrack cubes, a wide river of glowing orange lava across the middle, lava falls from the ceiling, black obsidian bank below the stream, hot haze and glow, ${MC_STYLE}`,
     negative: MC_NEG + ', sky, sun, clouds, grass, water, trees',
   },
+
+  // ---- четвёртый день ----
+  // Неба в этой истории нет вовсе: слой закрывает кадр целиком, поэтому
+  // в negative идёт не только небо, но и горизонт — генератор норовит
+  // прорубить его там, где у нас свод.
+  'mc/far-nether-sea': {
+    strength: 0.24,
+    prompt: `vast underground sea of glowing orange lava stretching to the horizon, low ceiling of dark red netherrack cubes with hanging stalactites, dark nether brick fortress with pale quartz battlements on the far bank, lava falls, hot red haze and glow, ${MC_STYLE}`,
+    negative: MC_NEG + ', sky, horizon, sun, clouds, grass, water, trees, people',
+  },
 };
 
 Object.assign(LAYERS, MC_LAYERS);

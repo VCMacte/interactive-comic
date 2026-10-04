@@ -138,6 +138,7 @@ if (failed) process.exitCode = 1;
     ore: { allow: /камень|камн|алмаз|слит|уголёк|угольк/, deny: /блок|факел/ },
     fuel: { allow: /слит|уголёк|угольк|факел/, deny: /алмаз|блок/ },
     blocks: { allow: /блок|камень|камн/, deny: /алмаз|факел|уголёк/ },
+    nether: { allow: /стерж|кирпич|гриб|слит/, deny: /блок|факел|алмаз|уголёк/ },
   };
   for (const [topic, { allow, deny }] of Object.entries(TOPICS)) {
     for (let i = 0; i < 120; i++) {
@@ -151,6 +152,50 @@ if (failed) process.exitCode = 1;
   for (let i = 0; i < 150; i++) {
     const t = makeTask('logic', { theme: 'minecraft', topic: 'animals', types: ['home', 'oddOneOut'] });
     if (/крипер|скелет|зомби/.test(t.question)) { console.log('FAIL: моб в загадке про зверей:', t.question); bad++; }
+  }
+
+  // Нижний мир — область, которой нет на поверхности. Загадка там про место,
+  // а не про род вещи, поэтому лесное и луговое в неё попадать не должно.
+  for (let i = 0; i < 150; i++) {
+    const t = makeTask('logic', { theme: 'minecraft', topic: 'nether', types: ['oddOneOut'] });
+    if (/корова|курица|рыба|осьминог|волк|овца/.test(t.question)) {
+      console.log('FAIL: зверь в загадке про Нижний мир:', t.question); bad++;
+    }
+    if (!/Нижнего мира/.test(t.hint)) {
+      console.log('FAIL: подсказка не про Нижний мир:', t.hint); bad++;
+    }
+  }
+
+  // Записи с onlyTopic живут только в своей области: сцена без topic не
+  // должна их видеть, иначе на лугу первого дня считают огненные стержни
+  // (а заодно переписывается готовая озвучка — пул собирается по тем же
+  // наборам).
+  for (let i = 0; i < 300; i++) {
+    const t = makeTask(i % 2 ? 'math' : 'logic', { theme: 'minecraft', max: 20 });
+    // «Кирпич» в проверку не берём: он есть и на поверхности — в загадке
+    // «доска, кирпич, камень» области blocks. Сторожим слова, которых
+    // в общем наборе нет вовсе.
+    if (/стерж|гриб|кварц|Нижнего мира/.test(t.question + t.hint)) {
+      console.log('FAIL: Нижний мир протёк в задание без области:', t.question); bad++;
+    }
+  }
+  // То же про откат: незнакомая область падает на общий набор, а не на полный.
+  for (let i = 0; i < 150; i++) {
+    const t = makeTask('math', { theme: 'minecraft', max: 10, topic: 'выдуманная' });
+    if (/стерж|кирпич|гриб/.test(t.question)) {
+      console.log('FAIL: откат привёл слова чужой области:', t.question); bad++;
+    }
+  }
+
+  // У каждой области, где считают предметы, свой глагол потери: иначе
+  // в сцене зазвучит «взорвал крипер» там, где вещь упала в лаву.
+  for (const topic of ['ore', 'fuel', 'blocks', 'nether']) {
+    for (let i = 0; i < 40; i++) {
+      const t = makeTask('math', { theme: 'minecraft', max: 10, topic, types: ['subtraction'] });
+      if (/взорвал крипер/.test(t.question)) {
+        console.log('FAIL: у области', topic, 'нет своего глагола потери'); bad++;
+      }
+    }
   }
 
   // Откат обязателен: незнакомая область не должна оставить сцену без задания.

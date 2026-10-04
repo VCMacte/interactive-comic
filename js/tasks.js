@@ -135,9 +135,15 @@ const THEMES = {
       { one: 'алмаз', few: 'алмаза', many: 'алмазов', topic: 'ore' },
       // У слитка метки fuel нет намеренно: слитки не горят, и в сцене
       // с печкой получалось «было пять слитков, сгорело три слитка».
-      { one: 'слиток', few: 'слитка', many: 'слитков', topic: 'ore' },
+      { one: 'слиток', few: 'слитка', many: 'слитков', topic: ['ore', 'nether'] },
       { one: 'уголёк', few: 'уголька', many: 'угольков', topic: ['ore', 'fuel'] },
       { one: 'факел', few: 'факела', many: 'факелов', topic: 'fuel' },
+      // Нижний мир — отдельный мир, и его предметы не должны выпадать
+      // в сцене на лугу первого дня. Отсюда onlyTopic: такая запись живёт
+      // только в своей области (см. narrow).
+      { one: 'стержень', few: 'стержня', many: 'стержней', topic: 'nether', onlyTopic: true },
+      { one: 'кирпич', few: 'кирпича', many: 'кирпичей', topic: 'nether', onlyTopic: true },
+      { one: 'гриб', few: 'гриба', many: 'грибов', topic: 'nether', onlyTopic: true },
     ],
     actors: ['Стива', 'крипера'],
     lost: 'взорвал крипер',
@@ -147,6 +153,7 @@ const THEMES = {
       fuel: 'сгорело',
       ore: 'укатилось в лаву',
       blocks: 'рассыпалось',
+      nether: 'упало в лаву',
     },
     oddOneOut: [
       { group: ['крипер', 'зомби', 'скелет'], odd: 'морковка', why: 'мобы' },
@@ -159,6 +166,12 @@ const THEMES = {
       { group: ['доска', 'палка', 'бревно'], odd: 'алмаз', why: 'из дерева', topic: 'craft' },
       { group: ['обсидиан', 'булыжник', 'песок'], odd: 'курица', why: 'блоки', topic: 'blocks' },
       { group: ['доска', 'кирпич', 'камень'], odd: 'облако', why: 'из них строят', topic: 'blocks' },
+      // Нижний мир: лишнее здесь — не «не предмет», а «не отсюда».
+      // Поэтому и группа, и лишнее — вещи одного рода, разводит их только
+      // место. Слова взяты те, что ребёнок увидит в самой истории.
+      { group: ['стержень', 'кварц', 'кирпич'], odd: 'доска', why: 'из Нижнего мира', topic: 'nether', onlyTopic: true },
+      { group: ['гриб', 'кварц', 'стержень'], odd: 'пшеница', why: 'из Нижнего мира', topic: 'nether', onlyTopic: true },
+      { group: ['лава', 'обсидиан', 'кирпич'], odd: 'трава', why: 'из Нижнего мира', topic: 'nether', onlyTopic: true },
     ],
     opposites: [
       ['день', 'ночь'], ['свет', 'темнота'], ['высоко', 'низко'],
@@ -233,12 +246,27 @@ function inTopic(entry, topic) {
  *
  * Откат обязателен: опечатка в сценарии иначе оставила бы сцену вообще
  * без задания, а это тупик — ребёнку некуда нажать.
+ *
+ * Запись с `onlyTopic` живёт только в своей области: в общий набор — тот,
+ * что уходит сцене без `topic`, и тот, на который падает откат, — она не
+ * попадает. Иначе Нижний мир протёк бы в первый день: там у заданий метки
+ * не расставлены, и ребёнок считал бы на лугу огненные стержни. Заодно это
+ * не переписывает готовую озвучку: общий набор остался прежним.
  */
 function narrow(theme, topic) {
-  if (!topic) return theme;
+  const common = (arr) => (arr ?? []).filter(e => !e?.onlyTopic);
+  if (!topic) {
+    return {
+      ...theme,
+      countable: common(theme.countable),
+      oddOneOut: common(theme.oddOneOut),
+      homes: common(theme.homes),
+      recipes: common(theme.recipes),
+    };
+  }
   const pick = (arr) => {
     const fit = (arr ?? []).filter(e => inTopic(e, topic));
-    return fit.length ? fit : arr;
+    return fit.length ? fit : common(arr);
   };
   return {
     ...theme,

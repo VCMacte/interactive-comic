@@ -239,6 +239,10 @@ function backToHub() {
   el.gate.hidden = false;
   el.gate.scrollTop = 0;
   renderResume();
+  // Полный экран снимается вместе с историей. Иначе каталог открывался
+  // в оставшемся от прошлого комикса альбомном полноэкранном режиме:
+  // карточки листались боком, а выйти из него было нечем.
+  exitFullscreen();
   lockOrientation('portrait');
 }
 
@@ -272,6 +276,14 @@ async function goFullscreenLandscape() {
     } catch {}
   }
   await lockOrientation('landscape');
+}
+
+// Выход обратный: у установленного приложения полный экран даёт манифест,
+// отменять там нечего, а в браузере просьба может и не завершиться — ждём
+// её с ограничением, как и вход.
+function exitFullscreen() {
+  if (installedApp || !document.fullscreenElement) return;
+  withTimeout(document.exitFullscreen?.(), 1500);
 }
 
 // Полный экран во вкладке браузера не держится: его сбрасывает поворот,

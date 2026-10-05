@@ -62,6 +62,16 @@ const P = {
   soul:   { base: '#4a3a33', dark: '#372b26', light: '#5d4a41' },
   nbrick: { base: '#43242a', dark: '#2e181d', light: '#5a333c' },
   quartz: { base: '#e3ddd4', dark: '#c2bbb0', light: '#f4f1ec' },
+  // Подземелье пятого дня: мох на камне и гнилая доска заброшенной деревни.
+  // Мох холоднее травы — тёплый зелёный под землёй читается как луг, а не
+  // как сырой камень. Гнилая доска темнее и серее обычной: с палитрой plank
+  // дома выглядели жилыми, а деревня должна читаться брошенной.
+  moss:   { base: '#49684a', dark: '#365038', light: '#5c7f5c' },
+  rot:    { base: '#6d5a3f', dark: '#51422d', light: '#857050' },
+  // Мокрый камень ущелья. Он темнее и синее обычного: на первой покраске
+  // дальняя стена вышла светлее ближней земли, и глубина перевернулась —
+  // дальний план обязан быть темнее переднего, иначе кадр плоский.
+  wet:    { base: '#2f3640', dark: '#222932', light: '#3e4854' },
 };
 
 /**
@@ -397,6 +407,102 @@ function farNetherSea(seed = 221) {
     out.push(`<rect x="${n(x + B * 0.25)}" y="0" width="${n(B * 0.5)}" height="${n(seaTop)}" fill="${P.lava.base}" opacity="0.9"/>`);
     out.push(`<rect x="${n(x + B * 0.38)}" y="0" width="${n(B * 0.24)}" height="${n(seaTop)}" fill="${P.lava.light}" opacity="0.78"/>`);
   }
+  return svg(out.join('\n'));
+}
+
+/**
+ * Ущелье с водопадом — подложка для покраски. Неба здесь тоже нет:
+ * сверху свод, напротив — стена другой стороны, и слой закрывает кадр
+ * целиком, поэтому маски при сборке ему не нужно, как far-nether-sea.
+ *
+ * Стена напротив идёт до нижнего края, а не висит полосой: под ней всё
+ * равно ляжет ближний слой, зато генератор не прорубает в разрыве ложный
+ * горизонт. Глубину даёт водопад, уходящий за нижний край, и дымка.
+ *
+ * Проём в стене стоит справа (x ≈ 88%), ровно там, куда приходит мостик
+ * ближнего слоя. Центр и левая половина оставлены под Стива, волка
+ * и летучую мышь — персонаж, налезший на постройку, уже был.
+ */
+function farRavine(seed = 251) {
+  const rand = rng(seed);
+  const out = [`<rect width="${W}" height="${H}" fill="#101521"/>`];
+
+  const vaultBottom = GROUND - B * 6;   // низ свода
+  const passX = Math.round((W / B) * 0.88) * B;
+
+  // Свод во всю ширину. Светлее стены, но ненамного: источник света здесь
+  // не солнце, а редкие факелы, и ровный серый потолок читался бы небом.
+  for (let r = 0; r * B < vaultBottom; r++) {
+    for (let c = 0; c * B < W; c++) {
+      out.push(block(c * B, r * B, rand() < 0.3 ? P.deep : P.wet, rand));
+    }
+  }
+  // Сталактиты свисают ПОД свод, а не надстраивают его сверху: иначе
+  // потолок просто становится толще и низким не читается.
+  for (let i = 0; i < 11; i++) {
+    const x = Math.floor(rand() * (W / B)) * B;
+    const h = 1 + Math.floor(rand() * 3);
+    for (let r = 0; r < h; r++) out.push(block(x, vaultBottom + r * B, P.wet, rand));
+  }
+
+  // Стена другой стороны — камень до низа кадра и БЕЗ мшистой кромки:
+  // с ней на предпросмотре получались две зелёные террасы, и ущелье
+  // читалось не провалом, а ступенькой. Чем ниже, тем темнее: это и есть
+  // глубина, и её нельзя оставлять одной полупрозрачной растяжке —
+  // нейросеть такую растяжку смывает, а разницу самих блоков держит.
+  for (let r = 0; vaultBottom + r * B < H; r++) {
+    for (let c = 0; c * B < W; c++) {
+      const pal = r < 2 ? (rand() < 0.3 ? P.deep : P.wet) : P.wet;
+      out.push(block(c * B, vaultBottom + r * B, pal, rand));
+    }
+  }
+  // Уступы: горизонтальные выходы породы посветлее. Без них стена — ровное
+  // поле одинаковых кубов, и генератору не за что зацепиться; на первой
+  // покраске она так и осталась серой заливкой.
+  for (let i = 0; i < 7; i++) {
+    const x = Math.floor(rand() * (W / B - 6)) * B;
+    const y = vaultBottom + Math.floor(rand() * 5) * B;
+    const len = 3 + Math.floor(rand() * 4);
+    for (let c = 0; c < len; c++) out.push(block(x + c * B, y, P.deep, rand));
+    for (let c = 1; c < len - 1; c++) out.push(block(x + c * B, y - B, P.stone, rand));
+  }
+
+  // Тот самый проём, к которому ведёт мостик. Низ проёма на линии земли:
+  // выше — и мостик упирался бы в стену, ниже — и его не было бы видно.
+  out.push(`<rect x="${n(passX)}" y="${n(GROUND - B * 3)}" width="${n(B * 2)}" height="${n(B * 3)}" fill="#07090f"/>`);
+  out.push(`<rect x="${n(passX)}" y="${n(GROUND - B * 3)}" width="${n(B * 2)}" height="10" fill="${P.deep.dark}"/>`);
+
+  // Водопады от свода и за нижний край: обрезанные по стене они читались
+  // голубыми полосами, приклеенными к камню, а не падающей водой.
+  // Правый падает прямо в провал ближнего слоя (62…86%) — он и показывает,
+  // что под мостиком пусто.
+  for (const fx of [W * 0.16, W * 0.78]) {
+    out.push(`<rect x="${n(fx)}" y="${n(vaultBottom)}" width="${n(B * 2)}" height="${n(H - vaultBottom)}" fill="${P.water.dark}"/>`);
+    out.push(`<rect x="${n(fx + B * 0.25)}" y="${n(vaultBottom)}" width="${n(B * 1.5)}" height="${n(H - vaultBottom)}" fill="${P.water.base}"/>`);
+    out.push(`<rect x="${n(fx + B * 0.7)}" y="${n(vaultBottom)}" width="${n(B * 0.6)}" height="${n(H - vaultBottom)}" fill="${P.water.light}"/>`);
+    // Пена по струе: ровная синяя полоса читается трубой, а не водой.
+    for (let i = 0; i < 16; i++) {
+      const sx = fx + rand() * B * 1.7;
+      const sy = vaultBottom + rand() * (H - vaultBottom);
+      out.push(`<rect x="${n(sx)}" y="${n(sy)}" width="${n(B * 0.3)}" height="12" fill="#dce8f5" opacity="0.75"/>`);
+    }
+    // Облако брызг там, где струя уходит в темноту.
+    out.push(`<rect x="${n(fx - B * 1.2)}" y="${n(GROUND - B * 1.6)}" width="${n(B * 4.4)}" height="${n(B * 1.6)}" fill="#aec6e0" opacity="0.3"/>`);
+  }
+
+  // Глубина провала. Затемнение видно ТОЛЬКО сквозь разрыв ближнего слоя —
+  // всё остальное ниже линии земли он закрывает собой. Без этой растяжки
+  // за мостиком стояла та же ровная стена, и ущелья не читалось вовсе:
+  // проверено на предпросмотре.
+  out.push(`<defs><linearGradient id="chasm" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0" stop-color="#0a0d14" stop-opacity="0"/>
+<stop offset="0.45" stop-color="#0a0d14" stop-opacity="0.82"/>
+<stop offset="1" stop-color="#05070b" stop-opacity="0.97"/>
+</linearGradient></defs>`);
+  out.push(`<rect x="0" y="${n(GROUND - B * 3)}" width="${W}" height="${n(H - GROUND + B * 3)}" fill="url(#chasm)"/>`);
+
+  // Сырая дымка у кромки: она отделяет свод от стены и даёт воздух.
+  out.push(`<rect x="0" y="${n(vaultBottom)}" width="${W}" height="${n(B * 2.5)}" fill="#6f8bb5" opacity="0.13"/>`);
   return svg(out.join('\n'));
 }
 
@@ -983,6 +1089,175 @@ ${torch(Math.round((W / B) * 0.36) * B, GROUND - B * 3)}
 ${torch(Math.round((W / B) * 0.64) * B, GROUND - B * 3)}`);
 }
 
+/**
+ * Кромка обрыва и мостик через провал. Слой кадр НЕ закрывает: выше линии
+ * земли он прозрачен, и сквозь провал видно ущелье дальнего плана — ровно
+ * та же работа, что у берега из песка душ.
+ *
+ * Провал справа (62…86%), мостик лежит ровно по линии земли: Стив в сцене
+ * `bats` стоит на нём (x = 66), а в сцене `ravine` — на своей стороне
+ * у самого края (x = 46). Центр и левая половина свободны под персонажей.
+ */
+function nearRavine(seed = 261) {
+  const rand = rng(seed);
+  const out = [];
+  const gapStart = Math.round((W / B) * 0.62) * B;
+  const gapEnd = Math.round((W / B) * 0.86) * B;
+
+  for (let r = 0; GROUND + r * B < H; r++) {
+    for (let c = 0; c * B < W; c++) {
+      const x = c * B;
+      if (x >= gapStart && x < gapEnd) continue;
+      out.push(block(x, GROUND + r * B, r === 0 ? P.moss : P.stone, rand));
+    }
+  }
+  // Тёмные щёки провала: без них земля обрывается плоским срезом и обрыв
+  // читается не глубиной, а дыркой в картинке.
+  out.push(`<rect x="${n(gapStart - 10)}" y="${n(GROUND)}" width="10" height="${n(H - GROUND)}" fill="#141a23"/>`);
+  out.push(`<rect x="${n(gapEnd)}" y="${n(GROUND)}" width="10" height="${n(H - GROUND)}" fill="#141a23"/>`);
+
+  // Мостик: один ряд досок по линии земли и редкие опоры под ним, чтобы
+  // он не выглядел висящим в воздухе.
+  const bridge = [];
+  for (let x = gapStart; x < gapEnd; x += B) bridge.push(block(x, GROUND, P.plank, rand));
+  for (let x = gapStart + B * 2; x < gapEnd; x += B * 3) {
+    bridge.push(`<rect x="${n(x + B * 0.4)}" y="${n(GROUND + B)}" width="${n(B * 0.2)}" height="${n(B * 1.6)}" fill="${P.wood.dark}"/>`);
+  }
+
+  return svg(`${out.join('\n')}
+${bridge.join('\n')}
+${torch(B * 4, GROUND - B * 2)}
+${torch(W - B * 3, GROUND - B * 2)}
+<rect x="0" y="0" width="${B * 2}" height="${H}" fill="#14171f"/>
+<rect x="${W - B * 2}" y="0" width="${B * 2}" height="${H}" fill="#14171f"/>`);
+}
+
+/**
+ * Заброшенная деревня под землёй: колодец слева, два полуразрушенных дома
+ * справа, мох по всему камню. Интерьер пещеры закрывает кадр целиком —
+ * ни небо, ни дальний план ей не нужны, как кузнице третьего дня.
+ *
+ * Колодец стоит слева (8…19%) нарочно: в сцене `well` Стив подходит к нему
+ * (x = 22) и смотрит влево, а в сценах `ruin`, `chest` и `map` он стоит
+ * в центре — там от 20 до 60% пусто.
+ */
+function nearRuin(seed = 271) {
+  const rand = rng(seed);
+  const out = [];
+
+  // Стена пещеры за деревней и пол под ней.
+  for (let r = 0; r * B < H; r++) {
+    for (let c = 0; c * B < W; c++) {
+      const y = r * B;
+      const pal = y >= GROUND
+        ? (y === GROUND ? P.moss : P.stone)
+        : (rand() < 0.22 ? P.deep : P.stone);
+      out.push(block(c * B, y, pal, rand));
+    }
+  }
+
+  /** Полуразрушенный дом: гнилые доски, проём и обвалившийся угол. */
+  const house = (x0, cols, rows) => {
+    const parts = [];
+    for (let c = 0; c < cols; c++) {
+      // Правый верх обвален: ровная коробка читается жилым домом.
+      const top = c > cols - 3 ? 1 : 0;
+      for (let r = top; r < rows; r++) {
+        parts.push(block(x0 + c * B, GROUND - B * (rows - r), P.rot, rand));
+      }
+    }
+    // Проём: тёмный, без двери — дверь давно унесли.
+    parts.push(`<rect x="${n(x0 + B)}" y="${n(GROUND - B * 2)}" width="${n(B)}" height="${n(B * 2)}" fill="#0b0d12"/>`);
+    // Мох по кладке: он и говорит, что дом брошен давно.
+    for (let i = 0; i < 9; i++) {
+      const mx = x0 + rand() * (cols * B - B * 0.5);
+      const my = GROUND - rand() * rows * B;
+      parts.push(`<rect x="${n(mx)}" y="${n(my)}" width="${n(B * 0.5)}" height="12" fill="${P.moss.base}" opacity="0.7"/>`);
+    }
+    return parts.join('\n');
+  };
+
+  /** Колодец: каменное кольцо, стойки и перекладина, внутри — темнота. */
+  const well = (x0) => {
+    const w = B * 2;
+    return `${block(x0, GROUND - B, P.brick, rand)}${block(x0 + B, GROUND - B, P.brick, rand)}
+<rect x="${n(x0 + B * 0.35)}" y="${n(GROUND - B * 0.9)}" width="${n(w - B * 0.7)}" height="${n(B * 0.8)}" fill="#07090d"/>
+<rect x="${n(x0 + B * 0.1)}" y="${n(GROUND - B * 3.2)}" width="${n(B * 0.26)}" height="${n(B * 2.3)}" fill="${P.wood.base}"/>
+<rect x="${n(x0 + w - B * 0.36)}" y="${n(GROUND - B * 3.2)}" width="${n(B * 0.26)}" height="${n(B * 2.3)}" fill="${P.wood.base}"/>
+<rect x="${n(x0 - B * 0.1)}" y="${n(GROUND - B * 3.4)}" width="${n(w + B * 0.2)}" height="${n(B * 0.3)}" fill="${P.wood.dark}"/>
+<rect x="${n(x0 + B * 0.9)}" y="${n(GROUND - B * 3.1)}" width="6" height="${n(B * 1.1)}" fill="#d8d4c8"/>
+<rect x="${n(x0 + B * 0.6)}" y="${n(GROUND - B * 2)}" width="${n(B * 0.7)}" height="${n(B * 0.45)}" fill="${P.wood.dark}"/>`;
+  };
+
+  const props = [
+    well(Math.round((W / B) * 0.08) * B),
+    house(Math.round((W / B) * 0.62) * B, 4, 4),
+    house(Math.round((W / B) * 0.82) * B, 4, 3),
+  ];
+
+  return svg(`${out.join('\n')}
+${props.join('\n')}
+${torch(B * 6, GROUND - B * 2)}
+${torch(W - B * 2.5, GROUND - B * 2)}`);
+}
+
+/**
+ * Рельсы в штольне: деревянные стойки, путь и две вагонетки. Кадр закрыт
+ * целиком — слой служит и сцене `tracks`, и сцене `rails`, у которых
+ * дальнего плана нет вовсе.
+ *
+ * Вагонетки стоят справа (72 и 86%): в сцене `rails` крипер сидит на 56%,
+ * волк на 29%, Стив на 40% — на постройки никто не налезает.
+ */
+function nearRails(seed = 281) {
+  const rand = rng(seed);
+  const out = [];
+
+  for (let r = 0; r * B < H; r++) {
+    for (let c = 0; c * B < W; c++) {
+      const y = r * B;
+      out.push(block(c * B, y, y >= GROUND ? P.stone : (rand() < 0.2 ? P.deep : P.stone), rand));
+    }
+  }
+
+  // Путь: шпалы и две железные нитки по линии земли. Рельсы лежат НА полу,
+  // поэтому у самой кромки, а не ниже: герои стоят ногами на этой линии.
+  const track = [];
+  for (let x = 0; x < W; x += B * 0.75) {
+    track.push(`<rect x="${n(x)}" y="${n(GROUND + 10)}" width="${n(B * 0.5)}" height="12" fill="${P.wood.dark}"/>`);
+  }
+  for (const dy of [4, 26]) {
+    track.push(`<rect x="0" y="${n(GROUND + dy)}" width="${W}" height="7" fill="${P.iron.base}"/>`);
+    track.push(`<rect x="0" y="${n(GROUND + dy)}" width="${W}" height="3" fill="${P.iron.light}"/>`);
+  }
+
+  /** Деревянная крепь: две стойки и перекладина. */
+  const support = (x0) => `<rect x="${n(x0)}" y="${n(GROUND - B * 5)}" width="${n(B * 0.4)}" height="${n(B * 5)}" fill="${P.wood.base}"/>
+<rect x="${n(x0 + B * 3.6)}" y="${n(GROUND - B * 5)}" width="${n(B * 0.4)}" height="${n(B * 5)}" fill="${P.wood.base}"/>
+<rect x="${n(x0 - B * 0.2)}" y="${n(GROUND - B * 5.4)}" width="${n(B * 4.4)}" height="${n(B * 0.4)}" fill="${P.wood.dark}"/>`;
+
+  /** Вагонетка с породой: железный кузов, колёса и горка камня сверху. */
+  const cart = (x0) => `<rect x="${n(x0)}" y="${n(GROUND - B * 2)}" width="${n(B * 2.4)}" height="${n(B * 1.9)}" fill="${P.anvil.base}"/>
+<rect x="${n(x0)}" y="${n(GROUND - B * 2)}" width="${n(B * 2.4)}" height="${n(B * 0.28)}" fill="${P.iron.base}"/>
+<rect x="${n(x0 + B * 0.25)}" y="${n(GROUND - B * 2.4)}" width="${n(B * 1.9)}" height="${n(B * 0.5)}" fill="${P.stone.base}"/>
+<rect x="${n(x0 + B * 0.7)}" y="${n(GROUND - B * 2.7)}" width="${n(B * 0.8)}" height="${n(B * 0.4)}" fill="${P.stone.light}"/>
+<rect x="${n(x0 + B * 0.3)}" y="${n(GROUND - B * 0.25)}" width="${n(B * 0.45)}" height="${n(B * 0.45)}" fill="${P.anvil.dark}"/>
+<rect x="${n(x0 + B * 1.65)}" y="${n(GROUND - B * 0.25)}" width="${n(B * 0.45)}" height="${n(B * 0.45)}" fill="${P.anvil.dark}"/>`;
+
+  const props = [
+    support(Math.round((W / B) * 0.04) * B),
+    support(Math.round((W / B) * 0.18) * B),
+    cart(Math.round((W / B) * 0.72) * B),
+    cart(Math.round((W / B) * 0.86) * B),
+  ];
+
+  return svg(`${out.join('\n')}
+${track.join('\n')}
+${props.join('\n')}
+${torch(290, GROUND - B * 2)}
+${torch(1266, GROUND - B * 2)}`);
+}
+
 /* ---------------- персонажи ---------------- */
 
 // width/height обязаны совпадать с viewBox: иначе браузер берёт пропорции
@@ -1238,6 +1513,54 @@ ${px(8.4 * U, 30 * U, 3 * U, 2 * U, '#3a2a24')}`;
   return charSvg(body, 16 * U, 32 * U);
 }
 
+/**
+ * Летучая мышь. Единственный персонаж не на земле: в сценарии у неё
+ * y = 46, то есть она висит под сводом, а не стоит. Поэтому и пропорции
+ * вытянуты в ширину — узнают её по размаху крыльев, а не по силуэту.
+ *
+ * Глаза крупные и круглые: ночной зверь в детской истории не должен
+ * выглядеть угрозой, это тот же приём, что у коровы и овцы.
+ */
+function bat() {
+  const U = 20;
+  const fur = '#5b4a59', furDark = '#443648', wing = '#705d6e', wingDark = '#534354';
+  const ear = '#8a7287', eye = '#ffffff', iris = '#2b1f2b', nose = '#c4a0b4';
+
+  const body = `
+<!-- крылья: размах во всю ширину, иначе мышь читается мышью обычной -->
+${px(0, 3 * U, 7.6 * U, 3 * U, wing)}
+${px(0.4 * U, 6 * U, 6.8 * U, 1 * U, wingDark)}
+${px(12.4 * U, 3 * U, 7.6 * U, 3 * U, wing)}
+${px(12.8 * U, 6 * U, 6.8 * U, 1 * U, wingDark)}
+${px(2.6 * U, 3 * U, 0.3 * U, 3.6 * U, wingDark)}
+${px(5.2 * U, 3 * U, 0.3 * U, 3.6 * U, wingDark)}
+${px(14.5 * U, 3 * U, 0.3 * U, 3.6 * U, wingDark)}
+${px(17.1 * U, 3 * U, 0.3 * U, 3.6 * U, wingDark)}
+
+<!-- уши -->
+${px(7.9 * U, 0.6 * U, 1.5 * U, 2.2 * U, fur)}
+${px(10.6 * U, 0.6 * U, 1.5 * U, 2.2 * U, fur)}
+${px(8.3 * U, 1.1 * U, 0.7 * U, 1.4 * U, ear)}
+${px(11 * U, 1.1 * U, 0.7 * U, 1.4 * U, ear)}
+
+<!-- тело -->
+${px(7.4 * U, 2.4 * U, 5.2 * U, 6.6 * U, fur)}
+${px(9.6 * U, 3.2 * U, 0.8 * U, 5.4 * U, furDark)}
+
+<!-- глаза -->
+${px(8.2 * U, 3.9 * U, 1.4 * U, 1.4 * U, eye)}
+${px(10.4 * U, 3.9 * U, 1.4 * U, 1.4 * U, eye)}
+${px(8.6 * U, 4.3 * U, 0.7 * U, 0.8 * U, iris)}
+${px(10.8 * U, 4.3 * U, 0.7 * U, 0.8 * U, iris)}
+
+<!-- нос и лапки -->
+${px(9.4 * U, 5.9 * U, 1.2 * U, 0.8 * U, nose)}
+${px(8.1 * U, 9 * U, 1.3 * U, 1.2 * U, furDark)}
+${px(10.6 * U, 9 * U, 1.3 * U, 1.2 * U, furDark)}`;
+
+  return charSvg(body, 20 * U, 11 * U);
+}
+
 /* ---------------- сборка ---------------- */
 
 console.log('Небо:');
@@ -1258,6 +1581,7 @@ write('assets/mc/far-pines.svg', farPines());
 write('assets/mc/far-deep.svg', farDeep());
 write('assets/mc/far-lava.svg', farLava());
 write('assets/mc/far-nether-sea.svg', farNetherSea());
+write('assets/mc/far-ravine.svg', farRavine());
 
 console.log('Ближний план:');
 write('assets/mc/near-forest.svg', nearForest());
@@ -1276,6 +1600,9 @@ write('assets/mc/near-obsidian.svg', nearObsidian());
 write('assets/mc/near-portal.svg', nearPortal());
 write('assets/mc/near-soul-sand.svg', nearSoulSand());
 write('assets/mc/near-fortress.svg', nearFortress());
+write('assets/mc/near-ravine.svg', nearRavine());
+write('assets/mc/near-ruin.svg', nearRuin());
+write('assets/mc/near-rails.svg', nearRails());
 
 console.log('Персонажи:');
 write('assets/mc/steve.svg', steve());
@@ -1285,5 +1612,6 @@ write('assets/mc/sheep.svg', sheep());
 write('assets/mc/wolf.svg', wolf());
 write('assets/mc/villager.svg', villager());
 write('assets/mc/piglin.svg', piglin());
+write('assets/mc/bat.svg', bat());
 
 console.log('\nГотово.');

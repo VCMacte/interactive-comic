@@ -133,6 +133,17 @@ const MC_LAYERS = {
     prompt: `vast underground sea of glowing orange lava stretching to the horizon, low ceiling of dark red netherrack cubes with hanging stalactites, dark nether brick fortress with pale quartz battlements on the far bank, lava falls, hot red haze and glow, ${MC_STYLE}`,
     negative: MC_NEG + ', sky, horizon, sun, clouds, grass, water, trees, people',
   },
+
+  // ---- пятый день ----
+  // Неба здесь тоже нет, но после красного дня всё держится на холодном
+  // синем. В negative идут не только небо и горизонт, но и лава с огнём:
+  // «подземелье» генератор охотно подсвечивает оранжевым, и тогда ущелье
+  // превращается во второй Нижний мир — а смена цвета и есть смысл дня.
+  'mc/far-ravine': {
+    strength: 0.24,
+    prompt: `huge dark underground ravine of grey stone cubes, tall waterfalls of blue water falling into a black bottomless chasm, low ceiling of cubic rock with hanging stalactites, cold blue damp haze and mist, faint torchlight on the far wall, ${MC_STYLE}`,
+    negative: MC_NEG + ', sky, horizon, sun, clouds, grass, trees, lava, fire, orange glow, warm light, people',
+  },
 };
 
 Object.assign(LAYERS, MC_LAYERS);

@@ -1,5 +1,12 @@
 [
   {
+    "id": "deep-road",
+    "title": "Дорога домой под землёй",
+    "subtitle": "Пятый день Стива · пять игр",
+    "cover": "assets/covers/deep-road.webp",
+    "story": "stories/deep-road.json"
+  },
+  {
     "id": "fire-sea",
     "title": "Огненное море",
     "subtitle": "Четвёртый день Стива · пять игр",

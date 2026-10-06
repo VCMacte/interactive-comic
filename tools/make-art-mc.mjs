@@ -72,6 +72,14 @@ const P = {
   // дальняя стена вышла светлее ближней земли, и глубина перевернулась —
   // дальний план обязан быть темнее переднего, иначе кадр плоский.
   wet:    { base: '#2f3640', dark: '#222932', light: '#3e4854' },
+  // Крепость шестого дня. Каменный кирпич теплее обычного камня: весь день
+  // держится на свете свечей, а холодный серый под жёлтым светом сереет
+  // ещё сильнее и читается тем же подземельем, из которого Стив только что
+  // вышел. Рамка Края — светлый песчаник с зеленцой, и она НЕ фиолетовая:
+  // фиолетовый занят горящим порталом третьего дня, а эта рамка пустая,
+  // в том и весь смысл дня.
+  sbrick: { base: '#7e7a70', dark: '#625f57', light: '#959186' },
+  eframe: { base: '#c9c57e', dark: '#a3a05f', light: '#e2df9c' },
 };
 
 /**
@@ -506,6 +514,91 @@ function farRavine(seed = 251) {
   return svg(out.join('\n'));
 }
 
+/**
+ * Анфилада коридоров крепости — первый тёплый интерьер сезона. Под
+ * нейросеть: от неё здесь нужны пыльная дымка и свет факелов на кладке,
+ * то есть ровно то, чего вектор не даёт.
+ *
+ * Слой закрывает кадр целиком, поэтому маска при сборке ему не нужна —
+ * как far-nether-sea и far-ravine. Неба нет вовсе: наружу не выходит ни
+ * один проём, крепость целиком под лесом.
+ *
+ * Точка схода стоит правее середины (x ≈ 58%). Стив и волк в сценах
+ * `door`, `wall` и `corridor` занимают полосу 29…52%, и уходящие вглубь
+ * проёмы не должны оказаться ровно за ними.
+ */
+function farStronghold(seed = 291) {
+  const rand = rng(seed);
+  const out = [`<rect width="${W}" height="${H}" fill="#1a150f"/>`];
+
+  // Кладка во весь кадр: стены, свод и пол одним материалом. Тона здесь
+  // СВОИ, темнее и теплее палитры ближних слоёв: на светлой серой подложке
+  // deliberate_v2 выбеливает кадр до белой комнаты — проверено, первая
+  // покраска вернула именно её. Генератор тянет картинку вверх по яркости,
+  // поэтому подложка должна быть с запасом вниз.
+  const wall = { base: '#5b5248', dark: '#443d35', light: '#6e6457' };
+  const rib = { base: '#6b6155', dark: '#524a40', light: '#7d7366' };
+  // Мха в подложке нет совсем, хотя крепость сырая: любой зелёный блок
+  // нейросеть возвращает плоским зелёным прямоугольником — газоном на
+  // стене, и это видно на обеих пробных покрасках. Сырость отдана промпту
+  // (mossy stone brick), он разводит её по швам сам.
+  for (let r = 0; r * B < H; r++) {
+    for (let c = 0; c * B < W; c++) {
+      out.push(block(c * B, r * B, rand() < 0.28 ? rib : wall, rand));
+    }
+  }
+  // Швы кладки: генератору нужен ряд, за который можно зацепиться, иначе
+  // стена расплывается в ровную штукатурку — ровно это и вышло в первый раз.
+  for (let r = 0; r * B < H; r++) {
+    out.push(`<rect x="0" y="${n(r * B + B - 6)}" width="${W}" height="6" fill="#39332c" opacity="0.8"/>`);
+    for (let c = 0; c * B < W; c++) {
+      out.push(`<rect x="${n(c * B + (r % 2 ? B / 2 : 0))}" y="${n(r * B)}" width="6" height="${n(B)}" fill="#39332c" opacity="0.6"/>`);
+    }
+  }
+
+  // Проёмы один в другом: каждый следующий у́же, ниже и темнее. Рисуются
+  // сплошными рамками от дальнего к ближнему — от наличников вокруг
+  // каждого проёма анфилада не получилась вовсе: наличник следующего
+  // закрывал предыдущий проём, и вместо череды арок вышла стена с дырой.
+  //
+  // Глубину держит разница самих блоков, а не полупрозрачная растяжка:
+  // растяжку нейросеть смывает, это уже проверено на стене ущелья.
+  const cx = Math.round((W / B) * 0.58) * B;
+  const tones = [
+    { base: '#4e4639', dark: '#3b352b', light: '#5f5646' },
+    { base: '#3d372d', dark: '#2e2a22', light: '#4e4639' },
+    { base: '#2c2822', dark: '#201d18', light: '#3d372d' },
+    { base: '#1c1a16', dark: '#141310', light: '#2c2822' },
+  ];
+  for (let i = 0; i < tones.length; i++) {
+    const hw = 8 - i, hb = 9 - i;
+    const x0 = cx - hw * B, y0 = GROUND - hb * B;
+    for (let r = 0; r < hb; r++) {
+      for (let c = 0; c < hw * 2; c++) out.push(block(x0 + c * B, y0 + r * B, tones[i], rand));
+    }
+  }
+  // Самый дальний проём — провал без деталей: коридор уходит дальше, чем
+  // видно, и это единственное место кадра, где совсем темно.
+  const lx = cx - 4 * B, ly = GROUND - 5 * B;
+  out.push(`<rect x="${n(lx)}" y="${n(ly)}" width="${n(B * 8)}" height="${n(B * 5)}" fill="#0b0a08"/>`);
+  out.push(`<rect x="${n(lx)}" y="${n(ly)}" width="${n(B * 8)}" height="${n(B * 0.25)}" fill="#050403"/>`);
+  // Факел в глубине: он и даёт понять, что там продолжение, а не тупик.
+  out.push(torch(cx - B * 0.5, GROUND - B * 3.4));
+
+  // Факелы на боковых стенах — тот самый тёплый свет, на котором держится
+  // весь день: после синего подземелья пятого контраст должен быть виден
+  // с первого кадра. Ореол вокруг обязателен, иначе огонь выглядит
+  // наклейкой на стене.
+  for (const tx of [B * 2, B * 7, W - B * 4]) {
+    out.push(glow(tx + B * 0.5, GROUND - B * 2.6, B * 3.6));
+    out.push(torch(tx, GROUND - B * 3));
+  }
+
+  // Тёплая пыльная дымка у точки схода: воздух и глубина.
+  out.push(`<rect x="${n(cx - B * 9)}" y="${n(GROUND - B * 10)}" width="${n(B * 18)}" height="${n(B * 10)}" fill="#ffc46b" opacity="0.07"/>`);
+  return svg(out.join('\n'), GLOW_DEF);
+}
+
 /* ---------------- ближний план ---------------- */
 
 /** Земля: верхний ряд дёрна, ниже грунт до нижнего края кадра. */
@@ -518,6 +611,19 @@ function groundRows(rand, topPal = P.grass, underPal = P.dirt) {
   }
   return out.join('\n');
 }
+
+/**
+ * Мягкий ореол вокруг огня. Полупрозрачный прямоугольник вместо него
+ * читается коричневой заплаткой на стене — это было видно в зале шестого
+ * дня с первого же предпросмотра. Определение градиента вставляется
+ * в тот же svg, где ореол используется.
+ */
+const GLOW_DEF = `<defs><radialGradient id="glow">
+<stop offset="0" stop-color="#ffb13b" stop-opacity="0.5"/>
+<stop offset="0.45" stop-color="#ffb13b" stop-opacity="0.17"/>
+<stop offset="1" stop-color="#ffb13b" stop-opacity="0"/>
+</radialGradient></defs>`;
+const glow = (x, y, r) => `<circle cx="${n(x)}" cy="${n(y)}" r="${n(r)}" fill="url(#glow)"/>`;
 
 function torch(x, y) {
   return `<rect x="${x + 24}" y="${y + 18}" width="12" height="42" fill="#7a5630"/>
@@ -1258,6 +1364,208 @@ ${torch(290, GROUND - B * 2)}
 ${torch(1266, GROUND - B * 2)}`);
 }
 
+/**
+ * Библиотека крепости: стеллажи, стол и свечи. Кадр закрыт целиком,
+ * поэтому сцена обходится одним этим слоем — ни небо, ни дальний план
+ * ей не нужны, как в кузнице и варочной.
+ *
+ * Стеллажи стоят по краям (4…20% и 78…95%), стол — в правой трети
+ * (66…78%). Полоса 29…68% остаётся свободной: там Стив, волк и
+ * библиотекарь в сценах `library`, `pearls` и `librarian`.
+ */
+function nearLibrary(seed = 301) {
+  const rand = rng(seed);
+  const out = [];
+
+  for (let r = 0; r * B < H; r++) {
+    for (let c = 0; c * B < W; c++) {
+      out.push(block(c * B, r * B, r * B >= GROUND ? P.plank : P.sbrick, rand));
+    }
+  }
+  // Швы между досками: тот же приём, что в near-furnace, иначе пол
+  // не читается полом внутри помещения.
+  for (let r = 0; GROUND + r * B < H; r++) {
+    out.push(`<rect x="0" y="${n(GROUND + r * B)}" width="${W}" height="5" fill="#8e6c3c" opacity="0.8"/>`);
+  }
+  // Швы кладки на стене. Без них верхние две трети кадра — ровное серое
+  // поле из крапин: стена не читается стеной, а комната выглядит пустой
+  // площадкой. Ряды смещены через один, как настоящая кладка.
+  for (let r = 0; r * B < GROUND; r++) {
+    out.push(`<rect x="0" y="${n(r * B + B - 5)}" width="${W}" height="5" fill="${P.sbrick.dark}" opacity="0.7"/>`);
+    for (let c = 0; c * B < W; c++) {
+      out.push(`<rect x="${n(c * B + (r % 2 ? B / 2 : 0))}" y="${n(r * B)}" width="5" height="${n(B)}" fill="${P.sbrick.dark}" opacity="0.5"/>`);
+    }
+  }
+
+  // Свеча: столбик, язычок и тёплый ореол. Ореол обязателен — без него
+  // свеча выглядит белой палочкой, приклеенной к полке, и света в комнате
+  // не прибавляет.
+  const candle = (x, y, h = B * 0.7) => `
+${glow(x + B * 0.15, y - h - B * 0.2, B * 1.9)}
+<rect x="${n(x)}" y="${n(y - h)}" width="${n(B * 0.3)}" height="${n(h)}" fill="#f4efdf"/>
+<rect x="${n(x - B * 0.06)}" y="${n(y - h - B * 0.26)}" width="${n(B * 0.42)}" height="${n(B * 0.3)}" fill="#ffb13b"/>
+<rect x="${n(x + B * 0.06)}" y="${n(y - h - B * 0.44)}" width="${n(B * 0.18)}" height="${n(B * 0.24)}" fill="#fff0b0"/>`;
+
+  // Корешки книг — в полблока шириной. Мелочь на телевизоре пропадает
+  // при сжатии трансляции, а книги здесь главный предмет сцены.
+  const tints = ['#b5452f', '#2f6ba8', '#b58a2f', '#4a7f3a', '#7a3f8f', '#a8603a', '#3f7f7a'];
+  const shelf = (x0, cols, rows) => {
+    const body = [];
+    const top = GROUND - rows * B;
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) body.push(block(x0 + c * B, top + r * B, P.wood, rand));
+    }
+    for (let r = 0; r < rows; r++) {
+      const y = top + r * B;
+      // Ниша под книги и доска полки под ней: без тёмной ниши стеллаж —
+      // просто деревянная стена, и книг на нём не видно.
+      body.push(`<rect x="${n(x0 + B * 0.16)}" y="${n(y + B * 0.1)}" width="${n(cols * B - B * 0.32)}" height="${n(B * 0.76)}" fill="#2a1d12"/>`);
+      body.push(`<rect x="${n(x0)}" y="${n(y + B * 0.86)}" width="${n(cols * B)}" height="${n(B * 0.14)}" fill="${P.wood.dark}"/>`);
+      let bx = x0 + B * 0.3;
+      while (bx < x0 + cols * B - B * 0.6) {
+        const bw = B * (0.17 + rand() * 0.11);
+        const bh = B * (0.5 + rand() * 0.24);
+        body.push(`<rect x="${n(bx)}" y="${n(y + B * 0.86 - bh)}" width="${n(bw)}" height="${n(bh)}" fill="${tints[Math.floor(rand() * tints.length)]}"/>`);
+        body.push(`<rect x="${n(bx)}" y="${n(y + B * 0.86 - bh)}" width="${n(bw)}" height="${n(B * 0.06)}" fill="#f4efdf" opacity="0.5"/>`);
+        bx += bw + B * 0.07;
+      }
+    }
+    return body.join('\n');
+  };
+
+  // Стол с раскрытой книгой: сюда библиотекарь кладёт то, что перебирает,
+  // и в сцене `library` ребёнок ищет лишнее именно здесь.
+  const tx = Math.round((W / B) * 0.66) * B;
+  const table = [
+    `<rect x="${n(tx + B * 0.2)}" y="${n(GROUND - B)}" width="${n(B * 0.25)}" height="${n(B)}" fill="${P.wood.dark}"/>`,
+    `<rect x="${n(tx + B * 3.55)}" y="${n(GROUND - B)}" width="${n(B * 0.25)}" height="${n(B)}" fill="${P.wood.dark}"/>`,
+    `<rect x="${n(tx)}" y="${n(GROUND - B * 1.3)}" width="${n(B * 4)}" height="${n(B * 0.3)}" fill="${P.plank.base}"/>`,
+    `<rect x="${n(tx)}" y="${n(GROUND - B * 1.3)}" width="${n(B * 4)}" height="${n(B * 0.1)}" fill="${P.plank.light}"/>`,
+    // Книга раскрыта: две светлые половины и тёмный корешок между ними.
+    // Закрытая книга со стороны читалась бы просто доской на столе.
+    `<rect x="${n(tx + B * 0.45)}" y="${n(GROUND - B * 1.62)}" width="${n(B * 1.95)}" height="${n(B * 0.32)}" fill="#efe7d2"/>`,
+    `<rect x="${n(tx + B * 0.45)}" y="${n(GROUND - B * 1.62)}" width="${n(B * 1.95)}" height="${n(B * 0.08)}" fill="#fffaf0"/>`,
+    `<rect x="${n(tx + B * 1.34)}" y="${n(GROUND - B * 1.68)}" width="${n(B * 0.18)}" height="${n(B * 0.38)}" fill="#6b4a2a"/>`,
+    // Стопка рядом: три корешка плашмя. Это и есть «кто-то поставил не то».
+    `<rect x="${n(tx + B * 2.7)}" y="${n(GROUND - B * 1.46)}" width="${n(B * 1)}" height="${n(B * 0.16)}" fill="${tints[1]}"/>`,
+    `<rect x="${n(tx + B * 2.74)}" y="${n(GROUND - B * 1.62)}" width="${n(B * 0.92)}" height="${n(B * 0.16)}" fill="${tints[3]}"/>`,
+    `<rect x="${n(tx + B * 2.78)}" y="${n(GROUND - B * 1.78)}" width="${n(B * 0.84)}" height="${n(B * 0.16)}" fill="${tints[0]}"/>`,
+  ];
+
+  // Факелы на стене и общий тёплый налёт поверх всего слоя. Этот слой
+  // нейросеть не красит, поэтому тепло должно быть в самом векторе:
+  // на холодной серой кладке библиотека выглядит тем же подземельем,
+  // из которого Стив только что вышел, а весь день построен на контрасте.
+  // Факелы висят на свободной стене между стеллажами и выше голов: за
+  // стеллажами они пропадали вовсе, а ниже — попали бы ровно за Стива
+  // и библиотекаря.
+  const lamp = (x) => `
+${glow(x + B * 0.5, GROUND - B * 5.6, B * 3.2)}
+${torch(x, GROUND - B * 6)}`;
+  const warm = [
+    lamp(Math.round((W / B) * 0.24) * B),
+    lamp(Math.round((W / B) * 0.73) * B),
+    `<rect x="0" y="0" width="${W}" height="${H}" fill="#ffb13b" opacity="0.09"/>`,
+  ];
+
+  return svg(`${out.join('\n')}
+${shelf(Math.round((W / B) * 0.04) * B, 5, 5)}
+${shelf(Math.round((W / B) * 0.78) * B, 5, 5)}
+${table.join('\n')}
+${candle(tx + B * 0.1, GROUND - B * 1.3)}
+${candle(Math.round((W / B) * 0.24) * B, GROUND, B * 1.1)}
+${candle(Math.round((W / B) * 0.72) * B, GROUND, B * 0.9)}
+${warm.join('\n')}
+<rect x="0" y="0" width="${B}" height="${H}" fill="#19130d"/>
+<rect x="${W - B}" y="0" width="${B}" height="${H}" fill="#19130d"/>`, GLOW_DEF);
+}
+
+/**
+ * Зал с рамкой портала Края. Кадр закрыт целиком.
+ *
+ * Рамка стоит правее середины (56…80%) и выше Стива: это главный предмет
+ * дня, и он должен читаться с дивана через сжатие трансляции. Герои в
+ * сценах `hall` и `frame` занимают полосу 24…42%, то есть рамка не
+ * оказывается за ними — жила алмазов за спиной Стива уже была.
+ *
+ * Гнёзда в блоках пустые, и внутри рамки темнота, а не свечение: день
+ * кончается тем, что рамке не хватает глаз. Кладка идёт чередованием
+ * светлого и тёмного блока — именно её ребёнок разглядывает в задании
+ * про «что дальше», поэтому ряд должен быть виден глазами.
+ *
+ * В ступенях площадки оставлен разрыв на два блока: в сцене `hall`
+ * площадку как раз достраивают, и ровная лестница противоречила бы
+ * тексту.
+ */
+function nearFrame(seed = 311) {
+  const rand = rng(seed);
+  const out = [];
+
+  for (let r = 0; r * B < H; r++) {
+    for (let c = 0; c * B < W; c++) {
+      out.push(block(c * B, r * B, r * B >= GROUND ? P.sbrick : P.deep, rand));
+    }
+  }
+
+  // Швы кладки на стене: без них верх кадра — ровное тёмное поле крапин,
+  // и зал не читается залом. Тот же приём, что в библиотеке.
+  for (let r = 0; r * B < GROUND; r++) {
+    out.push(`<rect x="0" y="${n(r * B + B - 5)}" width="${W}" height="5" fill="${P.deep.dark}" opacity="0.8"/>`);
+    for (let c = 0; c * B < W; c++) {
+      out.push(`<rect x="${n(c * B + (r % 2 ? B / 2 : 0))}" y="${n(r * B)}" width="5" height="${n(B)}" fill="${P.deep.dark}" opacity="0.6"/>`);
+    }
+  }
+
+  // Возвышение под рамкой: сплошная площадка в два блока. Ступеней к ней
+  // НЕТ — их-то и разобрали, и об этом вся сцена `hall`. Блоки, которыми
+  // Стив их заложит, лежат тут же на полу.
+  const dx = Math.round((W / B) * 0.5) * B;
+  for (let c = 2; c < 10; c++) {
+    for (let r = 0; r < 2; r++) out.push(block(dx + c * B, GROUND - B * (r + 1), P.stone, rand));
+  }
+  out.push(`<rect x="${n(dx + B * 2)}" y="${n(GROUND - B * 2)}" width="${n(B * 8)}" height="${n(B * 0.16)}" fill="${P.stone.light}"/>`);
+  for (let i = 0; i < 3; i++) {
+    out.push(block(dx - B * 1.6 + i * B * 0.95, GROUND - B * 0.85, P.stone, rand, B * 0.8));
+  }
+
+  // Рамка 5×7: кольцо из блоков с пустой темнотой внутри. Чередование
+  // светлого и тёмного блока по кольцу — кладка «по правилу».
+  const fx = Math.round((W / B) * 0.56) * B, fy = GROUND - B * 9;
+  const ring = [];
+  for (let r = 0; r < 7; r++) {
+    for (let c = 0; c < 5; c++) {
+      if (!(c === 0 || c === 4 || r === 0 || r === 6)) continue;
+      // Один блок в кладке отсутствует: в сцене `frame` речь ровно о том,
+      // какой блок идёт следующим.
+      if (r === 2 && c === 4) continue;
+      const pal = (r + c) % 2 === 0 ? P.eframe : { base: P.eframe.dark, dark: '#8a8750', light: P.eframe.base };
+      ring.push(block(fx + c * B, fy + r * B, pal, rand));
+      // Гнездо для глаза: тёмный квадрат сверху блока. Пустое гнездо —
+      // и есть тот крючок, на котором висит седьмой день.
+      ring.push(`<rect x="${n(fx + c * B + B * 0.28)}" y="${n(fy + r * B + B * 0.2)}" width="${n(B * 0.44)}" height="${n(B * 0.44)}" fill="#2b2a1c"/>`);
+      ring.push(`<rect x="${n(fx + c * B + B * 0.28)}" y="${n(fy + r * B + B * 0.2)}" width="${n(B * 0.44)}" height="${n(B * 0.1)}" fill="#1a190f"/>`);
+    }
+  }
+  // Внутри рамки темнота, а не портал: он не работает и работать пока
+  // не может.
+  ring.push(`<rect x="${n(fx + B)}" y="${n(fy + B)}" width="${n(B * 3)}" height="${n(B * 5)}" fill="#0b0d12"/>`);
+  ring.push(`<rect x="${n(fx + B)}" y="${n(fy + B)}" width="${n(B * 3)}" height="${n(B * 0.2)}" fill="#05070a"/>`);
+
+  // Факелы по стенам зала с ореолами: единственный свет здесь, потому что
+  // сама рамка не светит. Ореол обязателен — без него огонь выглядит
+  // наклейкой на стене, это уже ловилось в кузнице.
+  const lamp = (x) => `
+${glow(x + B * 0.5, GROUND - B * 4, B * 3.4)}
+${torch(x, GROUND - B * 4.4)}`;
+
+  return svg(`${out.join('\n')}
+${ring.join('\n')}
+${lamp(Math.round((W / B) * 0.14) * B)}
+${lamp(Math.round((W / B) * 0.86) * B)}
+<rect x="0" y="0" width="${B}" height="${H}" fill="#14141a"/>
+<rect x="${W - B}" y="0" width="${B}" height="${H}" fill="#14141a"/>`, GLOW_DEF);
+}
+
 /* ---------------- персонажи ---------------- */
 
 // width/height обязаны совпадать с viewBox: иначе браузер берёт пропорции
@@ -1582,6 +1890,7 @@ write('assets/mc/far-deep.svg', farDeep());
 write('assets/mc/far-lava.svg', farLava());
 write('assets/mc/far-nether-sea.svg', farNetherSea());
 write('assets/mc/far-ravine.svg', farRavine());
+write('assets/mc/far-stronghold.svg', farStronghold());
 
 console.log('Ближний план:');
 write('assets/mc/near-forest.svg', nearForest());
@@ -1603,6 +1912,8 @@ write('assets/mc/near-fortress.svg', nearFortress());
 write('assets/mc/near-ravine.svg', nearRavine());
 write('assets/mc/near-ruin.svg', nearRuin());
 write('assets/mc/near-rails.svg', nearRails());
+write('assets/mc/near-library.svg', nearLibrary());
+write('assets/mc/near-frame.svg', nearFrame());
 
 console.log('Персонажи:');
 write('assets/mc/steve.svg', steve());

@@ -1,5 +1,12 @@
 [
   {
+    "id": "stronghold",
+    "title": "Крепость и библиотека",
+    "subtitle": "Шестой день Стива · пять игр",
+    "cover": "assets/covers/stronghold.webp",
+    "story": "stories/stronghold.json"
+  },
+  {
     "id": "deep-road",
     "title": "Дорога домой под землёй",
     "subtitle": "Пятый день Стива · пять игр",

@@ -144,6 +144,17 @@ const MC_LAYERS = {
     prompt: `huge dark underground ravine of grey stone cubes, tall waterfalls of blue water falling into a black bottomless chasm, low ceiling of cubic rock with hanging stalactites, cold blue damp haze and mist, faint torchlight on the far wall, ${MC_STYLE}`,
     negative: MC_NEG + ', sky, horizon, sun, clouds, grass, trees, lava, fire, orange glow, warm light, people',
   },
+
+  // ---- шестой день ----
+  // Крепость — первый тёплый интерьер сезона, и весь её смысл в контрасте
+  // с синим подземельем пятого дня. Поэтому в negative идут не огонь
+  // с лавой, а холод и сырость: на «подземелье из камня» генератор
+  // уверенно выдаёт ту же синюю пещеру, из которой Стив только что вышел.
+  'mc/far-stronghold': {
+    strength: 0.24,
+    prompt: `long underground stronghold corridor of mossy stone brick cubes, receding square archways one behind another, warm yellow torchlight on the brick walls, low cubic ceiling, dusty warm haze, deep perspective into the dark, ${MC_STYLE}`,
+    negative: MC_NEG + ', sky, horizon, sun, clouds, grass, trees, water, waterfall, lava, cold blue light, blue haze, people',
+  },
 };
 
 Object.assign(LAYERS, MC_LAYERS);

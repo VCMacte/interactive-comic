@@ -7457,6 +7457,880 @@
    ],
    "audio": "ed135944",
    "hintAudio": "5b354a43"
+  },
+  {
+   "type": "pattern",
+   "question": "Что дальше: блок, факел, блок, факел, а потом?",
+   "hint": "Они идут по очереди. После «факел» снова начинается тот же порядок.",
+   "choices": [
+    {
+     "label": "Сундук",
+     "keywords": [
+      "сундук"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Факел",
+     "keywords": [
+      "факел"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Блок",
+     "keywords": [
+      "блок"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "a120056d",
+   "hintAudio": "dd653021"
+  },
+  {
+   "type": "pattern",
+   "question": "Что дальше: кирпич, мох, кирпич, мох, а потом?",
+   "hint": "Они идут по очереди. После «мох» снова начинается тот же порядок.",
+   "choices": [
+    {
+     "label": "Песок",
+     "keywords": [
+      "песок"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Кирпич",
+     "keywords": [
+      "кирпич"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Мох",
+     "keywords": [
+      "мох"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "abbe4447",
+   "hintAudio": "c9c14682"
+  },
+  {
+   "type": "pattern",
+   "question": "Что дальше: ступенька, плита, ступенька, плита, а потом?",
+   "hint": "Они идут по очереди. После «плита» снова начинается тот же порядок.",
+   "choices": [
+    {
+     "label": "Плита",
+     "keywords": [
+      "плита"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Ступенька",
+     "keywords": [
+      "ступенька"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Факел",
+     "keywords": [
+      "факел"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "738d7a99",
+   "hintAudio": "af2796ff"
+  },
+  {
+   "type": "pattern",
+   "question": "Что дальше: плита, блок, плита, блок, а потом?",
+   "hint": "Они идут по очереди. После «блок» снова начинается тот же порядок.",
+   "choices": [
+    {
+     "label": "Сундук",
+     "keywords": [
+      "сундук"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Плита",
+     "keywords": [
+      "плита"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Блок",
+     "keywords": [
+      "блок"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "7fd69d95",
+   "hintAudio": "56229885"
+  },
+  {
+   "type": "pattern",
+   "question": "Что дальше: доска, бревно, доска, бревно, а потом?",
+   "hint": "Они идут по очереди. После «бревно» снова начинается тот же порядок.",
+   "choices": [
+    {
+     "label": "Палка",
+     "keywords": [
+      "палка"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Доска",
+     "keywords": [
+      "доска"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Бревно",
+     "keywords": [
+      "бревно"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "3a8313bd",
+   "hintAudio": "bcd918e0"
+  },
+  {
+   "type": "pattern",
+   "question": "Что дальше: камень, земля, камень, земля, а потом?",
+   "hint": "Они идут по очереди. После «земля» снова начинается тот же порядок.",
+   "choices": [
+    {
+     "label": "Камень",
+     "keywords": [
+      "камень"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Земля",
+     "keywords": [
+      "земля"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Песок",
+     "keywords": [
+      "песок"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "51d94215",
+   "hintAudio": "d4c2f0d1"
+  },
+  {
+   "type": "pattern",
+   "question": "Что дальше: камень, кирпич, камень, кирпич, а потом?",
+   "hint": "Они идут по очереди. После «кирпич» снова начинается тот же порядок.",
+   "choices": [
+    {
+     "label": "Кирпич",
+     "keywords": [
+      "кирпич"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Доска",
+     "keywords": [
+      "доска"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Камень",
+     "keywords": [
+      "камень"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "3c922e69",
+   "hintAudio": "66be692b"
+  },
+  {
+   "type": "pattern",
+   "question": "Что дальше: песок, булыжник, песок, булыжник, а потом?",
+   "hint": "Они идут по очереди. После «булыжник» снова начинается тот же порядок.",
+   "choices": [
+    {
+     "label": "Земля",
+     "keywords": [
+      "земля"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Песок",
+     "keywords": [
+      "песок"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Булыжник",
+     "keywords": [
+      "булыжник"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "3d95f715",
+   "hintAudio": "a9709c70"
+  }
+ ],
+ "minecraft|logic|15|craft": [
+  {
+   "type": "oddOneOut",
+   "question": "Что здесь лишнее: страница, книга или кирка?",
+   "hint": "Подумай: два из них — это это читают. А третий?",
+   "choices": [
+    {
+     "label": "Страница",
+     "keywords": [
+      "страница"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Кирка",
+     "keywords": [
+      "кирка"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Книга",
+     "keywords": [
+      "книга"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "2eb2eeea",
+   "hintAudio": "33f1e94c"
+  },
+  {
+   "type": "oddOneOut",
+   "question": "Что здесь лишнее: палка, доска или алмаз?",
+   "hint": "Подумай: два из них — это из дерева. А третий?",
+   "choices": [
+    {
+     "label": "Алмаз",
+     "keywords": [
+      "алмаз"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Доска",
+     "keywords": [
+      "доска"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Палка",
+     "keywords": [
+      "палка"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "703bea03",
+   "hintAudio": "9b3136ed"
+  },
+  {
+   "type": "oddOneOut",
+   "question": "Что здесь лишнее: книга, буква или уголёк?",
+   "hint": "Подумай: два из них — это это читают. А третий?",
+   "choices": [
+    {
+     "label": "Буква",
+     "keywords": [
+      "буква"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Уголёк",
+     "keywords": [
+      "уголёк"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Книга",
+     "keywords": [
+      "книга"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "724ef5ae",
+   "hintAudio": "33f1e94c"
+  },
+  {
+   "type": "oddOneOut",
+   "question": "Что здесь лишнее: буква, книга или уголёк?",
+   "hint": "Подумай: два из них — это это читают. А третий?",
+   "choices": [
+    {
+     "label": "Уголёк",
+     "keywords": [
+      "уголёк"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Буква",
+     "keywords": [
+      "буква"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Книга",
+     "keywords": [
+      "книга"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "209b5b5e",
+   "hintAudio": "33f1e94c"
+  },
+  {
+   "type": "oddOneOut",
+   "question": "Что здесь лишнее: бревно, доска или алмаз?",
+   "hint": "Подумай: два из них — это из дерева. А третий?",
+   "choices": [
+    {
+     "label": "Бревно",
+     "keywords": [
+      "бревно"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Алмаз",
+     "keywords": [
+      "алмаз"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Доска",
+     "keywords": [
+      "доска"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "42fc8f5c",
+   "hintAudio": "9b3136ed"
+  },
+  {
+   "type": "oddOneOut",
+   "question": "Что здесь лишнее: книга, свиток или уголёк?",
+   "hint": "Подумай: два из них — это это читают. А третий?",
+   "choices": [
+    {
+     "label": "Свиток",
+     "keywords": [
+      "свиток"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Уголёк",
+     "keywords": [
+      "уголёк"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Книга",
+     "keywords": [
+      "книга"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "f4d250e7",
+   "hintAudio": "33f1e94c"
+  },
+  {
+   "type": "oddOneOut",
+   "question": "Что здесь лишнее: доска, бревно или алмаз?",
+   "hint": "Подумай: два из них — это из дерева. А третий?",
+   "choices": [
+    {
+     "label": "Алмаз",
+     "keywords": [
+      "алмаз"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Бревно",
+     "keywords": [
+      "бревно"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Доска",
+     "keywords": [
+      "доска"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "82f6f042",
+   "hintAudio": "9b3136ed"
+  },
+  {
+   "type": "oddOneOut",
+   "question": "Что здесь лишнее: буква, свиток или уголёк?",
+   "hint": "Подумай: два из них — это это читают. А третий?",
+   "choices": [
+    {
+     "label": "Уголёк",
+     "keywords": [
+      "уголёк"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Свиток",
+     "keywords": [
+      "свиток"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Буква",
+     "keywords": [
+      "буква"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "0eab044f",
+   "hintAudio": "33f1e94c"
+  },
+  {
+   "type": "oddOneOut",
+   "question": "Что здесь лишнее: бревно, палка или алмаз?",
+   "hint": "Подумай: два из них — это из дерева. А третий?",
+   "choices": [
+    {
+     "label": "Палка",
+     "keywords": [
+      "палка"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Алмаз",
+     "keywords": [
+      "алмаз"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Бревно",
+     "keywords": [
+      "бревно"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "6ffbeb83",
+   "hintAudio": "9b3136ed"
+  },
+  {
+   "type": "oddOneOut",
+   "question": "Что здесь лишнее: свиток, страница или кирка?",
+   "hint": "Подумай: два из них — это это читают. А третий?",
+   "choices": [
+    {
+     "label": "Страница",
+     "keywords": [
+      "страница"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Кирка",
+     "keywords": [
+      "кирка"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Свиток",
+     "keywords": [
+      "свиток"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "3fa8efbd",
+   "hintAudio": "33f1e94c"
+  }
+ ],
+ "minecraft|math|15|ore": [
+  {
+   "type": "addition",
+   "question": "Сколько будет два уголька и ещё три уголька?",
+   "hint": "Посчитаем вместе: два уголька, и прибавим ещё три.",
+   "choices": [
+    {
+     "label": "Пять",
+     "keywords": [
+      "пять",
+      "5"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Семь",
+     "keywords": [
+      "семь",
+      "7"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Шесть",
+     "keywords": [
+      "шесть",
+      "6"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "4862e87b",
+   "hintAudio": "8ee98433"
+  },
+  {
+   "type": "addition",
+   "question": "Сколько будет четыре камня и ещё семь камней?",
+   "hint": "Посчитаем вместе: четыре камня, и прибавим ещё семь.",
+   "choices": [
+    {
+     "label": "Одиннадцать",
+     "keywords": [
+      "одиннадцать",
+      "11"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Двенадцать",
+     "keywords": [
+      "двенадцать",
+      "12"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Девять",
+     "keywords": [
+      "девять",
+      "9"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "23f99d10",
+   "hintAudio": "d4e5cfaa"
+  },
+  {
+   "type": "addition",
+   "question": "Сколько будет один камень и ещё три камня?",
+   "hint": "Посчитаем вместе: один камень, и прибавим ещё три.",
+   "choices": [
+    {
+     "label": "Три",
+     "keywords": [
+      "три",
+      "3"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Четыре",
+     "keywords": [
+      "четыре",
+      "4"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Шесть",
+     "keywords": [
+      "шесть",
+      "6"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "438555aa",
+   "hintAudio": "fe2f612f"
+  },
+  {
+   "type": "addition",
+   "question": "Сколько будет два слитка и ещё семь слитков?",
+   "hint": "Посчитаем вместе: два слитка, и прибавим ещё семь.",
+   "choices": [
+    {
+     "label": "Девять",
+     "keywords": [
+      "девять",
+      "9"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Восемь",
+     "keywords": [
+      "восемь",
+      "8"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Десять",
+     "keywords": [
+      "десять",
+      "10"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "4480c8f5",
+   "hintAudio": "225518d6"
+  },
+  {
+   "type": "addition",
+   "question": "Сколько будет один уголёк и ещё шесть угольков?",
+   "hint": "Посчитаем вместе: один уголёк, и прибавим ещё шесть.",
+   "choices": [
+    {
+     "label": "Семь",
+     "keywords": [
+      "семь",
+      "7"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Восемь",
+     "keywords": [
+      "восемь",
+      "8"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Шесть",
+     "keywords": [
+      "шесть",
+      "6"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "e20a882f",
+   "hintAudio": "0ee62473"
+  },
+  {
+   "type": "addition",
+   "question": "Сколько будет шесть угольков и ещё семь угольков?",
+   "hint": "Посчитаем вместе: шесть угольков, и прибавим ещё семь.",
+   "choices": [
+    {
+     "label": "Двенадцать",
+     "keywords": [
+      "двенадцать",
+      "12"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Четырнадцать",
+     "keywords": [
+      "четырнадцать",
+      "14"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Тринадцать",
+     "keywords": [
+      "тринадцать",
+      "13"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "43b83d63",
+   "hintAudio": "23d30513"
+  },
+  {
+   "type": "addition",
+   "question": "Сколько будет два алмаза и ещё четыре алмаза?",
+   "hint": "Посчитаем вместе: два алмаза, и прибавим ещё четыре.",
+   "choices": [
+    {
+     "label": "Семь",
+     "keywords": [
+      "семь",
+      "7"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Пять",
+     "keywords": [
+      "пять",
+      "5"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Шесть",
+     "keywords": [
+      "шесть",
+      "6"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "777ce93b",
+   "hintAudio": "580d30ea"
+  },
+  {
+   "type": "addition",
+   "question": "Сколько будет один алмаз и ещё один алмаз?",
+   "hint": "Посчитаем вместе: один алмаз, и прибавим ещё один.",
+   "choices": [
+    {
+     "label": "Четыре",
+     "keywords": [
+      "четыре",
+      "4"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Один",
+     "keywords": [
+      "один",
+      "1"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Два",
+     "keywords": [
+      "два",
+      "2"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "0909ad63",
+   "hintAudio": "7e79ebde"
+  },
+  {
+   "type": "addition",
+   "question": "Сколько будет четыре уголька и ещё шесть угольков?",
+   "hint": "Посчитаем вместе: четыре уголька, и прибавим ещё шесть.",
+   "choices": [
+    {
+     "label": "Десять",
+     "keywords": [
+      "десять",
+      "10"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Восемь",
+     "keywords": [
+      "восемь",
+      "8"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Одиннадцать",
+     "keywords": [
+      "одиннадцать",
+      "11"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "32d12539",
+   "hintAudio": "3d9e7f71"
+  },
+  {
+   "type": "addition",
+   "question": "Сколько будет четыре камня и ещё три камня?",
+   "hint": "Посчитаем вместе: четыре камня, и прибавим ещё три.",
+   "choices": [
+    {
+     "label": "Шесть",
+     "keywords": [
+      "шесть",
+      "6"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Семь",
+     "keywords": [
+      "семь",
+      "7"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Пять",
+     "keywords": [
+      "пять",
+      "5"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "deba8a83",
+   "hintAudio": "6576c316"
   }
  ]
 }

@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 560" width="880" height="560">
+<style>
+  .idle { animation: idle 3.2s ease-in-out infinite; transform-origin: 50% 100%; }
+  @keyframes idle { 0%,100% { transform: translateY(0) } 50% { transform: translateY(-6px) } }
+  @media (prefers-reduced-motion: reduce) { .idle { animation: none } }
+  
+</style>
+<g class="idle">
+
+<!-- крылья -->
+<rect x="80" y="100" width="260" height="60" fill="#6e5a86"/>
+<rect x="80" y="150" width="260" height="10" fill="#463659"/>
+<rect x="120" y="160" width="220" height="60" fill="#6e5a86"/>
+<rect x="120" y="210" width="220" height="10" fill="#463659"/>
+<rect x="180" y="220" width="160" height="52" fill="#6e5a86"/>
+<rect x="180" y="262" width="160" height="10" fill="#463659"/>
+<rect x="262" y="100" width="6" height="172" fill="#463659"/>
+<rect x="178.8" y="100" width="6" height="172" fill="#463659"/>
+<rect x="540" y="100" width="260" height="60" fill="#6e5a86"/>
+<rect x="540" y="150" width="260" height="10" fill="#463659"/>
+<rect x="540" y="160" width="220" height="60" fill="#6e5a86"/>
+<rect x="540" y="210" width="220" height="10" fill="#463659"/>
+<rect x="540" y="220" width="160" height="52" fill="#6e5a86"/>
+<rect x="540" y="262" width="160" height="10" fill="#463659"/>
+<rect x="618" y="100" width="6" height="172" fill="#463659"/>
+<rect x="701.2" y="100" width="6" height="172" fill="#463659"/>
+
+<!-- хвост: уходит вправо и сужается, иначе дракон читается просто зверем -->
+<rect x="540" y="360" width="80" height="48" fill="#5a4870"/>
+<rect x="600" y="320" width="68" height="44" fill="#5a4870"/>
+<rect x="652" y="284" width="56" height="40" fill="#3e3050"/>
+
+<!-- туловище и шея -->
+<rect x="340" y="200" width="200" height="220" fill="#5a4870"/>
+<rect x="380" y="260" width="120" height="140" fill="#7d6b92"/>
+<rect x="380" y="120" width="120" height="100" fill="#5a4870"/>
+
+<!-- голова -->
+<rect x="340" y="20" width="200" height="120" fill="#5a4870"/>
+<rect x="390" y="120" width="100" height="70" fill="#4a3a60"/>
+<rect x="352" y="0" width="28" height="28" fill="#c3b2d6"/>
+<rect x="500" y="0" width="28" height="28" fill="#c3b2d6"/>
+<rect x="408" y="6" width="22" height="18" fill="#c3b2d6"/>
+<rect x="450" y="6" width="22" height="18" fill="#c3b2d6"/>
+
+<!-- глаза: крупные и круглые, в них вся разница между зверем и страшилой -->
+<rect x="364" y="52" width="52" height="44" fill="#ffffff"/>
+<rect x="464" y="52" width="52" height="44" fill="#ffffff"/>
+<rect x="382" y="64" width="24" height="26" fill="#d86ad0"/>
+<rect x="482" y="64" width="24" height="26" fill="#d86ad0"/>
+
+<!-- ноздри -->
+<rect x="412" y="160" width="16" height="14" fill="#3e3050"/>
+<rect x="456" y="160" width="16" height="14" fill="#3e3050"/>
+
+<!-- лапы -->
+<rect x="352" y="420" width="64" height="100" fill="#5a4870"/>
+<rect x="468" y="420" width="64" height="100" fill="#5a4870"/>
+<rect x="340" y="508" width="88" height="36" fill="#3e3050"/>
+<rect x="456" y="508" width="88" height="36" fill="#3e3050"/>
+<rect x="346" y="528" width="16" height="20" fill="#c3b2d6"/>
+<rect x="384" y="528" width="16" height="20" fill="#c3b2d6"/>
+<rect x="462" y="528" width="16" height="20" fill="#c3b2d6"/>
+<rect x="500" y="528" width="16" height="20" fill="#c3b2d6"/>
+</g>
+</svg>

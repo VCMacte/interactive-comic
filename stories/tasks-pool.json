@@ -8332,5 +8332,1273 @@
    "audio": "deba8a83",
    "hintAudio": "6576c316"
   }
+ ],
+ "minecraft|logic|10|end": [
+  {
+   "type": "oddOneOut",
+   "question": "Что здесь лишнее: обсидиан, пустота или яблоко?",
+   "hint": "Подумай: два из них — это из Края. А третий?",
+   "choices": [
+    {
+     "label": "Яблоко",
+     "keywords": [
+      "яблоко"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Обсидиан",
+     "keywords": [
+      "обсидиан"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Пустота",
+     "keywords": [
+      "пустота"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "ee666df5",
+   "hintAudio": "37b6ed3a"
+  },
+  {
+   "type": "oddOneOut",
+   "question": "Что здесь лишнее: обсидиан, столб или трава?",
+   "hint": "Подумай: два из них — это из Края. А третий?",
+   "choices": [
+    {
+     "label": "Обсидиан",
+     "keywords": [
+      "обсидиан"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Столб",
+     "keywords": [
+      "столб"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Трава",
+     "keywords": [
+      "трава"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "0a112748",
+   "hintAudio": "37b6ed3a"
+  },
+  {
+   "type": "oddOneOut",
+   "question": "Что здесь лишнее: столб, пустота или яблоко?",
+   "hint": "Подумай: два из них — это из Края. А третий?",
+   "choices": [
+    {
+     "label": "Столб",
+     "keywords": [
+      "столб"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Пустота",
+     "keywords": [
+      "пустота"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Яблоко",
+     "keywords": [
+      "яблоко"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "6e809115",
+   "hintAudio": "37b6ed3a"
+  },
+  {
+   "type": "oddOneOut",
+   "question": "Что здесь лишнее: столб, кристалл или трава?",
+   "hint": "Подумай: два из них — это из Края. А третий?",
+   "choices": [
+    {
+     "label": "Столб",
+     "keywords": [
+      "столб"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Кристалл",
+     "keywords": [
+      "кристалл"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Трава",
+     "keywords": [
+      "трава"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "ee8b3cf0",
+   "hintAudio": "37b6ed3a"
+  },
+  {
+   "type": "oddOneOut",
+   "question": "Что здесь лишнее: пустота, столб или яблоко?",
+   "hint": "Подумай: два из них — это из Края. А третий?",
+   "choices": [
+    {
+     "label": "Яблоко",
+     "keywords": [
+      "яблоко"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Пустота",
+     "keywords": [
+      "пустота"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Столб",
+     "keywords": [
+      "столб"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "5268dea9",
+   "hintAudio": "37b6ed3a"
+  },
+  {
+   "type": "oddOneOut",
+   "question": "Что здесь лишнее: пустота, звезда или корова?",
+   "hint": "Подумай: два из них — это из Края. А третий?",
+   "choices": [
+    {
+     "label": "Пустота",
+     "keywords": [
+      "пустота"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Корова",
+     "keywords": [
+      "корова"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Звезда",
+     "keywords": [
+      "звезда"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "25acebfa",
+   "hintAudio": "37b6ed3a"
+  },
+  {
+   "type": "oddOneOut",
+   "question": "Что здесь лишнее: кристалл, обсидиан или трава?",
+   "hint": "Подумай: два из них — это из Края. А третий?",
+   "choices": [
+    {
+     "label": "Кристалл",
+     "keywords": [
+      "кристалл"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Обсидиан",
+     "keywords": [
+      "обсидиан"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Трава",
+     "keywords": [
+      "трава"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "216ad21c",
+   "hintAudio": "37b6ed3a"
+  },
+  {
+   "type": "oddOneOut",
+   "question": "Что здесь лишнее: звезда, пустота или корова?",
+   "hint": "Подумай: два из них — это из Края. А третий?",
+   "choices": [
+    {
+     "label": "Корова",
+     "keywords": [
+      "корова"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Пустота",
+     "keywords": [
+      "пустота"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Звезда",
+     "keywords": [
+      "звезда"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "ed3f7420",
+   "hintAudio": "37b6ed3a"
+  },
+  {
+   "type": "oddOneOut",
+   "question": "Что здесь лишнее: кристалл, звезда или корова?",
+   "hint": "Подумай: два из них — это из Края. А третий?",
+   "choices": [
+    {
+     "label": "Корова",
+     "keywords": [
+      "корова"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Звезда",
+     "keywords": [
+      "звезда"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Кристалл",
+     "keywords": [
+      "кристалл"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "4604938c",
+   "hintAudio": "37b6ed3a"
+  },
+  {
+   "type": "oddOneOut",
+   "question": "Что здесь лишнее: столб, обсидиан или яблоко?",
+   "hint": "Подумай: два из них — это из Края. А третий?",
+   "choices": [
+    {
+     "label": "Яблоко",
+     "keywords": [
+      "яблоко"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Обсидиан",
+     "keywords": [
+      "обсидиан"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Столб",
+     "keywords": [
+      "столб"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "7454492f",
+   "hintAudio": "37b6ed3a"
+  }
+ ],
+ "minecraft|math|20|end": [
+  {
+   "type": "addition",
+   "question": "Сколько будет семь огоньков и ещё восемь огоньков?",
+   "hint": "Посчитаем вместе: семь огоньков, и прибавим ещё восемь.",
+   "choices": [
+    {
+     "label": "Тринадцать",
+     "keywords": [
+      "тринадцать",
+      "13"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Шестнадцать",
+     "keywords": [
+      "шестнадцать",
+      "16"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Пятнадцать",
+     "keywords": [
+      "пятнадцать",
+      "15"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "1302c067",
+   "hintAudio": "81f71e50"
+  },
+  {
+   "type": "addition",
+   "question": "Сколько будет семь огоньков и ещё пять огоньков?",
+   "hint": "Посчитаем вместе: семь огоньков, и прибавим ещё пять.",
+   "choices": [
+    {
+     "label": "Двенадцать",
+     "keywords": [
+      "двенадцать",
+      "12"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Тринадцать",
+     "keywords": [
+      "тринадцать",
+      "13"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Четырнадцать",
+     "keywords": [
+      "четырнадцать",
+      "14"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "f7c5f9b9",
+   "hintAudio": "72997ce6"
+  },
+  {
+   "type": "addition",
+   "question": "Сколько будет три огонька и ещё один огонёк?",
+   "hint": "Посчитаем вместе: три огонька, и прибавим ещё один.",
+   "choices": [
+    {
+     "label": "Два",
+     "keywords": [
+      "два",
+      "2"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Пять",
+     "keywords": [
+      "пять",
+      "5"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Четыре",
+     "keywords": [
+      "четыре",
+      "4"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "bab02aa3",
+   "hintAudio": "8ac553fd"
+  },
+  {
+   "type": "addition",
+   "question": "Сколько будет один кристалл и ещё один кристалл?",
+   "hint": "Посчитаем вместе: один кристалл, и прибавим ещё один.",
+   "choices": [
+    {
+     "label": "Один",
+     "keywords": [
+      "один",
+      "1"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Четыре",
+     "keywords": [
+      "четыре",
+      "4"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Два",
+     "keywords": [
+      "два",
+      "2"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "8d66cb63",
+   "hintAudio": "b3027ef9"
+  },
+  {
+   "type": "addition",
+   "question": "Сколько будет восемь огоньков и ещё пять огоньков?",
+   "hint": "Посчитаем вместе: восемь огоньков, и прибавим ещё пять.",
+   "choices": [
+    {
+     "label": "Тринадцать",
+     "keywords": [
+      "тринадцать",
+      "13"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Одиннадцать",
+     "keywords": [
+      "одиннадцать",
+      "11"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Двенадцать",
+     "keywords": [
+      "двенадцать",
+      "12"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "b4ace205",
+   "hintAudio": "7cfa8702"
+  },
+  {
+   "type": "addition",
+   "question": "Сколько будет три кристалла и ещё семь кристаллов?",
+   "hint": "Посчитаем вместе: три кристалла, и прибавим ещё семь.",
+   "choices": [
+    {
+     "label": "Восемь",
+     "keywords": [
+      "восемь",
+      "8"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Десять",
+     "keywords": [
+      "десять",
+      "10"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Двенадцать",
+     "keywords": [
+      "двенадцать",
+      "12"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "f402c041",
+   "hintAudio": "830eb3d3"
+  },
+  {
+   "type": "addition",
+   "question": "Сколько будет пять кристаллов и ещё три кристалла?",
+   "hint": "Посчитаем вместе: пять кристаллов, и прибавим ещё три.",
+   "choices": [
+    {
+     "label": "Шесть",
+     "keywords": [
+      "шесть",
+      "6"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Семь",
+     "keywords": [
+      "семь",
+      "7"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Восемь",
+     "keywords": [
+      "восемь",
+      "8"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "083da78f",
+   "hintAudio": "8596a9d9"
+  },
+  {
+   "type": "addition",
+   "question": "Сколько будет восемь огоньков и ещё десять огоньков?",
+   "hint": "Посчитаем вместе: восемь огоньков, и прибавим ещё десять.",
+   "choices": [
+    {
+     "label": "Двадцать",
+     "keywords": [
+      "двадцать",
+      "20"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Семнадцать",
+     "keywords": [
+      "семнадцать",
+      "17"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Восемнадцать",
+     "keywords": [
+      "восемнадцать",
+      "18"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "0c8d282c",
+   "hintAudio": "e7fc5841"
+  },
+  {
+   "type": "addition",
+   "question": "Сколько будет шесть огоньков и ещё семь огоньков?",
+   "hint": "Посчитаем вместе: шесть огоньков, и прибавим ещё семь.",
+   "choices": [
+    {
+     "label": "Тринадцать",
+     "keywords": [
+      "тринадцать",
+      "13"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Двенадцать",
+     "keywords": [
+      "двенадцать",
+      "12"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Одиннадцать",
+     "keywords": [
+      "одиннадцать",
+      "11"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "acf4368f",
+   "hintAudio": "4aae3c40"
+  },
+  {
+   "type": "addition",
+   "question": "Сколько будет четыре огонька и ещё два огонька?",
+   "hint": "Посчитаем вместе: четыре огонька, и прибавим ещё два.",
+   "choices": [
+    {
+     "label": "Шесть",
+     "keywords": [
+      "шесть",
+      "6"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Пять",
+     "keywords": [
+      "пять",
+      "5"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Четыре",
+     "keywords": [
+      "четыре",
+      "4"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "f3828587",
+   "hintAudio": "5e3d6164"
+  }
+ ],
+ "minecraft|math|10|end": [
+  {
+   "type": "subtraction",
+   "question": "Было шесть кристаллов, погасло три кристалла. Сколько осталось?",
+   "hint": "Было шесть, пропало три. Отними и скажи, сколько стало.",
+   "choices": [
+    {
+     "label": "Три",
+     "keywords": [
+      "три",
+      "3"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Пять",
+     "keywords": [
+      "пять",
+      "5"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Четыре",
+     "keywords": [
+      "четыре",
+      "4"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "ec02be6b",
+   "hintAudio": "9347c6da"
+  },
+  {
+   "type": "subtraction",
+   "question": "Было пять кристаллов, погасло два кристалла. Сколько осталось?",
+   "hint": "Было пять, пропало два. Отними и скажи, сколько стало.",
+   "choices": [
+    {
+     "label": "Четыре",
+     "keywords": [
+      "четыре",
+      "4"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Три",
+     "keywords": [
+      "три",
+      "3"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Пять",
+     "keywords": [
+      "пять",
+      "5"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "14f66b81",
+   "hintAudio": "998a2b2c"
+  },
+  {
+   "type": "subtraction",
+   "question": "Было семь кристаллов, погасло четыре кристалла. Сколько осталось?",
+   "hint": "Было семь, пропало четыре. Отними и скажи, сколько стало.",
+   "choices": [
+    {
+     "label": "Два",
+     "keywords": [
+      "два",
+      "2"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Три",
+     "keywords": [
+      "три",
+      "3"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Пять",
+     "keywords": [
+      "пять",
+      "5"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "5e912c39",
+   "hintAudio": "65f50560"
+  },
+  {
+   "type": "subtraction",
+   "question": "Было пять кристаллов, погасло четыре кристалла. Сколько осталось?",
+   "hint": "Было пять, пропало четыре. Отними и скажи, сколько стало.",
+   "choices": [
+    {
+     "label": "Три",
+     "keywords": [
+      "три",
+      "3"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Один",
+     "keywords": [
+      "один",
+      "1"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Ноль",
+     "keywords": [
+      "ноль",
+      "0"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "c6002bb3",
+   "hintAudio": "49a998d6"
+  },
+  {
+   "type": "subtraction",
+   "question": "Было четыре кристалла, погасло три кристалла. Сколько осталось?",
+   "hint": "Было четыре, пропало три. Отними и скажи, сколько стало.",
+   "choices": [
+    {
+     "label": "Три",
+     "keywords": [
+      "три",
+      "3"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Два",
+     "keywords": [
+      "два",
+      "2"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Один",
+     "keywords": [
+      "один",
+      "1"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "7f44b949",
+   "hintAudio": "ff82a9fc"
+  },
+  {
+   "type": "subtraction",
+   "question": "Было восемь кристаллов, погасло три кристалла. Сколько осталось?",
+   "hint": "Было восемь, пропало три. Отними и скажи, сколько стало.",
+   "choices": [
+    {
+     "label": "Пять",
+     "keywords": [
+      "пять",
+      "5"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Семь",
+     "keywords": [
+      "семь",
+      "7"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Шесть",
+     "keywords": [
+      "шесть",
+      "6"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "0bd127e7",
+   "hintAudio": "df940c2e"
+  },
+  {
+   "type": "subtraction",
+   "question": "Было шесть кристаллов, погасло пять кристаллов. Сколько осталось?",
+   "hint": "Было шесть, пропало пять. Отними и скажи, сколько стало.",
+   "choices": [
+    {
+     "label": "Ноль",
+     "keywords": [
+      "ноль",
+      "0"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Один",
+     "keywords": [
+      "один",
+      "1"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Два",
+     "keywords": [
+      "два",
+      "2"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "2afd1497",
+   "hintAudio": "87e96f50"
+  },
+  {
+   "type": "subtraction",
+   "question": "Было четыре кристалла, погасло два кристалла. Сколько осталось?",
+   "hint": "Было четыре, пропало два. Отними и скажи, сколько стало.",
+   "choices": [
+    {
+     "label": "Два",
+     "keywords": [
+      "два",
+      "2"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Ноль",
+     "keywords": [
+      "ноль",
+      "0"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Четыре",
+     "keywords": [
+      "четыре",
+      "4"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "44c8c169",
+   "hintAudio": "d9e61adc"
+  },
+  {
+   "type": "subtraction",
+   "question": "Было восемь огоньков, погасло три огонька. Сколько осталось?",
+   "hint": "Было восемь, пропало три. Отними и скажи, сколько стало.",
+   "choices": [
+    {
+     "label": "Три",
+     "keywords": [
+      "три",
+      "3"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Пять",
+     "keywords": [
+      "пять",
+      "5"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Шесть",
+     "keywords": [
+      "шесть",
+      "6"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "0e5843e3",
+   "hintAudio": "df940c2e"
+  },
+  {
+   "type": "subtraction",
+   "question": "Было три кристалла, погасло один кристалл. Сколько осталось?",
+   "hint": "Было три, пропало один. Отними и скажи, сколько стало.",
+   "choices": [
+    {
+     "label": "Три",
+     "keywords": [
+      "три",
+      "3"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Четыре",
+     "keywords": [
+      "четыре",
+      "4"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Два",
+     "keywords": [
+      "два",
+      "2"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "c3d4d790",
+   "hintAudio": "a81002f3"
+  }
+ ],
+ "minecraft|logic|15|-": [
+  {
+   "type": "opposite",
+   "question": "Скажи наоборот: день. Это будет…?",
+   "hint": "День — а если совсем наоборот?",
+   "choices": [
+    {
+     "label": "Ночь",
+     "keywords": [
+      "ночь"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Высоко",
+     "keywords": [
+      "высоко"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Полный",
+     "keywords": [
+      "полный"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "b0d87290",
+   "hintAudio": "125edf09"
+  },
+  {
+   "type": "opposite",
+   "question": "Скажи наоборот: твёрдый. Это будет…?",
+   "hint": "Твёрдый — а если совсем наоборот?",
+   "choices": [
+    {
+     "label": "Мягкий",
+     "keywords": [
+      "мягкий"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Далеко",
+     "keywords": [
+      "далеко"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Близко",
+     "keywords": [
+      "близко"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "94c241ad",
+   "hintAudio": "a96f4cb4"
+  },
+  {
+   "type": "opposite",
+   "question": "Скажи наоборот: полный. Это будет…?",
+   "hint": "Полный — а если совсем наоборот?",
+   "choices": [
+    {
+     "label": "Близко",
+     "keywords": [
+      "близко"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Пустой",
+     "keywords": [
+      "пустой"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Низко",
+     "keywords": [
+      "низко"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "e79d2f11",
+   "hintAudio": "adcdf36e"
+  },
+  {
+   "type": "opposite",
+   "question": "Скажи наоборот: близко. Это будет…?",
+   "hint": "Близко — а если совсем наоборот?",
+   "choices": [
+    {
+     "label": "Быстро",
+     "keywords": [
+      "быстро"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Полный",
+     "keywords": [
+      "полный"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Далеко",
+     "keywords": [
+      "далеко"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "537c43e5",
+   "hintAudio": "6225339a"
+  },
+  {
+   "type": "opposite",
+   "question": "Скажи наоборот: пустой. Это будет…?",
+   "hint": "Пустой — а если совсем наоборот?",
+   "choices": [
+    {
+     "label": "Полный",
+     "keywords": [
+      "полный"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Далеко",
+     "keywords": [
+      "далеко"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Ночь",
+     "keywords": [
+      "ночь"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "bf16b29e",
+   "hintAudio": "4d44309b"
+  },
+  {
+   "type": "opposite",
+   "question": "Скажи наоборот: далеко. Это будет…?",
+   "hint": "Далеко — а если совсем наоборот?",
+   "choices": [
+    {
+     "label": "Близко",
+     "keywords": [
+      "близко"
+     ],
+     "correct": true
+    },
+    {
+     "label": "День",
+     "keywords": [
+      "день"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Высоко",
+     "keywords": [
+      "высоко"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "d147842a",
+   "hintAudio": "62974c47"
+  },
+  {
+   "type": "opposite",
+   "question": "Скажи наоборот: быстро. Это будет…?",
+   "hint": "Быстро — а если совсем наоборот?",
+   "choices": [
+    {
+     "label": "Высоко",
+     "keywords": [
+      "высоко"
+     ],
+     "correct": false
+    },
+    {
+     "label": "День",
+     "keywords": [
+      "день"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Медленно",
+     "keywords": [
+      "медленно"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "476cd8d5",
+   "hintAudio": "8ffe3d66"
+  },
+  {
+   "type": "opposite",
+   "question": "Скажи наоборот: медленно. Это будет…?",
+   "hint": "Медленно — а если совсем наоборот?",
+   "choices": [
+    {
+     "label": "Мягкий",
+     "keywords": [
+      "мягкий"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Твёрдый",
+     "keywords": [
+      "твёрдый"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Быстро",
+     "keywords": [
+      "быстро"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "c8f3c33f",
+   "hintAudio": "88bad7a4"
+  },
+  {
+   "type": "opposite",
+   "question": "Скажи наоборот: высоко. Это будет…?",
+   "hint": "Высоко — а если совсем наоборот?",
+   "choices": [
+    {
+     "label": "Низко",
+     "keywords": [
+      "низко"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Близко",
+     "keywords": [
+      "близко"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Мягкий",
+     "keywords": [
+      "мягкий"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "5ab3a1d6",
+   "hintAudio": "afb5e8d3"
+  },
+  {
+   "type": "opposite",
+   "question": "Скажи наоборот: ночь. Это будет…?",
+   "hint": "Ночь — а если совсем наоборот?",
+   "choices": [
+    {
+     "label": "День",
+     "keywords": [
+      "день"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Мягкий",
+     "keywords": [
+      "мягкий"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Близко",
+     "keywords": [
+      "близко"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "02535b2e",
+   "hintAudio": "d711fe9f"
+  }
  ]
 }

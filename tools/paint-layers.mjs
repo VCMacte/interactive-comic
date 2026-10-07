@@ -155,6 +155,26 @@ const MC_LAYERS = {
     prompt: `long underground stronghold corridor of mossy stone brick cubes, receding square archways one behind another, warm yellow torchlight on the brick walls, low cubic ceiling, dusty warm haze, deep perspective into the dark, ${MC_STYLE}`,
     negative: MC_NEG + ', sky, horizon, sun, clouds, grass, trees, water, waterfall, lava, cold blue light, blue haze, people',
   },
+  // ---- седьмой день ----
+  // Край — единственное место сезона, где неба нет вовсе: вместо него
+  // лиловая пустота. Генератор пустоту терпеть не умеет и норовит
+  // достроить ей солнце, облака и горизонт, поэтому в negative они идут
+  // первыми. Светило отдельным слоем тут тоже не появится — его нет
+  // в сценарии ни в одной сцене.
+  'mc/sky-void': {
+    strength: 0.42,
+    prompt: `deep violet purple emptiness instead of sky, no sun, no moon, faint pale specks far away in the dark lilac void, smooth deep gradient, ${MC_STYLE}, no ground, no horizon`,
+    negative: MC_NEG + ', sun, moon, stars as big shapes, clouds, horizon, ground, grass, trees, water, lava, fire, orange glow, blue sky, daylight',
+  },
+  // Парящий остров. Слой кадр не закрывает — под островами видна
+  // пустота, и собирается он с chromaKey, как холмы и река. Отсюда же
+  // запрет на горизонт и землю в negative: стоит генератору дорисовать
+  // линию горизонта, и остров перестаёт висеть.
+  'mc/far-end-island': {
+    strength: 0.24,
+    prompt: `floating island of pale cream cubes hanging in a violet void, tall black obsidian cube pillars rising from it with small magenta crystals glowing on top, smaller islands floating separately in the emptiness, dark rocky underside, faint lilac haze, ${MC_STYLE}`,
+    negative: MC_NEG + ', sun, moon, clouds, horizon line, solid ground, grass, trees, water, waterfall, lava, fire, warm orange light, people',
+  },
 };
 
 Object.assign(LAYERS, MC_LAYERS);

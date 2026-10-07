@@ -1,5 +1,12 @@
 [
   {
+    "id": "the-end",
+    "title": "Край",
+    "subtitle": "Седьмой день Стива · пять игр",
+    "cover": "assets/covers/the-end.webp",
+    "story": "stories/the-end.json"
+  },
+  {
     "id": "stronghold",
     "title": "Крепость и библиотека",
     "subtitle": "Шестой день Стива · пять игр",

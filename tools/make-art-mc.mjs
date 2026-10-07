@@ -80,6 +80,13 @@ const P = {
   // в том и весь смысл дня.
   sbrick: { base: '#7e7a70', dark: '#625f57', light: '#959186' },
   eframe: { base: '#c9c57e', dark: '#a3a05f', light: '#e2df9c' },
+  // Край седьмого дня. Камень острова — бледный, выгоревший, почти без
+  // цвета: вокруг лиловая пустота, и любой насыщенный тон рядом с ней
+  // читается как «кусок другой истории». Кристалл малиновый — это
+  // единственное яркое пятно за весь день, и гаснет оно по одному.
+  estone: { base: '#ded8a8', dark: '#b8b184', light: '#f0ebc4' },
+  edeep:  { base: '#6e6a52', dark: '#53503e', light: '#857f63' },
+  ecrystal: { base: '#e06ad0', dark: '#a84a9e', light: '#f7a8ec' },
 };
 
 /**
@@ -624,6 +631,18 @@ const GLOW_DEF = `<defs><radialGradient id="glow">
 <stop offset="1" stop-color="#ffb13b" stop-opacity="0"/>
 </radialGradient></defs>`;
 const glow = (x, y, r) => `<circle cx="${n(x)}" cy="${n(y)}" r="${n(r)}" fill="url(#glow)"/>`;
+
+/**
+ * Тот же ореол, но холодный — под кристаллы Края. Отдельное определение,
+ * а не параметр: тёплый GLOW_DEF зовут семь готовых слоёв, и переделывать
+ * его ради одного дня нельзя.
+ */
+const GLOW_END_DEF = `<defs><radialGradient id="glow-end">
+<stop offset="0" stop-color="#f7a8ec" stop-opacity="0.55"/>
+<stop offset="0.45" stop-color="#e06ad0" stop-opacity="0.2"/>
+<stop offset="1" stop-color="#e06ad0" stop-opacity="0"/>
+</radialGradient></defs>`;
+const glowEnd = (x, y, r) => `<circle cx="${n(x)}" cy="${n(y)}" r="${n(r)}" fill="url(#glow-end)"/>`;
 
 function torch(x, y) {
   return `<rect x="${x + 24}" y="${y + 18}" width="12" height="42" fill="#7a5630"/>
@@ -1869,6 +1888,319 @@ ${px(10.6 * U, 9 * U, 1.3 * U, 1.2 * U, furDark)}`;
   return charSvg(body, 20 * U, 11 * U);
 }
 
+/* ---------------- Край седьмого дня ---------------- */
+
+/**
+ * Пустота Края. Небо без светила вовсе — единственное такое за сезон,
+ * и облаков тут нет: облако в пустоте читается как «всё-таки небо»,
+ * а весь смысл места в том, что это не небо.
+ */
+function skyVoid() {
+  const defs = `<defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#140a22"/><stop offset="0.55" stop-color="#241238"/>
+    <stop offset="1" stop-color="#3a1d52"/></linearGradient></defs>`;
+  return svg(`<rect width="${W}" height="${H}" fill="url(#g)"/>`, defs);
+}
+
+/**
+ * Крапины в пустоте — отдельным прозрачным слоем, как луна и солнце.
+ * Через img2img они либо раздуваются в светило, либо вымываются начисто,
+ * и это уже проверено на звёздах первой ночи.
+ *
+ * Выше линии земли и только там: на предпросмотре крапины легли и на
+ * камень острова, и получилась не пустота, а сыпь по земле.
+ */
+function starsVoid(seed = 17) {
+  const rand = rng(seed);
+  const out = [];
+  for (let i = 0; i < 120; i++) {
+    const x = Math.floor(rand() * (W / 20)) * 20;
+    const y = Math.floor(rand() * (GROUND * 0.86 / 20)) * 20;
+    const s = rand() < 0.2 ? 14 : 8;
+    out.push(`<rect x="${x}" y="${y}" width="${s}" height="${s}" fill="#e8d8ff" opacity="${n(0.22 + rand() * 0.6)}"/>`);
+  }
+  return svg(out.join('\n'));
+}
+
+/**
+ * Парящий остров Края. Слой кадр НЕ закрывает: под островами и между ними
+ * должна быть видна пустота, поэтому при сборке ему нужен chromaKey по
+ * цвету init-подложки — как у холмов и реки, а не как у свода Нижнего мира.
+ *
+ * Дальняя кромка поднимается над линией земли всего на блок-два. Первый
+ * вариант рос до четырёх, и уступ приходился Стиву ровно по пояс: вместо
+ * глубины получалась вторая стена прямо за спиной. Пустоты в среднем поясе
+ * кадра должно быть видно много — она тут главный герой.
+ *
+ * Тона дальнего плана СВОИ, темнее и холоднее ближнего камня. На одной
+ * палитре с ближним планом остров и земля сливались в одно поле: в холмах
+ * первого дня их разводит зелёный против травяного, здесь разводить нечем.
+ *
+ * Столбы стоят на 10, 22, 74 и 90%: полоса 32…64% остаётся пустой, там
+ * в сценах Края стоит Стив. Жила алмазов за спиной уже была.
+ */
+function farEndIsland(seed = 321) {
+  const rand = rng(seed);
+  const out = [];
+  const pale = { base: '#9e9a76', dark: '#7d7a5c', light: '#b4b08a' };
+  const under = { base: '#4a4738', dark: '#38362a', light: '#5c5945' };
+
+  let height = 1;
+  for (let col = 0; col * B < W; col++) {
+    const x = col * B;
+    if (rand() < 0.3) height += rand() < 0.5 ? 1 : -1;
+    height = Math.max(0, Math.min(2, height));
+    for (let i = 0; i < height; i++) {
+      out.push(block(x, GROUND - B - i * B, i === height - 1 ? pale : under, rand));
+    }
+    // Низ дальней кромки обрывается в пустоту, а не уходит под землю:
+    // иначе остров не парит, а просто стоит на чём-то невидимом.
+    for (let r = 0; r < 2 + Math.floor(rand() * 2); r++) {
+      out.push(block(x, GROUND + r * B, under, rand));
+    }
+  }
+
+  // Острова помельче висят сами по себе. Низ у каждого тёмный и неровный:
+  // ровная плита снизу читается полкой, а не куском оторванной земли.
+  for (const [cx, cy, w] of [[0.1, 0.2, 5], [0.44, 0.12, 7], [0.8, 0.25, 4]]) {
+    const x0 = Math.round((W / B) * cx) * B;
+    const y0 = Math.round((H / B) * cy) * B;
+    for (let c = 0; c < w; c++) {
+      out.push(block(x0 + c * B, y0, pale, rand));
+      const d = 1 + Math.floor(rand() * 2);
+      for (let r = 1; r <= d; r++) out.push(block(x0 + c * B, y0 + r * B, under, rand));
+    }
+  }
+
+  // Столбы с огоньками в глубине кадра: именно их Стив обходит кругом,
+  // и из них понятно, что остров больше, чем видно.
+  for (const fx of [0.1, 0.22, 0.74, 0.9]) {
+    const x = Math.round((W / B) * fx) * B;
+    const h = 4 + Math.floor(rand() * 3);
+    for (let r = 0; r < h; r++) out.push(block(x, GROUND - B * (2 + r), P.obsidian, rand));
+    const top = GROUND - B * (2 + h);
+    out.push(glowEnd(x + B * 0.5, top + B * 0.4, B * 2.4));
+    out.push(block(x + B * 0.1, top, P.ecrystal, rand, B * 0.8));
+  }
+
+  // Лиловая дымка у кромки: она даёт воздух и отделяет дальний план от
+  // ближнего. Жёсткой маской её срезает, поэтому собирать слой с softMask.
+  //
+  // Именно растяжка, а не ровный прямоугольник: у прямоугольника видна
+  // верхняя грань, и на предпросмотре он читался не дымкой, а полосой
+  // поперёк всего кадра.
+  const defs = GLOW_END_DEF.replace('</defs>', `<linearGradient id="endhaze" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0" stop-color="#8a5cc4" stop-opacity="0"/>
+<stop offset="1" stop-color="#8a5cc4" stop-opacity="0.2"/>
+</linearGradient></defs>`);
+  out.push(`<rect x="0" y="${n(GROUND - B * 6)}" width="${W}" height="${n(B * 6)}" fill="url(#endhaze)"/>`);
+  return svg(out.join('\n'), defs);
+}
+
+/**
+ * Ближний план Края: бледный камень, два столба с кристаллами и обрыв
+ * справа. Кулис по краям здесь нет намеренно — тёмная полоса у края кадра
+ * во всех прежних слоях означала «дальше стена», а здесь дальше пустота,
+ * и обрыв на 84% как раз и есть то, за край чего Стив свешивается в сцене
+ * `look`.
+ *
+ * Столбы стоят на 8 и 76%, полоса 32…64% свободна под Стива. Грань столба
+ * высветлена: сплошной обсидиан на лиловом фоне пропадал начисто, столбы
+ * читались дырками в картинке.
+ */
+function nearEndPillar(seed = 331) {
+  const rand = rng(seed);
+  const out = [];
+  const brink = Math.round((W / B) * 0.84) * B;
+
+  // Кромка обрыва ступенькой, а не отвесным срезом: отвесный читался
+  // прямоугольной дыркой в картинке, это было видно на предпросмотре.
+  // Чем глубже ряд, тем раньше он кончается — камень обламывается внутрь.
+  const cutAt = (r) => brink - Math.min(r, 3) * B;
+  for (let r = 0; GROUND + r * B < H; r++) {
+    const cut = cutAt(r);
+    for (let c = 0; c * B < W; c++) {
+      const x = c * B;
+      if (x >= cut) continue;
+      out.push(block(x, GROUND + r * B, r === 0 ? P.estone : P.edeep, rand));
+    }
+    out.push(`<rect x="${n(cut - 10)}" y="${n(GROUND + r * B)}" width="10" height="${n(B)}" fill="#1a1024"/>`);
+  }
+  // Пара блоков, оторвавшихся от кромки и повисших ниже: по ним видно,
+  // что остров обламывается, а не аккуратно обрезан.
+  out.push(block(brink + B * 0.4, GROUND + B * 1.4, P.edeep, rand, B * 0.7));
+  out.push(block(brink - B * 1.8, GROUND + B * 2.8, P.edeep, rand, B * 0.5));
+
+  // Столб с кристаллом. Кристалл сидит в тонкой клетке — её-то Стив
+  // и сбивает в сцене `crystals`, и по клетке понятно, что огонёк не
+  // просто светится, а чем-то держится.
+  const pillar = (fx, h) => {
+    const x = Math.round((W / B) * fx) * B;
+    const body = [];
+    for (let r = 0; r < h; r++) {
+      body.push(block(x, GROUND - B * (r + 1), P.obsidian, rand));
+      body.push(block(x + B, GROUND - B * (r + 1), P.obsidian, rand));
+    }
+    // Светлая грань и тёмная тень по бокам: без них столб не объёмный.
+    body.push(`<rect x="${n(x)}" y="${n(GROUND - B * h)}" width="${n(B * 0.22)}" height="${n(B * h)}" fill="#6b5a7a"/>`);
+    body.push(`<rect x="${n(x + B * 1.78)}" y="${n(GROUND - B * h)}" width="${n(B * 0.22)}" height="${n(B * h)}" fill="#120b1a"/>`);
+    const top = GROUND - B * (h + 1.4);
+    body.push(glowEnd(x + B, top + B * 0.7, B * 3.6));
+    body.push(block(x + B * 0.3, top, P.ecrystal, rand, B * 1.4));
+    body.push(`<rect x="${n(x + B * 0.3)}" y="${n(top)}" width="${n(B * 1.4)}" height="${n(B * 1.4)}" fill="none" stroke="#8d7aa3" stroke-width="7"/>`);
+    return body.join('\n');
+  };
+
+  return svg(`${out.join('\n')}
+${pillar(0.08, 7)}
+${pillar(0.76, 5)}`, GLOW_END_DEF);
+}
+
+/**
+ * Середина острова с порталом домой. Возвышение стоит слева (6…22%):
+ * полосу 32…82% занимают Стив и дракон, и портал не должен оказаться
+ * у них за спиной.
+ *
+ * Портал здесь РАБОТАЕТ — светлый, высокий и спокойный. В этом вся
+ * разница с пустой рамкой шестого дня, и ребёнок должен увидеть её сразу.
+ * Дорожка к возвышению разобрана на два блока: её достраивают в сцене
+ * `open`, и ровная дорожка противоречила бы тексту.
+ */
+function nearEndGate(seed = 341) {
+  const rand = rng(seed);
+  const out = [];
+
+  for (let r = 0; GROUND + r * B < H; r++) {
+    for (let c = 0; c * B < W; c++) {
+      out.push(block(c * B, GROUND + r * B, r === 0 ? P.estone : P.edeep, rand));
+    }
+  }
+
+  const gx = Math.round((W / B) * 0.06) * B, gw = 5;
+  const dais = [];
+  for (let c = 0; c < gw; c++) {
+    for (let r = 0; r < 2; r++) dais.push(block(gx + c * B, GROUND - B * (r + 1), P.obsidian, rand));
+  }
+  dais.push(`<rect x="${n(gx)}" y="${n(GROUND - B * 2)}" width="${n(gw * B)}" height="${n(B * 0.16)}" fill="#8d7aa3"/>`);
+
+  // Столбики по углам возвышения: без них площадка читается ступенькой,
+  // а не местом, где что-то стоит.
+  for (const c of [0, gw - 1]) {
+    for (let r = 0; r < 2; r++) dais.push(block(gx + c * B, GROUND - B * (r + 3), P.obsidian, rand));
+  }
+
+  // Сам портал: столб спокойного света в три блока высотой. Низкая
+  // лужица света на предпросмотре читалась просто светлым камнем.
+  const pw = 3, pxl = gx + B;
+  const light = { base: '#d8c8f2', dark: '#b09ad6', light: '#f2e8ff' };
+  dais.push(glowEnd(pxl + (pw * B) / 2, GROUND - B * 3, B * 5.2));
+  for (let c = 0; c < pw; c++) {
+    for (let r = 0; r < 3; r++) dais.push(block(pxl + c * B, GROUND - B * (3 + r), light, rand));
+  }
+  dais.push(`<rect x="${n(pxl)}" y="${n(GROUND - B * 5)}" width="${n(pw * B)}" height="${n(B * 0.14)}" fill="#fffaff"/>`);
+
+  const path = [];
+  const px0 = Math.round((W / B) * 0.24) * B;
+  for (let c = 0; c < 5; c++) {
+    if (c === 2 || c === 3) continue;
+    path.push(block(px0 + c * B, GROUND - B, P.estone, rand));
+  }
+  // Блоки, которыми разрыв и закладывают, лежат тут же на камне.
+  for (let i = 0; i < 3; i++) {
+    path.push(block(px0 + B * 5.4 + i * B * 0.9, GROUND - B * 0.8, P.estone, rand, B * 0.75));
+  }
+
+  return svg(`${out.join('\n')}
+${dais.join('\n')}
+${path.join('\n')}`, GLOW_END_DEF);
+}
+
+/**
+ * Дракон Края. Роль `villain` держалась свободной весь сезон именно под
+ * него, но страшным он быть не должен: его не побеждают, а отпускают
+ * домой. Поэтому глаза большие и круглые, морда без единого зуба, а линии
+ * мягкие — тот же приём, что у коровы, овцы и летучей мыши.
+ *
+ * Шкура светлее и теплее пустоты, хотя дракон Края и чёрный: первый
+ * вариант был почти чёрным, и на лиловом фоне получилось тёмное пятно
+ * без силуэта. Это ровно то правило, что записано про зверей ёжика —
+ * холодный персонаж сливается с холодным задником.
+ *
+ * Крылья сужаются книзу тремя ступенями: ровный прямоугольник читался
+ * доской, а не крылом. Пропорции вытянуты в ширину, как у мыши: узнают
+ * дракона по размаху. Стив — 16 на 32 «пикселя», дракон — 44 на 28,
+ * то есть при `w: 26` в сценарии он втрое шире Стива и чуть выше его.
+ */
+function dragon() {
+  const U = 20;
+  const hide = '#5a4870', hideDark = '#3e3050', belly = '#7d6b92';
+  const wing = '#6e5a86', wingDark = '#463659';
+  const horn = '#c3b2d6', snout = '#4a3a60';
+  const eye = '#ffffff', iris = '#d86ad0';
+
+  // Крыло ступенями: чем ниже, тем короче. tip — внешний край.
+  const wingSteps = (tip, dir) => {
+    const rows = [[5, 3, 13], [8, 3, 11], [11, 2.6, 8]];
+    const body = [];
+    for (const [y, h, len] of rows) {
+      const x = dir > 0 ? tip : tip - len * U;
+      body.push(px(x, y * U, len * U, h * U, wing));
+      body.push(px(x, (y + h - 0.5) * U, len * U, 0.5 * U, wingDark));
+    }
+    // Жилки: без них перепонка остаётся плоским пятном.
+    for (const k of [0.3, 0.62]) {
+      const x = dir > 0 ? tip + 13 * U * k : tip - 13 * U * k;
+      body.push(px(x, 5 * U, 0.3 * U, 8.6 * U, wingDark));
+    }
+    return body.join('\n');
+  };
+
+  const body = `
+<!-- крылья -->
+${wingSteps(17 * U, -1)}
+${wingSteps(27 * U, 1)}
+
+<!-- хвост: уходит вправо и сужается, иначе дракон читается просто зверем -->
+${px(27 * U, 18 * U, 4 * U, 2.4 * U, hide)}
+${px(30 * U, 16 * U, 3.4 * U, 2.2 * U, hide)}
+${px(32.6 * U, 14.2 * U, 2.8 * U, 2 * U, hideDark)}
+
+<!-- туловище и шея -->
+${px(17 * U, 10 * U, 10 * U, 11 * U, hide)}
+${px(19 * U, 13 * U, 6 * U, 7 * U, belly)}
+${px(19 * U, 6 * U, 6 * U, 5 * U, hide)}
+
+<!-- голова -->
+${px(17 * U, 1 * U, 10 * U, 6 * U, hide)}
+${px(19.5 * U, 6 * U, 5 * U, 3.5 * U, snout)}
+${px(17.6 * U, 0, 1.4 * U, 1.4 * U, horn)}
+${px(25 * U, 0, 1.4 * U, 1.4 * U, horn)}
+${px(20.4 * U, 0.3 * U, 1.1 * U, 0.9 * U, horn)}
+${px(22.5 * U, 0.3 * U, 1.1 * U, 0.9 * U, horn)}
+
+<!-- глаза: крупные и круглые, в них вся разница между зверем и страшилой -->
+${px(18.2 * U, 2.6 * U, 2.6 * U, 2.2 * U, eye)}
+${px(23.2 * U, 2.6 * U, 2.6 * U, 2.2 * U, eye)}
+${px(19.1 * U, 3.2 * U, 1.2 * U, 1.3 * U, iris)}
+${px(24.1 * U, 3.2 * U, 1.2 * U, 1.3 * U, iris)}
+
+<!-- ноздри -->
+${px(20.6 * U, 8 * U, 0.8 * U, 0.7 * U, hideDark)}
+${px(22.8 * U, 8 * U, 0.8 * U, 0.7 * U, hideDark)}
+
+<!-- лапы -->
+${px(17.6 * U, 21 * U, 3.2 * U, 5 * U, hide)}
+${px(23.4 * U, 21 * U, 3.2 * U, 5 * U, hide)}
+${px(17 * U, 25.4 * U, 4.4 * U, 1.8 * U, hideDark)}
+${px(22.8 * U, 25.4 * U, 4.4 * U, 1.8 * U, hideDark)}
+${px(17.3 * U, 26.4 * U, 0.8 * U, 1 * U, horn)}
+${px(19.2 * U, 26.4 * U, 0.8 * U, 1 * U, horn)}
+${px(23.1 * U, 26.4 * U, 0.8 * U, 1 * U, horn)}
+${px(25 * U, 26.4 * U, 0.8 * U, 1 * U, horn)}`;
+
+  return charSvg(body, 44 * U, 28 * U);
+}
+
 /* ---------------- сборка ---------------- */
 
 console.log('Небо:');
@@ -1876,10 +2208,12 @@ write('assets/mc/sky-day.svg', skyDay());
 write('assets/mc/sky-sunset.svg', skySunset());
 write('assets/mc/sky-night.svg', skyNight());
 write('assets/mc/sky-dawn.svg', skyDawn());
+write('assets/mc/sky-void.svg', skyVoid());
 write('assets/mc/sun-day.svg', celestial(1500, 220, 88, '#ffe873', '#fff3b0'));
 write('assets/mc/sun-sunset.svg', celestial(1420, 600, 86, '#ffc24d', '#ff9d5c'));
 write('assets/mc/moon-night.svg', celestial(1500, 230, 74, '#f2f5fb', '#c9d8f2', 90));
 write('assets/mc/sun-dawn.svg', celestial(430, 640, 80, '#ffd98a', '#ffb878'));
+write('assets/mc/stars-void.svg', starsVoid());
 
 console.log('Дальний план:');
 write('assets/mc/far-hills.svg', farHills());
@@ -1891,6 +2225,7 @@ write('assets/mc/far-lava.svg', farLava());
 write('assets/mc/far-nether-sea.svg', farNetherSea());
 write('assets/mc/far-ravine.svg', farRavine());
 write('assets/mc/far-stronghold.svg', farStronghold());
+write('assets/mc/far-end-island.svg', farEndIsland());
 
 console.log('Ближний план:');
 write('assets/mc/near-forest.svg', nearForest());
@@ -1914,6 +2249,8 @@ write('assets/mc/near-ruin.svg', nearRuin());
 write('assets/mc/near-rails.svg', nearRails());
 write('assets/mc/near-library.svg', nearLibrary());
 write('assets/mc/near-frame.svg', nearFrame());
+write('assets/mc/near-end-pillar.svg', nearEndPillar());
+write('assets/mc/near-end-gate.svg', nearEndGate());
 
 console.log('Персонажи:');
 write('assets/mc/steve.svg', steve());
@@ -1924,5 +2261,6 @@ write('assets/mc/wolf.svg', wolf());
 write('assets/mc/villager.svg', villager());
 write('assets/mc/piglin.svg', piglin());
 write('assets/mc/bat.svg', bat());
+write('assets/mc/dragon.svg', dragon());
 
 console.log('\nГотово.');

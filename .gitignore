@@ -15,3 +15,7 @@ tools/out/
 # В приложение уходят только сжатые MP3 из assets/audio.
 tools/tts/models/
 tools/tts/wav/
+
+# Кэш импорта Python: check-accents.py и audit-accents.py тянут
+# соседний accents.py, и рядом заводится __pycache__.
+tools/tts/__pycache__/

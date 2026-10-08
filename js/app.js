@@ -1,7 +1,7 @@
 import { speak, speakDialogue, cancelSpeech, createListener, voiceSupported, ttsAvailable } from './voice.js';
 import { matchChoice } from './match.js';
 import { makeTask, usePool } from './tasks.js';
-import { setScene, preloadScene, enter, leave, cheer, wobble } from './stage.js';
+import { setScene, preloadScene, enter, leave, cheer, wobble, impact } from './stage.js';
 
 const $ = (id) => document.getElementById(id);
 const el = {
@@ -392,9 +392,10 @@ function withTask(raw) {
   const spec = typeof raw.task === 'string' ? { kind: raw.task } : raw.task;
   const task = makeTask(spec.kind, {
     theme: state.story.theme, max: spec.max, types: spec.types, topic: spec.topic,
+    spread: spec.spread,
   });
   const choices = task.choices.map(c => c.correct
-    ? { label: c.label, keywords: c.keywords, correct: true, say: PRAISE[Math.floor(Math.random() * PRAISE.length)], next: raw.next }
+    ? { label: c.label, keywords: c.keywords, correct: true, fx: raw.fx, say: PRAISE[Math.floor(Math.random() * PRAISE.length)], next: raw.next }
     : { label: c.label, keywords: c.keywords, hint: task.hint });
 
   return {
@@ -618,7 +619,9 @@ async function pick(choice, btn) {
 
   // Радуемся только верному ответу на задание. У сюжетных развилок
   // неправильного выбора нет, и салют там был бы ни к чему.
-  if (choice.correct) cheer();
+  // В сцене боя верный ответ — это удар: кадр встряхивает, искры крупнее.
+  // Поле сцены "fx": "impact" задаёт именно это, и только на верном ответе.
+  if (choice.correct) (choice.fx === 'impact' ? impact : cheer)();
 
   if (choice.say) {
     setChoicesEnabled(false);

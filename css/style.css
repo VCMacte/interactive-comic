@@ -115,6 +115,11 @@ body{
   position:absolute; width:1.4vmin; height:1.4vmin; border-radius:50%;
   background:var(--accent); box-shadow:0 0 1.2vmin var(--accent);
 }
+/* удар в сцене боя: крупнее и теплее, но по-прежнему не красное */
+.spark.hit{
+  width:2vmin; height:2vmin;
+  background:#ffd27a; box-shadow:0 0 2vmin #ffb347;
+}
 .vignette{
   position:absolute; inset:0; pointer-events:none;
   background:linear-gradient(to top,rgba(0,0,0,.92) 0%,rgba(0,0,0,.55) 32%,transparent 60%);

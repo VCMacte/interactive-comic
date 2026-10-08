@@ -134,7 +134,36 @@ export function cheer() {
   sparks();
 }
 
-function sparks(count = 16) {
+/**
+ * Верный ответ в сцене боя: удар. Кадр коротко встряхивает, персонажи
+ * подаются вперёд, искр больше и они тёплые.
+ *
+ * Отдельно от cheer(), потому что это другое событие: там ребёнок
+ * порадовался, здесь отряд попал. Красного и здесь нет — враг
+ * рассыпается искрами, а не получает урон.
+ */
+export function impact() {
+  play(el.scenery, [
+    { transform: 'translate(0,0)' },
+    { transform: 'translate(-10px,4px)', offset: 0.18 },
+    { transform: 'translate(8px,-3px)', offset: 0.42 },
+    { transform: 'translate(-5px,2px)', offset: 0.68 },
+    { transform: 'translate(0,0)' },
+  ], { duration: 420, easing: 'ease-in-out' });
+
+  for (const c of el.cast.children) {
+    play(c, [
+      { transform: 'translateX(0) scale(1)' },
+      { transform: 'translateX(-2%) scale(.98)', offset: 0.22 },
+      { transform: 'translateX(3%) scale(1.05)', offset: 0.5 },
+      { transform: 'translateX(0) scale(1)' },
+    ], { duration: 560, easing: 'ease-out' });
+  }
+
+  sparks(28, 'hit');
+}
+
+function sparks(count = 16, extra = '') {
   if (reduced) return;
   const hero = el.cast.firstElementChild;
   const box = el.fx.getBoundingClientRect();
@@ -145,13 +174,13 @@ function sparks(count = 16) {
 
   for (let i = 0; i < count; i++) {
     const s = document.createElement('div');
-    s.className = 'spark';
+    s.className = extra ? 'spark ' + extra : 'spark';
     s.style.left = cx + '%';
     s.style.top = cy + '%';
     el.fx.append(s);
 
     const angle = (Math.PI * 2 * i) / count + Math.random() * 0.4;
-    const dist = 60 + Math.random() * 110;
+    const dist = (extra ? 90 : 60) + Math.random() * 110;
     const a = s.animate([
       { transform: 'translate(-50%,-50%) scale(.4)', opacity: 1 },
       { transform: `translate(calc(-50% + ${Math.cos(angle) * dist}px), calc(-50% + ${Math.sin(angle) * dist}px)) scale(1.1)`, opacity: 0 },

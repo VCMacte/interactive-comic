@@ -222,6 +222,55 @@ function farHills(seed = 7) {
   return svg(out.join('\n'));
 }
 
+/**
+ * Холмы с тремя столбами дыма — дальний план восьмого дня. Дым рваный
+ * и в три столба ровно потому, что так его описывает рассказчик в первой
+ * сцене: ребёнок должен увидеть на экране то, что услышал.
+ *
+ * Рельеф тот же, что у farHills, и это намеренно: луг у дома не изменился,
+ * изменилось только то, что над ним.
+ */
+function farSmoke(seed = 377) {
+  const rand = rng(seed);
+  const out = [];
+  let height = 2;
+
+  for (let col = 0; col * B < W; col++) {
+    const x = col * B;
+    if (rand() < 0.3) height += rand() < 0.5 ? 1 : -1;
+    height = Math.max(1, Math.min(5, height));
+    for (let i = 0; i < height; i++) {
+      out.push(block(x, GROUND - B - i * B, i === height - 1 ? P.far : P.dirt, rand));
+    }
+    if (rand() < 0.1) out.push(cubeTree(x, GROUND - height * B, 2, rand));
+  }
+
+  // Столбы дыма: кверху шире, бледнее и с отклонением по ветру. Ровный
+  // столб читался бы печной трубой, а здесь горит то, что гореть не должно.
+  //
+  // Начинаются они ВЫШЕ гребня холмов, а не от линии земли: холм поднимается
+  // до пяти блоков и прежний дым оказывался за ним — на init-картинке от него
+  // оставались три тёмные полоски, и нейросети было не на что опереться.
+  for (const [bx, lean] of [[W * 0.3, 0.16], [W * 0.46, 0.08], [W * 0.6, 0.22]]) {
+    const base = GROUND - B * 5.4;
+    // Огонь у основания: сам костёр за холмом не виден, видно его зарево.
+    out.push(`<rect x="${n(bx - B * 0.3)}" y="${n(base)}" width="${n(B * 1.5)}" height="${n(B * 0.9)}" fill="#e08a30" opacity="0.75"/>`);
+    let w = B * 0.85;
+    for (let r = 0; r < 11; r++) {
+      const y = base - B * 0.6 - r * B * 0.95;
+      const x = bx + r * B * lean + (rand() - 0.5) * B * 0.9;
+      out.push(`<rect x="${n(x)}" y="${n(y)}" width="${n(w)}" height="${n(B * 0.95)}" fill="#8d847c" opacity="${n(0.72 - r * 0.058)}"/>`);
+      // Клок сбоку: без него столб остаётся ровной лесенкой, а дым рваный.
+      if (rand() < 0.55) {
+        out.push(`<rect x="${n(x + (rand() < 0.5 ? -B * 0.7 : w - B * 0.2))}" y="${n(y + B * 0.2)}" width="${n(B * 0.8)}" height="${n(B * 0.7)}" fill="#8d847c" opacity="${n(0.5 - r * 0.04)}"/>`);
+      }
+      w += B * 0.22;
+    }
+  }
+
+  return svg(out.join('\n'));
+}
+
 function farCave(seed = 11) {
   const rand = rng(seed);
   const out = [`<rect width="${W}" height="${H}" fill="#2b2b31"/>`];
@@ -1668,6 +1717,56 @@ ${px(5 * U, 5 * U, 1 * U, 2 * U, face)}`;
   return charSvg(body, 8 * U, 26 * U);
 }
 
+/**
+ * Брошенная телега. Ставится не слоем, а персонажем: слой пришлось бы
+ * красить отдельно ради одной сцены, а телега нужна ровно в одной —
+ * и стоять она должна рядом со Стивом, на той же линии земли.
+ *
+ * Она сломана, и это видно силуэтом: одно колесо лежит, кузов
+ * перекошен, оглобля задрана. Целая телега читалась бы как обоз
+ * торговца, а здесь её бросали на бегу.
+ */
+function cart() {
+  const U = 20;
+  const wood = '#8a6336', woodDark = '#664825', woodLight = '#a87d47';
+  const iron = '#9aa0a8', ironDark = '#70767e';
+
+  const body = `
+<!-- кузов, перекошенный на левый бок -->
+<g transform="rotate(-7 ${9 * U} ${9 * U})">
+${px(2 * U, 5 * U, 14 * U, 4.4 * U, wood)}
+${px(2 * U, 5 * U, 14 * U, 0.9 * U, woodLight)}
+${px(2 * U, 8.5 * U, 14 * U, 0.9 * U, woodDark)}
+${px(5 * U, 5 * U, 0.7 * U, 4.4 * U, woodDark)}
+${px(9 * U, 5 * U, 0.7 * U, 4.4 * U, woodDark)}
+${px(13 * U, 5 * U, 0.7 * U, 4.4 * U, woodDark)}
+<!-- выломанная доска борта -->
+${px(10.5 * U, 3.4 * U, 3.6 * U, 1.4 * U, wood)}
+</g>
+
+<!-- оглобля задрана вверх -->
+${px(15.4 * U, 1.6 * U, 5.6 * U, 1 * U, wood)}
+${px(15.4 * U, 1.6 * U, 5.6 * U, 0.35 * U, woodLight)}
+
+<!-- уцелевшее колесо -->
+${px(11.4 * U, 9.6 * U, 4 * U, 4 * U, ironDark)}
+${px(12.2 * U, 10.4 * U, 2.4 * U, 2.4 * U, wood)}
+${px(13.1 * U, 9.6 * U, 0.6 * U, 4 * U, iron)}
+${px(11.4 * U, 11.3 * U, 4 * U, 0.6 * U, iron)}
+
+<!-- второе колесо слетело и лежит на земле -->
+${px(1 * U, 12 * U, 4.6 * U, 1.6 * U, ironDark)}
+${px(2 * U, 12.4 * U, 2.6 * U, 0.8 * U, wood)}
+
+<!-- рассыпанное снаряжение: щит у колеса и шлем поодаль -->
+${px(6.4 * U, 11.6 * U, 2.8 * U, 2 * U, '#5a6472')}
+${px(7.2 * U, 12.2 * U, 1.2 * U, 1.2 * U, iron)}
+${px(17 * U, 12.2 * U, 2.4 * U, 1.4 * U, iron)}
+${px(17 * U, 12.2 * U, 2.4 * U, 0.5 * U, '#c9ccd2')}`;
+
+  // Покачивание charSvg тут лишнее: телега брошена и лежит.
+  return charSvg(body, 21 * U, 14 * U, '.idle { animation: none }');
+}
 function cow() {
   const U = 20;
   const white = '#e8e4dc', dark = '#3a3028', snout = '#d9a8a0', horn = '#cfc6a8';
@@ -1745,8 +1844,10 @@ ${px(10 * U, 0, 1.4 * U, 1.4 * U, dark)}
 <!-- хвост и лапы -->
 ${px(0, 1.4 * U, 1.6 * U, 2.4 * U, dark)}
 ${px(1.4 * U, 9 * U, 2 * U, 2.4 * U, grey)}
-${px(5.4 * U, 9 * U, 2 * U, 2.4 * U, light)}
-${px(8.6 * U, 6 * U, 2 * U, 5.4 * U, grey)}`;
+${px(5.4 * U, 9 * U, 2 * U, 2.4 * U, light)}`;
+  // Лап ровно две — задняя и передняя. Третья была лишней вдвойне: она
+  // стояла правее туловища, под самой головой, и шла до пола отдельной
+  // полосой. На экране это читалось ногой, растущей из морды.
 
   return charSvg(body, 13 * U, 12 * U);
 }
@@ -1838,6 +1939,239 @@ ${px(4.6 * U, 30 * U, 3 * U, 2 * U, '#3a2a24')}
 ${px(8.4 * U, 30 * U, 3 * U, 2 * U, '#3a2a24')}`;
 
   return charSvg(body, 16 * U, 32 * U);
+}
+
+/**
+ * Оружие в руке персонажа. Рисуется в своих координатах и ставится
+ * в кадр одним поворотом: вертикальный клинок с поперечиной читается
+ * крестом, а не мечом — на арбалете Алекс это уже поймали.
+ *
+ * @param {string} kind sword | axe | mace | bow
+ * @param {number} hx,hy где кулак, в единицах модели
+ * @param {number} deg наклон; отрицательный — остриём вперёд-вверх
+ */
+function weapon(kind, hx, hy, deg, U, tint = {}) {
+  const steel = tint.steel ?? '#c8ccd2', steelDark = tint.steelDark ?? '#8f949c';
+  const haft = tint.haft ?? '#7a5630', haftDark = tint.haftDark ?? '#5a3e20';
+  const cord = tint.cord ?? '#e8e4d8';
+  const q = (x, y, w, h, fill) => px(x * U, y * U, w * U, h * U, fill);
+  let body = '';
+
+  if (kind === 'sword') {
+    // Клинок сужается к острию, поперечина короткая: длинная превращает
+    // меч в крест.
+    body = `
+${q(-0.45, -9.2, 0.9, 7.4, steel)}
+${q(-0.45, -9.2, 0.35, 7.4, '#eef1f5')}
+${q(-0.2, -10.1, 0.4, 0.9, steel)}
+${q(-1.1, -1.8, 2.2, 0.7, steelDark)}
+${q(-0.4, -1.1, 0.8, 2.4, haftDark)}
+${q(-0.6, 1.3, 1.2, 0.6, steelDark)}`;
+  } else if (kind === 'axe') {
+    body = `
+${q(-0.4, -8.4, 0.8, 10, haft)}
+${q(-0.4, -8.4, 0.3, 10, haftDark)}
+${q(0.4, -8.6, 2.6, 4, steel)}
+${q(0.4, -8.6, 2.6, 0.9, '#eef1f5')}
+${q(3, -7.9, 0.9, 2.6, steelDark)}
+${q(-1.4, -7.4, 1, 1.6, steelDark)}`;
+  } else if (kind === 'mace') {
+    body = `
+${q(-0.35, -6.6, 0.7, 8.4, haft)}
+${q(-0.35, -6.6, 0.25, 8.4, haftDark)}
+${q(-1.5, -9.4, 3, 3, steelDark)}
+${q(-1.1, -9, 2.2, 2.2, steel)}
+${q(-2.2, -8.6, 0.7, 1.2, steelDark)}
+${q(1.5, -8.6, 0.7, 1.2, steelDark)}
+${q(-0.35, -10.1, 0.7, 0.7, steelDark)}`;
+  } else {
+    // Лук: две дуги лесенкой и тетива между концами. Поперечины нет вовсе.
+    body = `
+${q(-0.4, -8.6, 0.8, 1.6, haft)}
+${q(0.2, -7.2, 0.8, 1.6, haft)}
+${q(0.6, -5.6, 0.8, 3.2, haft)}
+${q(0.2, -2.4, 0.8, 1.6, haft)}
+${q(-0.4, -1, 0.8, 1.6, haft)}
+${q(-0.25, -8.4, 0.25, 8.8, cord)}`;
+  }
+
+  return `<g transform="translate(${hx * U} ${hy * U}) rotate(${deg})">${body}</g>`;
+}
+
+/**
+ * Алекс — напарница Стива со второго сезона. Рост и ширина ровно как
+ * у Стива: они работают вместе, и разница в размере читалась бы
+ * как «взрослая и ребёнок».
+ *
+ * Узнают её по двум вещам: рыжая коса набок и арбалет в руке. Коса
+ * вынесена за силуэт головы, иначе после сжатия при зеркалировании
+ * она слипается с волосами — на носе жителя это уже проходили.
+ */
+function alex() {
+  const U = 20;
+  const skin = '#d8a27c', hair = '#b85c1e', hairDark = '#8e4414';
+  const shirt = '#4e9a52', shirtDark = '#3c7a40';
+  const legs = '#6b5a3a', shoe = '#4a3a28', eye = '#ffffff', iris = '#3a6b4a';
+
+  const body = `
+<!-- голова -->
+${px(4 * U, 0, 8 * U, 8 * U, skin)}
+${px(4 * U, 0, 8 * U, 2 * U, hair)}
+${px(4 * U, 2 * U, U, 2 * U, hair)}
+${px(11 * U, 2 * U, U, 2 * U, hair)}
+${px(5.4 * U, 3 * U, 1.6 * U, 1.2 * U, eye)}
+${px(8.8 * U, 3 * U, 1.6 * U, 1.2 * U, eye)}
+${px(6 * U, 3.2 * U, 0.9 * U, 0.9 * U, iris)}
+${px(9.4 * U, 3.2 * U, 0.9 * U, 0.9 * U, iris)}
+${px(6.4 * U, 5.6 * U, 3.2 * U, 0.7 * U, '#a66a48')}
+
+<!-- коса набок: выходит за голову, чтобы её было видно силуэтом -->
+${px(12 * U, 1.4 * U, 2.6 * U, 2 * U, hair)}
+${px(13.4 * U, 3.4 * U, 2 * U, 5 * U, hair)}
+${px(13.4 * U, 5 * U, 2 * U, 0.6 * U, hairDark)}
+${px(13.4 * U, 7 * U, 2 * U, 0.6 * U, hairDark)}
+${px(13.8 * U, 8.4 * U, 1.2 * U, 1 * U, hairDark)}
+
+<!-- туловище и руки -->
+${px(4 * U, 8 * U, 8 * U, 12 * U, shirt)}
+${px(4 * U, 8 * U, 8 * U, 1 * U, shirtDark)}
+${px(0, 8 * U, 4 * U, 9 * U, shirt)}
+${px(12 * U, 8 * U, 4 * U, 9 * U, shirt)}
+${px(0, 17 * U, 4 * U, 3 * U, skin)}
+${px(12 * U, 17 * U, 4 * U, 3 * U, skin)}
+
+<!-- меч в правой руке, остриём вперёд-вверх -->
+${weapon('sword', 14.2, 18.6, -28, U)}
+
+<!-- ноги -->
+${px(4 * U, 20 * U, 4 * U, 10 * U, legs)}
+${px(8 * U, 20 * U, 4 * U, 10 * U, legs)}
+${px(4 * U, 30 * U, 4 * U, 2 * U, shoe)}
+${px(8 * U, 30 * U, 4 * U, 2 * U, shoe)}`;
+
+  return charSvg(body, 17 * U, 32 * U);
+}
+
+/**
+ * Железный голем. Оживлён ритуалом, и это видно: знак на груди —
+ * единственное тёплое пятно на холодном железе. Он же и объясняет
+ * ребёнку, почему голем вообще двигается.
+ *
+ * Пропорции против правила «все персонажи одного роста»: голем выше
+ * Стива вчетверо шире. В сценарии он ставится w: 13 при w: 8 у Стива —
+ * то есть в кадре он ровно такой, каким его описывает рассказчик.
+ * Руки длинные и опущены ниже колен: так силуэт узнаётся даже издали.
+ */
+function golem() {
+  const U = 20;
+  const iron = '#c9ccd2', ironDark = '#9a9ea8', ironLight = '#e4e7ec';
+  const moss = '#5e7f52', mossDark = '#46603c';
+  const eye = '#2b2f36', rune = '#ffb13b', runeCore = '#ffe3a8';
+  const vine = '#4f7a3e';
+  const rust = '#a2653a', rustDark = '#7d4a28';
+
+  // Ржавчина по корпусу и рукам: голем стоит под дождём не первый год,
+  // и пятна говорят это раньше рассказчика. Раскладка детерминированная —
+  // иначе в истории правок не видно, что реально изменилось.
+  const rand = rng(371);
+  const patches = [
+    [7.4, 13.6, 2.2, 1.4], [14.6, 15.2, 2.6, 1.2], [8.6, 21.4, 3.2, 1.6],
+    [15.2, 20.6, 1.8, 2.2], [2.4, 14.2, 2.2, 1.6], [19.2, 17.4, 2.4, 1.4],
+    [2.8, 22.6, 1.8, 2.4], [19.6, 23.2, 2.2, 1.8], [8.2, 28.4, 2.4, 1.4],
+    [13.4, 31.2, 2.6, 1.6], [10.4, 9.8, 2.8, 1.2],
+  ].map(([x, y, w, h]) => px(x * U, y * U, w * U, h * U, rand() < 0.5 ? rust : rustDark,
+    ' opacity="0.7"'));
+
+  const body = `
+<!-- голова: тяжёлая, с выступом носа во всю высоту лица -->
+${px(7 * U, 0, 10 * U, 8 * U, iron)}
+${px(7 * U, 0, 10 * U, 1.4 * U, ironLight)}
+${px(8.4 * U, 2.6 * U, 2.4 * U, 1.4 * U, eye)}
+${px(13.2 * U, 2.6 * U, 2.4 * U, 1.4 * U, eye)}
+${px(10.6 * U, 2.6 * U, 2.8 * U, 5 * U, ironDark)}
+${px(9 * U, 8 * U, 6 * U, 1.4 * U, ironDark)}
+
+<!-- плечи и туловище -->
+${px(4 * U, 9.4 * U, 16 * U, 3 * U, ironDark)}
+${px(6 * U, 12.4 * U, 12 * U, 12 * U, iron)}
+${px(6 * U, 12.4 * U, 12 * U, 1 * U, ironLight)}
+${px(11.6 * U, 13.4 * U, 0.8 * U, 10 * U, ironDark)}
+
+<!-- знак ритуала: он и оживил голема, и он же метка «свой» -->
+${px(9.6 * U, 16 * U, 4.8 * U, 4.8 * U, rune)}
+${px(10.8 * U, 17.2 * U, 2.4 * U, 2.4 * U, runeCore)}
+
+<!-- лозы на плечах: голем стоял в деревне давно -->
+${px(4.4 * U, 10 * U, 1.2 * U, 3.4 * U, moss)}
+${px(18.4 * U, 10 * U, 1.2 * U, 2.6 * U, moss)}
+${px(6 * U, 12.4 * U, 2.6 * U, 1.2 * U, mossDark)}
+${px(15.4 * U, 12.4 * U, 2.6 * U, 1.2 * U, vine)}
+
+<!-- руки: длинные, кулаки ниже колен -->
+${px(1.6 * U, 10.4 * U, 4.4 * U, 16 * U, iron)}
+${px(18 * U, 10.4 * U, 4.4 * U, 16 * U, iron)}
+${px(1.6 * U, 10.4 * U, 4.4 * U, 1 * U, ironLight)}
+${px(18 * U, 10.4 * U, 4.4 * U, 1 * U, ironLight)}
+${px(0.6 * U, 26.4 * U, 6.4 * U, 5 * U, ironDark)}
+${px(17 * U, 26.4 * U, 6.4 * U, 5 * U, ironDark)}
+
+<!-- ноги: короткие и широкие, он тяжёлый -->
+${px(7.4 * U, 24.4 * U, 4.4 * U, 13 * U, iron)}
+${px(12.2 * U, 24.4 * U, 4.4 * U, 13 * U, iron)}
+${px(6.6 * U, 37.4 * U, 5.2 * U, 2.6 * U, ironDark)}
+${px(12.2 * U, 37.4 * U, 5.2 * U, 2.6 * U, ironDark)}
+
+<!-- ржавые пятна поверх железа -->
+${patches.join('\n')}`;
+
+  return charSvg(body, 24 * U, 40 * U);
+}
+
+/**
+ * Разбойник. Намеренно не страшный: силуэт сутулый и уже Стива,
+ * лицо открыто, капюшон мягкий. Тон сезона — «страшного на ночь нет»,
+ * и злодей здесь скорее нелепый, чем жуткий.
+ *
+ * Узнают его по серо-синему плащу и арбалету — те же две приметы,
+ * что у Алекс, но холодные против её тёплых.
+ */
+function pillager(kind = 'axe') {
+  const U = 20;
+  const cloak = '#5a6472', cloakDark = '#434b57', cloakLight = '#717c8c';
+  const skin = '#9aa2a8', skinDark = '#7d858b';
+  const eye = '#2b2f36', brow = '#3a4048';
+
+  const body = `
+<!-- голова под капюшоном -->
+${px(4.4 * U, 0.8 * U, 7.6 * U, 7.6 * U, skin)}
+${px(3.8 * U, 0, 8.8 * U, 2.4 * U, cloakDark)}
+${px(3.8 * U, 2.4 * U, 1.2 * U, 3 * U, cloakDark)}
+${px(11.4 * U, 2.4 * U, 1.2 * U, 3 * U, cloakDark)}
+${px(5.6 * U, 3.4 * U, 1.6 * U, 1 * U, eye)}
+${px(9 * U, 3.4 * U, 1.6 * U, 1 * U, eye)}
+${px(5.4 * U, 2.8 * U, 2 * U, 0.5 * U, brow)}
+${px(8.8 * U, 2.8 * U, 2 * U, 0.5 * U, brow)}
+${px(7.2 * U, 4 * U, 2 * U, 3.4 * U, skinDark)}
+
+<!-- плащ: сутулые плечи, он ниже и уже Стива -->
+${px(3.6 * U, 8.4 * U, 9.2 * U, 12 * U, cloak)}
+${px(3.6 * U, 8.4 * U, 9.2 * U, 1 * U, cloakLight)}
+${px(7.8 * U, 9.4 * U, 0.8 * U, 11 * U, cloakDark)}
+${px(2 * U, 9.4 * U, 2.2 * U, 8 * U, cloak)}
+${px(12.2 * U, 9.4 * U, 2.2 * U, 8 * U, cloak)}
+${px(2 * U, 17.4 * U, 2.2 * U, 2 * U, skin)}
+${px(12.2 * U, 17.4 * U, 2.2 * U, 2 * U, skin)}
+
+<!-- оружие: у каждого своё, чтобы в кадре они не были близнецами -->
+${weapon(kind, 13.6, 18.8, kind === 'bow' ? 0 : 24, U, { haft: '#6b5030', haftDark: '#4a3620', steel: '#aab0b8', steelDark: '#767d86' })}
+
+<!-- ноги -->
+${px(4.6 * U, 20.4 * U, 3.2 * U, 9.6 * U, cloakDark)}
+${px(8.4 * U, 20.4 * U, 3.2 * U, 9.6 * U, cloakDark)}
+${px(4.6 * U, 30 * U, 3.2 * U, 2 * U, '#2f343c')}
+${px(8.4 * U, 30 * U, 3.2 * U, 2 * U, '#2f343c')}`;
+
+  return charSvg(body, 17 * U, 32 * U);
 }
 
 /**
@@ -2201,6 +2535,74 @@ ${px(25 * U, 26.4 * U, 0.8 * U, 1 * U, horn)}`;
   return charSvg(body, 44 * U, 28 * U);
 }
 
+/**
+ * Деревня за частоколом. Кулисы по краям — частокол и ворота, центр
+ * свободен: туда встают Стив, Алекс, житель и голем, а голем широкий.
+ *
+ * Колокол стоит слева от ворот и невысоко: он звучит в каждой серии
+ * сезона, и ребёнок должен находить его в кадре глазами.
+ */
+function nearVillage(seed = 371) {
+  const rand = rng(seed);
+  const out = [];
+  const LOG = '#6b4a28', LOG_TOP = '#8a6334', LOG_DARK = '#4e3519';
+  const ROOF = '#9c4234', ROOF_DARK = '#7a3228';
+  const BELL = '#cfae4a', BELL_DARK = '#9a7f2c';
+
+  // Частокол рисуется брёвнами с просветами, а не блоками: сквозь просветы
+  // видно небо, и стена читается силуэтом. Блоками она сливалась с землёй —
+  // цвет дерева и цвет грунта в этой палитре почти совпадают.
+  const palisade = (x0, cols) => {
+    for (let c = 0; c < cols; c++) {
+      const x = x0 + c * B + 5;
+      const w = B - 10;
+      const top = GROUND - B * 3.4 - 10 * rand();
+      out.push(`<rect x="${n(x)}" y="${n(top)}" width="${n(w)}" height="${n(GROUND - top)}" fill="${LOG}"/>`);
+      out.push(`<rect x="${n(x)}" y="${n(top)}" width="${n(w)}" height="12" fill="${LOG_TOP}"/>`);
+      out.push(`<rect x="${n(x + w - 7)}" y="${n(top)}" width="7" height="${n(GROUND - top)}" fill="${LOG_DARK}"/>`);
+    }
+    // Поперечина: без неё частокол распадается на отдельные палки.
+    out.push(`<rect x="${n(x0)}" y="${n(GROUND - B * 1.6)}" width="${n(cols * B)}" height="14" fill="${LOG_DARK}"/>`);
+  };
+
+  // Крыши за стеной: деревня живёт, но домов целиком не видно. Красные
+  // крыши — единственное тёплое пятно выше стены, их видно первыми.
+  const roofs = [[B * 7, 4, 2], [B * 12.5, 3, 2], [B * 21, 4, 3]];
+  for (const [hx, hw, hh] of roofs) {
+    for (let c = 0; c < hw; c++) {
+      for (let r = 0; r < hh; r++) out.push(block(hx + c * B, GROUND - B * (r + 2.2), P.plank, rand));
+    }
+    for (let c = -1; c <= hw; c++) {
+      out.push(`<rect x="${n(hx + c * B)}" y="${n(GROUND - B * (hh + 2.2))}" width="${B}" height="${B}" fill="${c % 2 ? ROOF : ROOF_DARK}"/>`);
+    }
+  }
+
+  palisade(0, 5);
+  palisade(W - B * 5, 5);
+
+  // Ворота: две створки по краям проёма и перекладина над ним. Проём пустой —
+  // в него уходят персонажи, и туда же смотрит ребёнок.
+  const gx = B * 5;
+  for (const x of [gx, gx + B * 2]) {
+    out.push(`<rect x="${n(x + 4)}" y="${n(GROUND - B * 3.6)}" width="${n(B - 8)}" height="${n(B * 3.6)}" fill="${LOG}"/>`);
+    out.push(`<rect x="${n(x + 4)}" y="${n(GROUND - B * 3.6)}" width="${n(B - 8)}" height="14" fill="${LOG_TOP}"/>`);
+  }
+  out.push(`<rect x="${n(gx)}" y="${n(GROUND - B * 3.9)}" width="${n(B * 3)}" height="18" fill="${LOG_DARK}"/>`);
+
+  // Колокол на столбе. Он звонит в каждой серии сезона, поэтому крупный
+  // и тёплого металла: ребёнок должен находить его в кадре глазами.
+  const bx = B * 2.2;
+  out.push(`<rect x="${n(bx)}" y="${n(GROUND - B * 4.4)}" width="${n(B * 0.5)}" height="${n(B * 4.4)}" fill="${LOG}"/>`);
+  out.push(`<rect x="${n(bx)}" y="${n(GROUND - B * 4.4)}" width="${n(B * 1.9)}" height="16" fill="${LOG_DARK}"/>`);
+  const cx = bx + B * 1.05;
+  out.push(`<rect x="${n(cx)}" y="${n(GROUND - B * 4.2)}" width="${n(B * 0.8)}" height="${n(B * 1.1)}" fill="${BELL}"/>`);
+  out.push(`<rect x="${n(cx - 6)}" y="${n(GROUND - B * 3.1)}" width="${n(B * 0.8 + 12)}" height="14" fill="${BELL_DARK}"/>`);
+  out.push(`<rect x="${n(cx + B * 0.3)}" y="${n(GROUND - B * 2.9)}" width="${n(B * 0.2)}" height="12" fill="${BELL_DARK}"/>`);
+
+  return svg(`${groundRows(rand)}
+${out.join('\n')}
+${torch(gx + B * 3.4, GROUND - B * 2)}`);
+}
 /* ---------------- сборка ---------------- */
 
 console.log('Небо:');
@@ -2226,6 +2628,7 @@ write('assets/mc/far-nether-sea.svg', farNetherSea());
 write('assets/mc/far-ravine.svg', farRavine());
 write('assets/mc/far-stronghold.svg', farStronghold());
 write('assets/mc/far-end-island.svg', farEndIsland());
+write('assets/mc/far-smoke.svg', farSmoke());
 
 console.log('Ближний план:');
 write('assets/mc/near-forest.svg', nearForest());
@@ -2251,6 +2654,7 @@ write('assets/mc/near-library.svg', nearLibrary());
 write('assets/mc/near-frame.svg', nearFrame());
 write('assets/mc/near-end-pillar.svg', nearEndPillar());
 write('assets/mc/near-end-gate.svg', nearEndGate());
+write('assets/mc/near-village.svg', nearVillage());
 
 console.log('Персонажи:');
 write('assets/mc/steve.svg', steve());
@@ -2262,5 +2666,12 @@ write('assets/mc/villager.svg', villager());
 write('assets/mc/piglin.svg', piglin());
 write('assets/mc/bat.svg', bat());
 write('assets/mc/dragon.svg', dragon());
+write('assets/mc/alex.svg', alex());
+write('assets/mc/golem.svg', golem());
+write('assets/mc/cart.svg', cart());
+write('assets/mc/pillager-axe.svg', pillager('axe'));
+write('assets/mc/pillager-mace.svg', pillager('mace'));
+write('assets/mc/pillager-bow.svg', pillager('bow'));
+write('assets/mc/pillager-sword.svg', pillager('sword'));
 
 console.log('\nГотово.');

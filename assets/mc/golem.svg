@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 800" width="480" height="800">
+<style>
+  .idle { animation: idle 3.2s ease-in-out infinite; transform-origin: 50% 100%; }
+  @keyframes idle { 0%,100% { transform: translateY(0) } 50% { transform: translateY(-6px) } }
+  @media (prefers-reduced-motion: reduce) { .idle { animation: none } }
+  
+</style>
+<g class="idle">
+
+<!-- голова: тяжёлая, с выступом носа во всю высоту лица -->
+<rect x="140" y="0" width="200" height="160" fill="#c9ccd2"/>
+<rect x="140" y="0" width="200" height="28" fill="#e4e7ec"/>
+<rect x="168" y="52" width="48" height="28" fill="#2b2f36"/>
+<rect x="264" y="52" width="48" height="28" fill="#2b2f36"/>
+<rect x="212" y="52" width="56" height="100" fill="#9a9ea8"/>
+<rect x="180" y="160" width="120" height="28" fill="#9a9ea8"/>
+
+<!-- плечи и туловище -->
+<rect x="80" y="188" width="320" height="60" fill="#9a9ea8"/>
+<rect x="120" y="248" width="240" height="240" fill="#c9ccd2"/>
+<rect x="120" y="248" width="240" height="20" fill="#e4e7ec"/>
+<rect x="232" y="268" width="16" height="200" fill="#9a9ea8"/>
+
+<!-- знак ритуала: он и оживил голема, и он же метка «свой» -->
+<rect x="192" y="320" width="96" height="96" fill="#ffb13b"/>
+<rect x="216" y="344" width="48" height="48" fill="#ffe3a8"/>
+
+<!-- лозы на плечах: голем стоял в деревне давно -->
+<rect x="88" y="200" width="24" height="68" fill="#5e7f52"/>
+<rect x="368" y="200" width="24" height="52" fill="#5e7f52"/>
+<rect x="120" y="248" width="52" height="24" fill="#46603c"/>
+<rect x="308" y="248" width="52" height="24" fill="#4f7a3e"/>
+
+<!-- руки: длинные, кулаки ниже колен -->
+<rect x="32" y="208" width="88" height="320" fill="#c9ccd2"/>
+<rect x="360" y="208" width="88" height="320" fill="#c9ccd2"/>
+<rect x="32" y="208" width="88" height="20" fill="#e4e7ec"/>
+<rect x="360" y="208" width="88" height="20" fill="#e4e7ec"/>
+<rect x="12" y="528" width="128" height="100" fill="#9a9ea8"/>
+<rect x="340" y="528" width="128" height="100" fill="#9a9ea8"/>
+
+<!-- ноги: короткие и широкие, он тяжёлый -->
+<rect x="148" y="488" width="88" height="260" fill="#c9ccd2"/>
+<rect x="244" y="488" width="88" height="260" fill="#c9ccd2"/>
+<rect x="132" y="748" width="104" height="52" fill="#9a9ea8"/>
+<rect x="244" y="748" width="104" height="52" fill="#9a9ea8"/>
+
+<!-- ржавые пятна поверх железа -->
+<rect x="148" y="272" width="44" height="28" fill="#7d4a28" opacity="0.7"/>
+<rect x="292" y="304" width="52" height="24" fill="#7d4a28" opacity="0.7"/>
+<rect x="172" y="428" width="64" height="32" fill="#7d4a28" opacity="0.7"/>
+<rect x="304" y="412" width="36" height="44" fill="#7d4a28" opacity="0.7"/>
+<rect x="48" y="284" width="44" height="32" fill="#a2653a" opacity="0.7"/>
+<rect x="384" y="348" width="48" height="28" fill="#7d4a28" opacity="0.7"/>
+<rect x="56" y="452" width="36" height="48" fill="#a2653a" opacity="0.7"/>
+<rect x="392" y="464" width="44" height="36" fill="#7d4a28" opacity="0.7"/>
+<rect x="164" y="568" width="48" height="28" fill="#a2653a" opacity="0.7"/>
+<rect x="268" y="624" width="52" height="32" fill="#a2653a" opacity="0.7"/>
+<rect x="208" y="196" width="56" height="24" fill="#7d4a28" opacity="0.7"/>
+</g>
+</svg>

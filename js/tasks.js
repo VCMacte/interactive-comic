@@ -56,6 +56,59 @@ function numberChoices(answer, max) {
   return shuffle([numChoice(answer, true), ...[...wrong].map(v => numChoice(v, false))]);
 }
 
+// Разброс пошире — для сцен со `"spread": "wide"`. У тесной тройки ±1/±2
+// два изъяна: числа часто идут подряд, и тогда верное оказывается ровно
+// посередине, а у границы предела оба неверных встают с одной стороны —
+// и верное всегда крайнее. И то, и другое ребёнок находит позицией,
+// не считая.
+//
+// Почему флагом, а не заменой numberChoices: пул озвучки собирается
+// генератором, и правка общего поведения переписала бы вопросы всех
+// прежних ключей вместе с готовыми записями. Флаг входит в ключ пула,
+// поэтому старые истории остаются байт в байт теми же.
+const WIDE_GAPS = [2, 3, 4, 5];
+
+/**
+ * @param {number|number[]} traps результат «не той» операции — типичная ошибка.
+ *        Такой вариант нельзя отбросить на глаз, его можно только посчитать.
+ *        Список — потому что первая ловушка не всегда попадает в предел счёта:
+ *        у вычитания «девять минус восемь» сумма семнадцать за пределом, и тогда
+ *        ловушкой становится само услышанное «было девять».
+ */
+function numberChoicesWide(answer, max, traps) {
+  const wrong = [];
+  // Расстояние не меньше двух и до ответа, и между неверными: иначе тройка
+  // идёт подряд и верное оказывается ровно посередине.
+  const ok = (v) => v >= 0 && v <= max && Math.abs(v - answer) >= 2
+    && wrong.every(w => Math.abs(w - v) >= 2);
+
+  const trap = [traps].flat().find(v => Number.isInteger(v) && ok(v));
+  if (trap !== undefined) wrong.push(trap);
+
+  // Второе число — на расстоянии от двух до пяти и по возможности с другой
+  // стороны от ответа, чем ловушка.
+  const side = (s) => {
+    const opts = WIDE_GAPS.map(g => answer + s * g).filter(ok);
+    return opts.length ? pickOne(opts) : null;
+  };
+  const away = wrong.length ? -Math.sign(wrong[0] - answer) : pickOne([-1, 1]);
+  const second = side(away) ?? side(-away);
+  if (second !== null) wrong.push(second);
+
+  // Ответ у самой границы — места на разброс может не остаться. Вариантов
+  // всё равно должно быть три, поэтому добираем чем есть.
+  for (let v = 0; v <= max && wrong.length < 2; v++) if (ok(v)) wrong.push(v);
+  for (let v = 0; v <= max && wrong.length < 2; v++) {
+    if (v !== answer && !wrong.includes(v)) wrong.push(v);
+  }
+
+  return shuffle([numChoice(answer, true), ...wrong.map(v => numChoice(v, false))]);
+}
+
+/** Какие варианты даёт сцена: тесные по умолчанию, широкие при `spread`. */
+const spreadChoices = (answer, max, wide, traps) =>
+  wide ? numberChoicesWide(answer, max, traps) : numberChoices(answer, max);
+
 // Русские числительные требуют согласования: 1 блок, 2 блока, 5 блоков.
 function plural(n, forms) {
   const mod10 = n % 10, mod100 = n % 100;
@@ -156,6 +209,13 @@ const THEMES = {
       // нелепо, и сцена считает огоньки на столбах, а не столбы.
       { one: 'кристалл', few: 'кристалла', many: 'кристаллов', topic: 'end', onlyTopic: true },
       { one: 'огонёк', few: 'огонька', many: 'огоньков', topic: 'end', onlyTopic: true },
+      // Рейд второго сезона. Снаряжение, а не добыча: его носят, теряют
+      // и ломают — отсюда и глагол области. Все четыре слова мужского рода
+      // и неодушевлённые, иначе выйдет «один тотем» рядом с «одна стрела».
+      { one: 'щит', few: 'щита', many: 'щитов', topic: 'raid', onlyTopic: true },
+      { one: 'арбалет', few: 'арбалета', many: 'арбалетов', topic: 'raid', onlyTopic: true },
+      { one: 'шлем', few: 'шлема', many: 'шлемов', topic: 'raid', onlyTopic: true },
+      { one: 'тотем', few: 'тотема', many: 'тотемов', topic: 'raid', onlyTopic: true },
     ],
     actors: ['Стива', 'крипера'],
     lost: 'взорвал крипер',
@@ -167,6 +227,9 @@ const THEMES = {
       blocks: 'рассыпалось',
       nether: 'упало в лаву',
       end: 'погасло',
+      // Снаряжение не горит и не катится в лаву — его ломают в бою.
+      // Глагол подобран ко всем четырём словам области сразу.
+      raid: 'сломали разбойники',
     },
     oddOneOut: [
       { group: ['крипер', 'зомби', 'скелет'], odd: 'морковка', why: 'мобы' },
@@ -197,6 +260,14 @@ const THEMES = {
       { group: ['кристалл', 'обсидиан', 'столб'], odd: 'трава', why: 'из Края', topic: 'end', onlyTopic: true },
       { group: ['пустота', 'кристалл', 'звезда'], odd: 'корова', why: 'из Края', topic: 'end', onlyTopic: true },
       { group: ['обсидиан', 'столб', 'пустота'], odd: 'яблоко', why: 'из Края', topic: 'end', onlyTopic: true },
+      // Рейд. Шесть записей, а не три: лишнего можно выбрать тремя способами
+      // из каждой, и тогда на вид набирается десяток разных вопросов.
+      { group: ['щит', 'арбалет', 'шлем'], odd: 'морковка', why: 'снаряжение для боя', topic: 'raid', onlyTopic: true },
+      { group: ['стена', 'ворота', 'частокол'], odd: 'облако', why: 'ими закрывают деревню', topic: 'raid', onlyTopic: true },
+      { group: ['знамя', 'тотем', 'плащ'], odd: 'яблоко', why: 'это у разбойников', topic: 'raid', onlyTopic: true },
+      { group: ['колокол', 'труба', 'барабан'], odd: 'камень', why: 'они шумят', topic: 'raid', onlyTopic: true },
+      { group: ['лук', 'арбалет', 'стрела'], odd: 'овца', why: 'из них стреляют', topic: 'raid', onlyTopic: true },
+      { group: ['житель', 'кузнец', 'библиотекарь'], odd: 'разбойник', why: 'живут в деревне', topic: 'raid', onlyTopic: true },
     ],
     // Двух пар про одну и ту же ось быть не должно. `taskOpposite` берёт
     // неверные варианты из ОСТАЛЬНЫХ пар, поэтому пара-дублёр превращается
@@ -275,6 +346,20 @@ const THEMES = {
       { what: 'доспехи', need: 'железные слитки',
         wrong: ['шерсть и вода', 'палки и уголёк'],
         hint: 'Доспехи должны держать удар. Что здесь самое твёрдое?', topic: 'craft' },
+      // Рейд. Метка onlyTopic здесь обязательна: общий набор рецептов уже
+      // озвучен, и щит с воротами на лугу первого дня взялись бы ниоткуда.
+      { what: 'щит', need: 'доски и слиток железа',
+        wrong: ['шерсть и вода', 'пшеница и уголёк'],
+        hint: 'Щит держит удар. Что здесь крепкое, а что мягкое?',
+        topic: 'raid', onlyTopic: true },
+      { what: 'стрелу', need: 'палку, камушек и перо',
+        wrong: ['доски и шерсть', 'алмаз и воду'],
+        hint: 'Стрела летит далеко. Значит, она прямая и лёгкая.',
+        topic: 'raid', onlyTopic: true },
+      { what: 'ворота', need: 'доски',
+        wrong: ['алмазы', 'шерсть'],
+        hint: 'Ворота деревянные, как и верстак.',
+        topic: 'raid', onlyTopic: true },
     ],
   },
 };
@@ -332,7 +417,7 @@ function narrow(theme, topic) {
 
 /* ---------------- арифметика ---------------- */
 
-function taskAddition(t, max) {
+function taskAddition(t, max, wide) {
   // Слагаемые соразмерны пределу: при максимуме двадцать «один плюс два»
   // было бы обидно простым, а при десяти — «девять плюс восемь» неподъёмным.
   const half = Math.max(2, Math.floor(max / 2));
@@ -342,11 +427,13 @@ function taskAddition(t, max) {
   return {
     question: `Сколько будет ${count(a, thing)} и ещё ${count(b, thing)}?`,
     hint: `Посчитаем вместе: ${count(a, thing)}, и прибавим ещё ${NUM[b]}.`,
-    choices: numberChoices(a + b, max),
+    // Ловушка сложения — разность: ребёнок, услышавший числа, но не вопрос,
+    // отнимает вместо того, чтобы прибавить.
+    choices: spreadChoices(a + b, max, wide, [a - b, a]),
   };
 }
 
-function taskSubtraction(t, max) {
+function taskSubtraction(t, max, wide) {
   // Вычитание держим в пределах десяти даже там, где сложение идёт до двадцати:
   // переход через десяток в обратную сторону первокласснику даётся заметно хуже.
   const top = Math.min(max, 10);
@@ -356,7 +443,7 @@ function taskSubtraction(t, max) {
   return {
     question: `Было ${count(a, thing)}, ${t.lost} ${count(b, thing)}. Сколько осталось?`,
     hint: `Было ${NUM[a]}, пропало ${NUM[b]}. Отними и скажи, сколько стало.`,
-    choices: numberChoices(a - b, max),
+    choices: spreadChoices(a - b, max, wide, [a + b, a]),
   };
 }
 
@@ -377,12 +464,13 @@ function taskCompare(t, max) {
   };
 }
 
-function taskNext(t, max) {
+function taskNext(t, max, wide) {
   const start = 1 + rnd(max - 1);
   return {
     question: `Какое число идёт после ${NUM_GEN[start]}?`,
     hint: `Посчитай по порядку: ${NUM[start - 1]}, ${NUM[start]}, а дальше?`,
-    choices: numberChoices(start + 1, max),
+    // Ловушка — число перед названным: его называет тот, кто считает назад.
+    choices: spreadChoices(start + 1, max, wide, [start - 1, start + 3]),
   };
 }
 
@@ -391,7 +479,7 @@ function taskNext(t, max) {
 // вставленной наугад — потому что так и было.
 // Пропущенное слагаемое — та же программа первого класса, но считать
 // приходится в другую сторону: не «сложи», а «досчитай до».
-function taskMissing(t, max) {
+function taskMissing(t, max, wide) {
   const total = 4 + rnd(Math.max(2, max - 3));
   // Начинаем с двух, а не с одного: «было один камень» согласуется неверно,
   // а падежи числительного «один» ради одной задачи тащить незачем.
@@ -400,7 +488,8 @@ function taskMissing(t, max) {
   return {
     question: `Было ${count(had, thing)}, стало ${count(total, thing)}. Сколько прибавилось?`,
     hint: `Досчитай от ${NUM_GEN[had]} до ${NUM_GEN[total]} и запомни, сколько вышло шагов.`,
-    choices: numberChoices(total - had, max),
+    // Ловушка — само «стало»: последнее услышанное число.
+    choices: spreadChoices(total - had, max, wide, [total, had]),
   };
 }
 
@@ -524,16 +613,25 @@ export function typesFor(kind, themeName = 'forest') {
   return groupOf(kind).filter(g => supported(g, theme)).map(g => g.type);
 }
 
-/** Ключ пула готовой озвучки. Считается здесь и в tools/tts/collect.mjs. */
-export function poolKey(themeName, kind, max, topic) {
-  return `${themeName}|${kind}|${max}|${topic || '-'}`;
+/**
+ * Ключ пула готовой озвучки. Считается здесь и в tools/tts/collect.mjs.
+ *
+ * Пятый сегмент появляется только при широком разбросе: без него ключи
+ * прежних историй остаются прежними строками, а значит и их семя,
+ * и их вопросы, и их записи голосом.
+ */
+export function poolKey(themeName, kind, max, topic, spread) {
+  const base = `${themeName}|${kind}|${max}|${topic || '-'}`;
+  return spread === 'wide' ? `${base}|wide` : base;
 }
 
 /**
  * @param {'math'|'logic'|'any'} kind
- * @param {{theme?: string, max?: number, types?: string[], topic?: string}} opts
+ * @param {{theme?: string, max?: number, types?: string[], topic?: string,
+ *          spread?: 'wide'}} opts
  *        предел счёта и предметную область задаёт сцена: сложность растёт
- *        по ходу истории, а вопрос остаётся про то, что на экране
+ *        по ходу истории, а вопрос остаётся про то, что на экране;
+ *        spread: 'wide' — разброс в ответах шире, подобрать без вычисления нельзя
  * @returns {{question:string, hint:string, choices:Array<{label:string,keywords:string[],correct:boolean}>}}
  */
 export function makeTask(kind = 'any', opts = {}) {
@@ -542,8 +640,9 @@ export function makeTask(kind = 'any', opts = {}) {
   const theme = narrow(full, opts.topic);
   const max = Math.min(Math.max(opts.max ?? 10, 5), 20);
   const wanted = opts.types?.length ? opts.types : null;
+  const wide = opts.spread === 'wide';
 
-  const ready = pool?.[poolKey(themeName, kind, max, opts.topic)];
+  const ready = pool?.[poolKey(themeName, kind, max, opts.topic, opts.spread)];
   if (ready && ready.length) {
     const fit = wanted ? ready.filter(t => wanted.includes(t.type)) : ready;
     if (fit.length) return fromPool(fit);
@@ -558,7 +657,7 @@ export function makeTask(kind = 'any', opts = {}) {
   let task, gen;
   for (let attempt = 0; attempt < 6; attempt++) {
     gen = pickOne(generators);
-    task = gen.make(theme, max);
+    task = gen.make(theme, max, wide);
     if (!recent.includes(task.question)) break;
   }
 

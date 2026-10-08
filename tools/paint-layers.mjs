@@ -9,119 +9,79 @@
 
 import { spawnSync } from 'node:child_process';
 
-const STYLE = 'children book illustration, flat vector shapes, clean smooth gradients, '
-  + 'deep blue night palette, moonlight rim light, no outlines, no texture noise';
-const NEG = 'text, letters, watermark, signature, frame, border, people, person, human, '
-  + 'character, animal, blurry, lowres, jpeg artifacts, cluttered, busy details';
-
-// strength подобрана по планам: небо можно переписывать смелее — там нет
-// геометрии, которую нужно беречь; у ближнего плана силуэт держит персонажей,
-// поэтому вмешательство минимальное.
-const LAYERS = {
-  'sky': {
-    strength: 0.5,
-    // «одна луна» приходится проговаривать дважды: на первом прогоне
-    // генератор дорисовал слева ещё и месяц.
-    prompt: `night sky with exactly one single full moon in the upper right, soft halo around it, scattered small stars, deep blue vertical gradient, ${STYLE}, no ground, no trees, no horizon`,
-    // На прогонах генератор дорисовывал слева то месяц, то яркую вспышку —
-    // приходится запрещать любой второй источник света.
-    negative: 'crescent moon, second moon, two moons, multiple moons, bright star, lens flare, glowing orb, clouds',
-  },
-  'far-forest': {
-    strength: 0.45,
-    prompt: `distant pine forest silhouettes in night mist, layered depth, soft fog band, dark blue, ${STYLE}`,
-  },
-  'far-hills': {
-    strength: 0.45,
-    prompt: `distant rolling hills at night, soft haze, dark blue silhouettes, ${STYLE}`,
-  },
-  'near-forest': {
-    strength: 0.38,
-    prompt: `dark forest floor at night with moonlit path, tall tree trunks framing the edges, near black blue silhouettes, ${STYLE}`,
-  },
-  'near-river': {
-    strength: 0.38,
-    prompt: `calm river at night with moonlight reflections, reeds on the bank, dark silhouettes, ${STYLE}`,
-  },
-  'near-oak': {
-    strength: 0.38,
-    prompt: `huge ancient oak trunk with a hollow glowing warm, night, dark silhouette, ${STYLE}`,
-  },
-  'near-glade': {
-    strength: 0.38,
-    prompt: `night forest clearing with floating fireflies, soft warm glows, grass, dark silhouettes, ${STYLE}`,
-  },
-  'near-burrow': {
-    strength: 0.38,
-    prompt: `earth mound with a round burrow entrance glowing warm inside, night, dark silhouettes, ${STYLE}`,
-  },
-};
-
-
-// ---- мир «Первой ночи» ----
 // Стиль описан нарочно жёстко: нейросеть склонна сглаживать кубы в холмики,
 // а здесь вся узнаваемость держится на чётких гранях.
-const MC_STYLE = 'blocky voxel game world, large cubic blocks, crisp square edges, '
+const STYLE = 'blocky voxel game world, large cubic blocks, crisp square edges, '
   + 'flat saturated colors, pixel art texture, no blur, no soft shading';
-const MC_NEG = 'text, letters, watermark, signature, frame, border, people, person, character, '
+const NEG = 'text, letters, watermark, signature, frame, border, people, person, character, '
   + 'blurry, soft focus, smooth gradients, rounded shapes, realistic, photo, lowres';
 
-const MC_LAYERS = {
+const LAYERS = {
   'mc/sky-day': {
     strength: 0.42,
-    prompt: `bright blue daytime sky with chunky square white clouds and a square sun, ${MC_STYLE}, no ground, no trees`,
-    negative: MC_NEG + ', round clouds, round sun',
+    prompt: `bright blue daytime sky with chunky square white clouds and a square sun, ${STYLE}, no ground, no trees`,
+    negative: NEG + ', round clouds, round sun',
   },
   'mc/sky-sunset': {
     strength: 0.42,
-    prompt: `sunset sky, orange and pink bands, chunky square clouds, square sun near the horizon, ${MC_STYLE}, no ground, no trees`,
-    negative: MC_NEG + ', round clouds, round sun',
+    prompt: `sunset sky, orange and pink bands, chunky square clouds, square sun near the horizon, ${STYLE}, no ground, no trees`,
+    negative: NEG + ', round clouds, round sun',
   },
   'mc/sky-night': {
     strength: 0.42,
-    prompt: `dark blue night sky with a square moon, ${MC_STYLE}, no ground, no trees`,
-    negative: MC_NEG + ', round moon, crescent moon, second moon',
+    prompt: `dark blue night sky with a square moon, ${STYLE}, no ground, no trees`,
+    negative: NEG + ', round moon, crescent moon, second moon',
   },
   'mc/far-hills': {
     strength: 0.34,
-    prompt: `distant blocky hills of grass and dirt cubes with cubic trees, layered depth, ${MC_STYLE}`,
-    negative: MC_NEG,
+    prompt: `distant blocky hills of grass and dirt cubes with cubic trees, layered depth, ${STYLE}`,
+    negative: NEG,
+  },
+  // Дальний план восьмого дня: те же холмы, но над ними три столба дыма.
+  // Дым — единственное, ради чего слой красится отдельно от far-hills,
+  // поэтому он назван в промпте дважды и вынесен в начало.
+  'mc/far-smoke': {
+    strength: 0.24,
+    prompt: `three ragged columns of dark smoke rising from behind distant blocky hills, `
+      + `smoke drifting sideways in the wind, orange glow of fire at the base, `
+      + `grass and dirt cubes with cubic trees, layered depth, ${STYLE}`,
+    negative: NEG + ', chimney, house, campfire ring, clouds',
   },
   'mc/far-cave': {
     strength: 0.34,
-    prompt: `underground cave wall of stone cubes with coal and diamond ore blocks, torchlight, ${MC_STYLE}`,
-    negative: MC_NEG + ', sky, sun, clouds',
+    prompt: `underground cave wall of stone cubes with coal and diamond ore blocks, torchlight, ${STYLE}`,
+    negative: NEG + ', sky, sun, clouds',
   },
 
   // ---- второй день ----
   'mc/sky-dawn': {
     strength: 0.42,
-    prompt: `early morning sky just after sunrise, pale pink and lilac bands turning to blue, chunky square clouds, ${MC_STYLE}, no ground, no trees`,
+    prompt: `early morning sky just after sunrise, pale pink and lilac bands turning to blue, chunky square clouds, ${STYLE}, no ground, no trees`,
     // Светило лежит отдельным слоем: если дать его генератору, он
     // перерисовывает квадрат в пятно, и это уже проверено на закате.
-    negative: MC_NEG + ', round clouds, sun, moon, stars',
+    negative: NEG + ', round clouds, sun, moon, stars',
   },
   'mc/far-river': {
     strength: 0.24,
-    prompt: `distant blocky mountain of stone cubes rising in the centre, grassy blocky hills on both sides, hazy depth, ${MC_STYLE}`,
-    negative: MC_NEG + ', water, river, lake',
+    prompt: `distant blocky mountain of stone cubes rising in the centre, grassy blocky hills on both sides, hazy depth, ${STYLE}`,
+    negative: NEG + ', water, river, lake',
   },
   'mc/far-pines': {
     strength: 0.24,
-    prompt: `distant blocky spruce forest, dark green cubic conifers in tiers, evening haze between the trunks, ${MC_STYLE}`,
-    negative: MC_NEG + ', round treetops, sun, moon',
+    prompt: `distant blocky spruce forest, dark green cubic conifers in tiers, evening haze between the trunks, ${STYLE}`,
+    negative: NEG + ', round treetops, sun, moon',
   },
   'mc/far-deep': {
     strength: 0.24,
-    prompt: `deep underground wall of dark stone cubes with coal blocks and a bright diamond ore vein, torchlight glow, ${MC_STYLE}`,
-    negative: MC_NEG + ', sky, sun, clouds, grass',
+    prompt: `deep underground wall of dark stone cubes with coal blocks and a bright diamond ore vein, torchlight glow, ${STYLE}`,
+    negative: NEG + ', sky, sun, clouds, grass',
   },
 
   // ---- третий день ----
   'mc/far-lava': {
     strength: 0.24,
-    prompt: `huge underground cavern of dark red netherrack cubes, a wide river of glowing orange lava across the middle, lava falls from the ceiling, black obsidian bank below the stream, hot haze and glow, ${MC_STYLE}`,
-    negative: MC_NEG + ', sky, sun, clouds, grass, water, trees',
+    prompt: `huge underground cavern of dark red netherrack cubes, a wide river of glowing orange lava across the middle, lava falls from the ceiling, black obsidian bank below the stream, hot haze and glow, ${STYLE}`,
+    negative: NEG + ', sky, sun, clouds, grass, water, trees',
   },
 
   // ---- четвёртый день ----
@@ -130,8 +90,8 @@ const MC_LAYERS = {
   // прорубить его там, где у нас свод.
   'mc/far-nether-sea': {
     strength: 0.24,
-    prompt: `vast underground sea of glowing orange lava stretching to the horizon, low ceiling of dark red netherrack cubes with hanging stalactites, dark nether brick fortress with pale quartz battlements on the far bank, lava falls, hot red haze and glow, ${MC_STYLE}`,
-    negative: MC_NEG + ', sky, horizon, sun, clouds, grass, water, trees, people',
+    prompt: `vast underground sea of glowing orange lava stretching to the horizon, low ceiling of dark red netherrack cubes with hanging stalactites, dark nether brick fortress with pale quartz battlements on the far bank, lava falls, hot red haze and glow, ${STYLE}`,
+    negative: NEG + ', sky, horizon, sun, clouds, grass, water, trees, people',
   },
 
   // ---- пятый день ----
@@ -141,8 +101,8 @@ const MC_LAYERS = {
   // превращается во второй Нижний мир — а смена цвета и есть смысл дня.
   'mc/far-ravine': {
     strength: 0.24,
-    prompt: `huge dark underground ravine of grey stone cubes, tall waterfalls of blue water falling into a black bottomless chasm, low ceiling of cubic rock with hanging stalactites, cold blue damp haze and mist, faint torchlight on the far wall, ${MC_STYLE}`,
-    negative: MC_NEG + ', sky, horizon, sun, clouds, grass, trees, lava, fire, orange glow, warm light, people',
+    prompt: `huge dark underground ravine of grey stone cubes, tall waterfalls of blue water falling into a black bottomless chasm, low ceiling of cubic rock with hanging stalactites, cold blue damp haze and mist, faint torchlight on the far wall, ${STYLE}`,
+    negative: NEG + ', sky, horizon, sun, clouds, grass, trees, lava, fire, orange glow, warm light, people',
   },
 
   // ---- шестой день ----
@@ -152,8 +112,8 @@ const MC_LAYERS = {
   // уверенно выдаёт ту же синюю пещеру, из которой Стив только что вышел.
   'mc/far-stronghold': {
     strength: 0.24,
-    prompt: `long underground stronghold corridor of mossy stone brick cubes, receding square archways one behind another, warm yellow torchlight on the brick walls, low cubic ceiling, dusty warm haze, deep perspective into the dark, ${MC_STYLE}`,
-    negative: MC_NEG + ', sky, horizon, sun, clouds, grass, trees, water, waterfall, lava, cold blue light, blue haze, people',
+    prompt: `long underground stronghold corridor of mossy stone brick cubes, receding square archways one behind another, warm yellow torchlight on the brick walls, low cubic ceiling, dusty warm haze, deep perspective into the dark, ${STYLE}`,
+    negative: NEG + ', sky, horizon, sun, clouds, grass, trees, water, waterfall, lava, cold blue light, blue haze, people',
   },
   // ---- седьмой день ----
   // Край — единственное место сезона, где неба нет вовсе: вместо него
@@ -163,8 +123,8 @@ const MC_LAYERS = {
   // в сценарии ни в одной сцене.
   'mc/sky-void': {
     strength: 0.42,
-    prompt: `deep violet purple emptiness instead of sky, no sun, no moon, faint pale specks far away in the dark lilac void, smooth deep gradient, ${MC_STYLE}, no ground, no horizon`,
-    negative: MC_NEG + ', sun, moon, stars as big shapes, clouds, horizon, ground, grass, trees, water, lava, fire, orange glow, blue sky, daylight',
+    prompt: `deep violet purple emptiness instead of sky, no sun, no moon, faint pale specks far away in the dark lilac void, smooth deep gradient, ${STYLE}, no ground, no horizon`,
+    negative: NEG + ', sun, moon, stars as big shapes, clouds, horizon, ground, grass, trees, water, lava, fire, orange glow, blue sky, daylight',
   },
   // Парящий остров. Слой кадр не закрывает — под островами видна
   // пустота, и собирается он с chromaKey, как холмы и река. Отсюда же
@@ -172,12 +132,11 @@ const MC_LAYERS = {
   // линию горизонта, и остров перестаёт висеть.
   'mc/far-end-island': {
     strength: 0.24,
-    prompt: `floating island of pale cream cubes hanging in a violet void, tall black obsidian cube pillars rising from it with small magenta crystals glowing on top, smaller islands floating separately in the emptiness, dark rocky underside, faint lilac haze, ${MC_STYLE}`,
-    negative: MC_NEG + ', sun, moon, clouds, horizon line, solid ground, grass, trees, water, waterfall, lava, fire, warm orange light, people',
+    prompt: `floating island of pale cream cubes hanging in a violet void, tall black obsidian cube pillars rising from it with small magenta crystals glowing on top, smaller islands floating separately in the emptiness, dark rocky underside, faint lilac haze, ${STYLE}`,
+    negative: NEG + ', sun, moon, clouds, horizon line, solid ground, grass, trees, water, waterfall, lava, fire, warm orange light, people',
   },
 };
 
-Object.assign(LAYERS, MC_LAYERS);
 
 const wanted = process.argv.slice(2);
 const names = wanted.length ? wanted : Object.keys(LAYERS);

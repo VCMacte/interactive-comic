@@ -114,7 +114,7 @@ for (const file of stories) {
       const spec = typeof scene.task === 'string' ? { kind: scene.task } : scene.task;
       const theme = story.theme ?? 'forest';
       const max = spec.max ?? 10;
-      const key = poolKey(theme, spec.kind, max, spec.topic);
+      const key = poolKey(theme, spec.kind, max, spec.topic, spec.spread);
 
       // Озвучиваем только те виды, которые сцены действительно просят.
       // Раньше пул набирался по всем видам сразу, и четыре пятых записей
@@ -127,7 +127,7 @@ for (const file of stories) {
       const types = prev?.types === null || !spec.types?.length
         ? null
         : [...new Set([...(prev?.types ?? []), ...spec.types])];
-      taskSpecs.set(key, { theme, kind: spec.kind, max, topic: spec.topic, types });
+      taskSpecs.set(key, { theme, kind: spec.kind, max, topic: spec.topic, types, spread: spec.spread });
     }
   }
 }
@@ -172,6 +172,7 @@ for (const [key, spec] of taskSpecs) {
     for (let i = 0; i < PER_TYPE * 60 && made < PER_TYPE; i++) {
       const t = makeTask(spec.kind, {
         theme: spec.theme, max: spec.max, topic: spec.topic, types: [type],
+        spread: spec.spread,
       });
       if (seen.has(t.question)) continue;
       seen.set(t.question, {

@@ -1,5 +1,12 @@
 [
   {
+    "id": "smoke",
+    "title": "Дым над лугом",
+    "subtitle": "Восьмой день Стива · пять игр",
+    "cover": "assets/covers/smoke.webp",
+    "story": "stories/smoke.json"
+  },
+  {
     "id": "the-end",
     "title": "Край",
     "subtitle": "Седьмой день Стива · пять игр",
@@ -47,12 +54,5 @@
     "subtitle": "По мотивам Minecraft · пять игр",
     "cover": "assets/covers/minecraft.webp",
     "story": "stories/minecraft.json"
-  },
-  {
-    "id": "hedgehog",
-    "title": "Ёжик и лунная тропа",
-    "subtitle": "Сказка на ночь",
-    "cover": "assets/covers/hedgehog.webp",
-    "story": "stories/hedgehog.json"
   }
 ]

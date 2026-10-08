@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 640" width="340" height="640">
+<style>
+  .idle { animation: idle 3.2s ease-in-out infinite; transform-origin: 50% 100%; }
+  @keyframes idle { 0%,100% { transform: translateY(0) } 50% { transform: translateY(-6px) } }
+  @media (prefers-reduced-motion: reduce) { .idle { animation: none } }
+  
+</style>
+<g class="idle">
+
+<!-- голова под капюшоном -->
+<rect x="88" y="16" width="152" height="152" fill="#9aa2a8"/>
+<rect x="76" y="0" width="176" height="48" fill="#434b57"/>
+<rect x="76" y="48" width="24" height="60" fill="#434b57"/>
+<rect x="228" y="48" width="24" height="60" fill="#434b57"/>
+<rect x="112" y="68" width="32" height="20" fill="#2b2f36"/>
+<rect x="180" y="68" width="32" height="20" fill="#2b2f36"/>
+<rect x="108" y="56" width="40" height="10" fill="#3a4048"/>
+<rect x="176" y="56" width="40" height="10" fill="#3a4048"/>
+<rect x="144" y="80" width="40" height="68" fill="#7d858b"/>
+
+<!-- плащ: сутулые плечи, он ниже и уже Стива -->
+<rect x="72" y="168" width="184" height="240" fill="#5a6472"/>
+<rect x="72" y="168" width="184" height="20" fill="#717c8c"/>
+<rect x="156" y="188" width="16" height="220" fill="#434b57"/>
+<rect x="40" y="188" width="44" height="160" fill="#5a6472"/>
+<rect x="244" y="188" width="44" height="160" fill="#5a6472"/>
+<rect x="40" y="348" width="44" height="40" fill="#9aa2a8"/>
+<rect x="244" y="348" width="44" height="40" fill="#9aa2a8"/>
+
+<!-- оружие: у каждого своё, чтобы в кадре они не были близнецами -->
+<g transform="translate(272 376) rotate(24)">
+<rect x="-7" y="-132" width="14" height="168" fill="#6b5030"/>
+<rect x="-7" y="-132" width="5" height="168" fill="#4a3620"/>
+<rect x="-30" y="-188" width="60" height="60" fill="#767d86"/>
+<rect x="-22" y="-180" width="44" height="44" fill="#aab0b8"/>
+<rect x="-44" y="-172" width="14" height="24" fill="#767d86"/>
+<rect x="30" y="-172" width="14" height="24" fill="#767d86"/>
+<rect x="-7" y="-202" width="14" height="14" fill="#767d86"/></g>
+
+<!-- ноги -->
+<rect x="92" y="408" width="64" height="192" fill="#434b57"/>
+<rect x="168" y="408" width="64" height="192" fill="#434b57"/>
+<rect x="92" y="600" width="64" height="40" fill="#2f343c"/>
+<rect x="168" y="600" width="64" height="40" fill="#2f343c"/>
+</g>
+</svg>

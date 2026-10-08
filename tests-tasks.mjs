@@ -255,3 +255,109 @@ if (failed) process.exitCode = 1;
   console.log(bad ? `\n${bad} провалено в новых видах` : '\nпропущенное слагаемое и рецепты в порядке');
   if (bad) process.exitCode = 1;
 }
+
+/* ---------------- широкий разброс и область рейда ---------------- */
+{
+  let bad = 0;
+  const W = ['ноль','один','два','три','четыре','пять','шесть','семь','восемь','девять','десять',
+             'одиннадцать','двенадцать','тринадцать','четырнадцать','пятнадцать',
+             'шестнадцать','семнадцать','восемнадцать','девятнадцать','двадцать'];
+  const numsIn = (s) => [...s.matchAll(/[\u0430-\u044f\u0451]+/gi)].map(m => W.indexOf(m[0].toLowerCase())).filter(n => n >= 0);
+  const valOf = (c) => Number(c.keywords[1]);
+
+  const CASES = [
+    { types: ['addition'], max: 20, trap: ([a, b]) => a - b },
+    { types: ['subtraction'], max: 10, trap: ([a, b]) => a + b },
+    { types: ['missing'], max: 20, trap: ([had, total]) => total },
+  ];
+
+  for (const c of CASES) {
+    let middle = 0, trapShown = 0, trapPossible = 0;
+    const slots = new Set();
+    for (let i = 0; i < 300; i++) {
+      const t = makeTask('math', {
+        theme: 'minecraft', max: c.max, topic: 'raid', types: c.types, spread: 'wide',
+      });
+      if (t.type !== c.types[0]) { console.log('FAIL: просили', c.types[0], 'получили', t.type); bad++; continue; }
+      if (t.choices.length !== 3) { console.log('FAIL: вариантов не три:', t.question); bad++; continue; }
+
+      const vals = t.choices.map(valOf);
+      const answer = valOf(t.choices.find(x => x.correct));
+      // Ни одной пары на расстоянии меньше двух: тройка подряд, в которой
+      // верное стоит посередине, отгадывается позицией.
+      for (let a = 0; a < 3; a++) for (let b = a + 1; b < 3; b++) {
+        if (Math.abs(vals[a] - vals[b]) < 2) { console.log('FAIL: числа слишком близко:', t.question, vals); bad++; }
+      }
+      for (const v of vals) {
+        if (v < 0 || v > c.max) { console.log('FAIL: вариант вне предела:', t.question, v); bad++; }
+      }
+      const wrong = vals.filter(v => v !== answer);
+      if (answer > Math.min(...wrong) && answer < Math.max(...wrong)) middle++;
+      slots.add(t.choices.findIndex(x => x.correct));
+
+      const trap = c.trap(numsIn(t.question));
+      if (Number.isInteger(trap) && trap >= 0 && trap <= c.max && Math.abs(trap - answer) >= 2) {
+        trapPossible++;
+        if (vals.includes(trap)) trapShown++;
+      }
+    }
+    // Ловушка от типичной ошибки должна стоять в вариантах всегда, когда
+    // она вообще попадает в предел счёта.
+    if (trapPossible && trapShown < trapPossible) {
+      console.log(`FAIL: ловушка показана ${trapShown} раз из ${trapPossible}:`, c.types[0]); bad++;
+    }
+    // Верный ответ не обязан быть крайним: иначе хватило бы правила
+    // «бери самое большое».
+    if (middle < 60) { console.log(`FAIL: верный ответ почти всегда крайний (${middle} из 300):`, c.types[0]); bad++; }
+    if (slots.size !== 3) { console.log('FAIL: верный ответ не на всех кнопках:', c.types[0]); bad++; }
+  }
+
+  // Без флага поведение прежнее — тесные ±1/±2. Это и защищает готовый пул.
+  for (let i = 0; i < 200; i++) {
+    const t = makeTask('math', { theme: 'minecraft', max: 20, topic: 'ore', types: ['addition'] });
+    const answer = valOf(t.choices.find(x => x.correct));
+    for (const c of t.choices) {
+      if (Math.abs(valOf(c) - answer) > 2) { console.log('FAIL: без флага разброс разъехался:', t.question); bad++; break; }
+    }
+  }
+
+  // Область рейда: считаем только её снаряжение, и ломают его разбойники.
+  const GEAR = ['щит', 'арбалет', 'шлем', 'тотем'];
+  for (let i = 0; i < 300; i++) {
+    const t = makeTask('math', { theme: 'minecraft', max: 10, topic: 'raid', types: ['subtraction'], spread: 'wide' });
+    if (!GEAR.some(g => t.question.includes(g))) { console.log('FAIL: в рейде считаем не снаряжение:', t.question); bad++; }
+    if (!t.question.includes('сломали разбойники')) { console.log('FAIL: чужой глагол потери:', t.question); bad++; }
+  }
+
+  // Логика рейда: лишнее и рецепты — только из области, без утечки в общий
+  // набор (иначе переписался бы уже озвученный пул первого дня).
+  const RAID_WORDS = ['щит','арбалет','шлем','тотем','знамя','плащ','стена','ворота','частокол',
+                      'колокол','труба','барабан','лук','стрела','житель','кузнец','библиотекарь',
+                      'разбойник','морковка','облако','яблоко','камень','овца'];
+  for (let i = 0; i < 300; i++) {
+    const t = makeTask('logic', { theme: 'minecraft', max: 10, topic: 'raid', types: ['oddOneOut'] });
+    for (const c of t.choices) {
+      if (!RAID_WORDS.includes(c.label.toLowerCase())) { console.log('FAIL: лишнее не из рейда:', c.label, '—', t.question); bad++; }
+    }
+  }
+  for (let i = 0; i < 200; i++) {
+    const t = makeTask('logic', { theme: 'minecraft', max: 10, topic: 'raid', types: ['recipe'] });
+    if (!/щит|стрел|ворота/.test(t.question)) { console.log('FAIL: рецепт не из рейда:', t.question); bad++; }
+    const said = t.question.toLowerCase();
+    for (const c of t.choices) {
+      if (!said.includes(c.label.toLowerCase())) { console.log('FAIL: вариант не назван в вопросе:', c.label, '—', t.question); bad++; }
+    }
+  }
+  // Снаряжение рейда не должно выпадать там, где область не задана.
+  for (let i = 0; i < 400; i++) {
+    const t = makeTask('math', { theme: 'minecraft', max: 10, types: ['subtraction'] });
+    if (GEAR.some(g => t.question.includes(g))) { console.log('FAIL: рейд протёк в общий набор:', t.question); bad++; break; }
+  }
+
+  // Ключ пула: пятый сегмент появляется только при широком разбросе.
+  if (poolKey('minecraft', 'math', 20, 'raid', 'wide') !== 'minecraft|math|20|raid|wide') { console.log('FAIL: ключ пула с разбросом'); bad++; }
+  if (poolKey('minecraft', 'math', 10, 'ore', undefined) !== 'minecraft|math|10|ore') { console.log('FAIL: ключ пула без разброса изменился'); bad++; }
+
+  console.log(bad ? `\n${bad} провалено в разбросе и рейде` : '\nширокий разброс и область рейда в порядке');
+  if (bad) process.exitCode = 1;
+}

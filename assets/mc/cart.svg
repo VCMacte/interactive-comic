@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 280" width="420" height="280">
+<style>
+  .idle { animation: idle 3.2s ease-in-out infinite; transform-origin: 50% 100%; }
+  @keyframes idle { 0%,100% { transform: translateY(0) } 50% { transform: translateY(-6px) } }
+  @media (prefers-reduced-motion: reduce) { .idle { animation: none } }
+  .idle { animation: none }
+</style>
+<g class="idle">
+
+<!-- кузов, перекошенный на левый бок -->
+<g transform="rotate(-7 180 180)">
+<rect x="40" y="100" width="280" height="88" fill="#8a6336"/>
+<rect x="40" y="100" width="280" height="18" fill="#a87d47"/>
+<rect x="40" y="170" width="280" height="18" fill="#664825"/>
+<rect x="100" y="100" width="14" height="88" fill="#664825"/>
+<rect x="180" y="100" width="14" height="88" fill="#664825"/>
+<rect x="260" y="100" width="14" height="88" fill="#664825"/>
+<!-- выломанная доска борта -->
+<rect x="210" y="68" width="72" height="28" fill="#8a6336"/>
+</g>
+
+<!-- оглобля задрана вверх -->
+<rect x="308" y="32" width="112" height="20" fill="#8a6336"/>
+<rect x="308" y="32" width="112" height="7" fill="#a87d47"/>
+
+<!-- уцелевшее колесо -->
+<rect x="228" y="192" width="80" height="80" fill="#70767e"/>
+<rect x="244" y="208" width="48" height="48" fill="#8a6336"/>
+<rect x="262" y="192" width="12" height="80" fill="#9aa0a8"/>
+<rect x="228" y="226" width="80" height="12" fill="#9aa0a8"/>
+
+<!-- второе колесо слетело и лежит на земле -->
+<rect x="20" y="240" width="92" height="32" fill="#70767e"/>
+<rect x="40" y="248" width="52" height="16" fill="#8a6336"/>
+
+<!-- рассыпанное снаряжение: щит у колеса и шлем поодаль -->
+<rect x="128" y="232" width="56" height="40" fill="#5a6472"/>
+<rect x="144" y="244" width="24" height="24" fill="#9aa0a8"/>
+<rect x="340" y="244" width="48" height="28" fill="#9aa0a8"/>
+<rect x="340" y="244" width="48" height="10" fill="#c9ccd2"/>
+</g>
+</svg>

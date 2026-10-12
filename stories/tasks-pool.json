@@ -3415,6 +3415,1602 @@
    "hintAudio": "30130651"
   }
  ],
+ "minecraft|math|20|iron|wide": [
+  {
+   "type": "addition",
+   "question": "Сколько будет один блок и ещё семь блоков?",
+   "hint": "Посчитаем вместе: один блок, и прибавим ещё семь.",
+   "choices": [
+    {
+     "label": "Двенадцать",
+     "keywords": [
+      "двенадцать",
+      "12"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Один",
+     "keywords": [
+      "один",
+      "1"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Восемь",
+     "keywords": [
+      "восемь",
+      "8"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "2e27b0d0",
+   "hintAudio": "f4fedaa1"
+  },
+  {
+   "type": "addition",
+   "question": "Сколько будет десять слитков и ещё четыре слитка?",
+   "hint": "Посчитаем вместе: десять слитков, и прибавим ещё четыре.",
+   "choices": [
+    {
+     "label": "Девятнадцать",
+     "keywords": [
+      "девятнадцать",
+      "19"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Шесть",
+     "keywords": [
+      "шесть",
+      "6"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Четырнадцать",
+     "keywords": [
+      "четырнадцать",
+      "14"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "f367fa96",
+   "hintAudio": "3233a4ef"
+  },
+  {
+   "type": "addition",
+   "question": "Сколько будет семь блоков и ещё два блока?",
+   "hint": "Посчитаем вместе: семь блоков, и прибавим ещё два.",
+   "choices": [
+    {
+     "label": "Девять",
+     "keywords": [
+      "девять",
+      "9"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Пять",
+     "keywords": [
+      "пять",
+      "5"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Одиннадцать",
+     "keywords": [
+      "одиннадцать",
+      "11"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "f36df48f",
+   "hintAudio": "40173f10"
+  },
+  {
+   "type": "addition",
+   "question": "Сколько будет девять блоков и ещё два блока?",
+   "hint": "Посчитаем вместе: девять блоков, и прибавим ещё два.",
+   "choices": [
+    {
+     "label": "Тринадцать",
+     "keywords": [
+      "тринадцать",
+      "13"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Одиннадцать",
+     "keywords": [
+      "одиннадцать",
+      "11"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Семь",
+     "keywords": [
+      "семь",
+      "7"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "3eb82407",
+   "hintAudio": "814106ac"
+  },
+  {
+   "type": "addition",
+   "question": "Сколько будет шесть блоков и ещё шесть блоков?",
+   "hint": "Посчитаем вместе: шесть блоков, и прибавим ещё шесть.",
+   "choices": [
+    {
+     "label": "Двенадцать",
+     "keywords": [
+      "двенадцать",
+      "12"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Семнадцать",
+     "keywords": [
+      "семнадцать",
+      "17"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Ноль",
+     "keywords": [
+      "ноль",
+      "0"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "727bb719",
+   "hintAudio": "ec718e2e"
+  },
+  {
+   "type": "addition",
+   "question": "Сколько будет пять слитков и ещё три слитка?",
+   "hint": "Посчитаем вместе: пять слитков, и прибавим ещё три.",
+   "choices": [
+    {
+     "label": "Два",
+     "keywords": [
+      "два",
+      "2"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Десять",
+     "keywords": [
+      "десять",
+      "10"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Восемь",
+     "keywords": [
+      "восемь",
+      "8"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "93c45ab3",
+   "hintAudio": "729c3114"
+  },
+  {
+   "type": "addition",
+   "question": "Сколько будет два блока и ещё три блока?",
+   "hint": "Посчитаем вместе: два блока, и прибавим ещё три.",
+   "choices": [
+    {
+     "label": "Два",
+     "keywords": [
+      "два",
+      "2"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Семь",
+     "keywords": [
+      "семь",
+      "7"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Пять",
+     "keywords": [
+      "пять",
+      "5"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "f431d847",
+   "hintAudio": "130b2084"
+  },
+  {
+   "type": "addition",
+   "question": "Сколько будет четыре блока и ещё два блока?",
+   "hint": "Посчитаем вместе: четыре блока, и прибавим ещё два.",
+   "choices": [
+    {
+     "label": "Два",
+     "keywords": [
+      "два",
+      "2"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Шесть",
+     "keywords": [
+      "шесть",
+      "6"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Десять",
+     "keywords": [
+      "десять",
+      "10"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "a239a99b",
+   "hintAudio": "b0a5871c"
+  },
+  {
+   "type": "addition",
+   "question": "Сколько будет семь слитков и ещё шесть слитков?",
+   "hint": "Посчитаем вместе: семь слитков, и прибавим ещё шесть.",
+   "choices": [
+    {
+     "label": "Один",
+     "keywords": [
+      "один",
+      "1"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Шестнадцать",
+     "keywords": [
+      "шестнадцать",
+      "16"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Тринадцать",
+     "keywords": [
+      "тринадцать",
+      "13"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "9c60cab3",
+   "hintAudio": "fcf2311c"
+  },
+  {
+   "type": "addition",
+   "question": "Сколько будет десять блоков и ещё два блока?",
+   "hint": "Посчитаем вместе: десять блоков, и прибавим ещё два.",
+   "choices": [
+    {
+     "label": "Восемь",
+     "keywords": [
+      "восемь",
+      "8"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Двенадцать",
+     "keywords": [
+      "двенадцать",
+      "12"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Четырнадцать",
+     "keywords": [
+      "четырнадцать",
+      "14"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "395d1208",
+   "hintAudio": "f0198c67"
+  },
+  {
+   "type": "missing",
+   "question": "Было пять блоков, стало десять блоков. Сколько прибавилось?",
+   "hint": "Досчитай от пяти до десяти и запомни, сколько вышло шагов.",
+   "choices": [
+    {
+     "label": "Пять",
+     "keywords": [
+      "пять",
+      "5"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Десять",
+     "keywords": [
+      "десять",
+      "10"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Ноль",
+     "keywords": [
+      "ноль",
+      "0"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "46b5b71d",
+   "hintAudio": "e64a8016"
+  },
+  {
+   "type": "missing",
+   "question": "Было два слитка, стало восемнадцать слитков. Сколько прибавилось?",
+   "hint": "Досчитай от двух до восемнадцати и запомни, сколько вышло шагов.",
+   "choices": [
+    {
+     "label": "Четырнадцать",
+     "keywords": [
+      "четырнадцать",
+      "14"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Восемнадцать",
+     "keywords": [
+      "восемнадцать",
+      "18"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Шестнадцать",
+     "keywords": [
+      "шестнадцать",
+      "16"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "6ef62335",
+   "hintAudio": "0d8150f8"
+  },
+  {
+   "type": "missing",
+   "question": "Было одиннадцать блоков, стало восемнадцать блоков. Сколько прибавилось?",
+   "hint": "Досчитай от одиннадцати до восемнадцати и запомни, сколько вышло шагов.",
+   "choices": [
+    {
+     "label": "Четыре",
+     "keywords": [
+      "четыре",
+      "4"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Восемнадцать",
+     "keywords": [
+      "восемнадцать",
+      "18"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Семь",
+     "keywords": [
+      "семь",
+      "7"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "c38de1b3",
+   "hintAudio": "3cd8d770"
+  },
+  {
+   "type": "missing",
+   "question": "Было восемь слитков, стало семнадцать слитков. Сколько прибавилось?",
+   "hint": "Досчитай от восьми до семнадцати и запомни, сколько вышло шагов.",
+   "choices": [
+    {
+     "label": "Четыре",
+     "keywords": [
+      "четыре",
+      "4"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Семнадцать",
+     "keywords": [
+      "семнадцать",
+      "17"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Девять",
+     "keywords": [
+      "девять",
+      "9"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "155b52e1",
+   "hintAudio": "d88187a3"
+  },
+  {
+   "type": "missing",
+   "question": "Было двенадцать блоков, стало четырнадцать блоков. Сколько прибавилось?",
+   "hint": "Досчитай от двенадцати до четырнадцати и запомни, сколько вышло шагов.",
+   "choices": [
+    {
+     "label": "Ноль",
+     "keywords": [
+      "ноль",
+      "0"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Два",
+     "keywords": [
+      "два",
+      "2"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Четырнадцать",
+     "keywords": [
+      "четырнадцать",
+      "14"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "3de0e612",
+   "hintAudio": "4f50dcbf"
+  },
+  {
+   "type": "missing",
+   "question": "Было два слитка, стало шестнадцать слитков. Сколько прибавилось?",
+   "hint": "Досчитай от двух до шестнадцати и запомни, сколько вышло шагов.",
+   "choices": [
+    {
+     "label": "Одиннадцать",
+     "keywords": [
+      "одиннадцать",
+      "11"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Шестнадцать",
+     "keywords": [
+      "шестнадцать",
+      "16"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Четырнадцать",
+     "keywords": [
+      "четырнадцать",
+      "14"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "7dacf8d1",
+   "hintAudio": "e6d64bc4"
+  },
+  {
+   "type": "missing",
+   "question": "Было тринадцать блоков, стало восемнадцать блоков. Сколько прибавилось?",
+   "hint": "Досчитай от тринадцати до восемнадцати и запомни, сколько вышло шагов.",
+   "choices": [
+    {
+     "label": "Восемнадцать",
+     "keywords": [
+      "восемнадцать",
+      "18"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Ноль",
+     "keywords": [
+      "ноль",
+      "0"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Пять",
+     "keywords": [
+      "пять",
+      "5"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "f8908bc0",
+   "hintAudio": "f19be937"
+  },
+  {
+   "type": "missing",
+   "question": "Было три блока, стало девять блоков. Сколько прибавилось?",
+   "hint": "Досчитай от трёх до девяти и запомни, сколько вышло шагов.",
+   "choices": [
+    {
+     "label": "Два",
+     "keywords": [
+      "два",
+      "2"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Шесть",
+     "keywords": [
+      "шесть",
+      "6"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Девять",
+     "keywords": [
+      "девять",
+      "9"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "ce39630a",
+   "hintAudio": "adb0cdf9"
+  },
+  {
+   "type": "missing",
+   "question": "Было два слитка, стало четыре слитка. Сколько прибавилось?",
+   "hint": "Досчитай от двух до четырёх и запомни, сколько вышло шагов.",
+   "choices": [
+    {
+     "label": "Четыре",
+     "keywords": [
+      "четыре",
+      "4"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Ноль",
+     "keywords": [
+      "ноль",
+      "0"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Два",
+     "keywords": [
+      "два",
+      "2"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "684fb7a2",
+   "hintAudio": "74c487b0"
+  },
+  {
+   "type": "missing",
+   "question": "Было четыре блока, стало двадцать блоков. Сколько прибавилось?",
+   "hint": "Досчитай от четырёх до двадцати и запомни, сколько вышло шагов.",
+   "choices": [
+    {
+     "label": "Двадцать",
+     "keywords": [
+      "двадцать",
+      "20"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Одиннадцать",
+     "keywords": [
+      "одиннадцать",
+      "11"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Шестнадцать",
+     "keywords": [
+      "шестнадцать",
+      "16"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "76515aaa",
+   "hintAudio": "88d76734"
+  }
+ ],
+ "minecraft|logic|10|iron": [
+  {
+   "type": "oddOneOut",
+   "question": "Что здесь лишнее: наковальня, дверь или шерсть?",
+   "hint": "Подумай: два из них — это из железа. А третий?",
+   "choices": [
+    {
+     "label": "Шерсть",
+     "keywords": [
+      "шерсть"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Наковальня",
+     "keywords": [
+      "наковальня"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Дверь",
+     "keywords": [
+      "дверь"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "9f7e7693",
+   "hintAudio": "e34dc731"
+  },
+  {
+   "type": "oddOneOut",
+   "question": "Что здесь лишнее: дверь, наковальня или шерсть?",
+   "hint": "Подумай: два из них — это из железа. А третий?",
+   "choices": [
+    {
+     "label": "Наковальня",
+     "keywords": [
+      "наковальня"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Дверь",
+     "keywords": [
+      "дверь"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Шерсть",
+     "keywords": [
+      "шерсть"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "03cf7bef",
+   "hintAudio": "e34dc731"
+  },
+  {
+   "type": "oddOneOut",
+   "question": "Что здесь лишнее: ведро, рельс или доска?",
+   "hint": "Подумай: два из них — это из железа. А третий?",
+   "choices": [
+    {
+     "label": "Доска",
+     "keywords": [
+      "доска"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Ведро",
+     "keywords": [
+      "ведро"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Рельс",
+     "keywords": [
+      "рельс"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "de90e413",
+   "hintAudio": "e34dc731"
+  },
+  {
+   "type": "oddOneOut",
+   "question": "Что здесь лишнее: решётка, дверь или шерсть?",
+   "hint": "Подумай: два из них — это из железа. А третий?",
+   "choices": [
+    {
+     "label": "Решётка",
+     "keywords": [
+      "решётка"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Дверь",
+     "keywords": [
+      "дверь"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Шерсть",
+     "keywords": [
+      "шерсть"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "6430647f",
+   "hintAudio": "e34dc731"
+  },
+  {
+   "type": "oddOneOut",
+   "question": "Что здесь лишнее: пшеница, морковка или слиток?",
+   "hint": "Подумай: два из них — это растёт на грядке. А третий?",
+   "choices": [
+    {
+     "label": "Пшеница",
+     "keywords": [
+      "пшеница"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Морковка",
+     "keywords": [
+      "морковка"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Слиток",
+     "keywords": [
+      "слиток"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "88ae56d1",
+   "hintAudio": "fb46e86a"
+  },
+  {
+   "type": "oddOneOut",
+   "question": "Что здесь лишнее: пшеница, тыква или слиток?",
+   "hint": "Подумай: два из них — это растёт на грядке. А третий?",
+   "choices": [
+    {
+     "label": "Слиток",
+     "keywords": [
+      "слиток"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Тыква",
+     "keywords": [
+      "тыква"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Пшеница",
+     "keywords": [
+      "пшеница"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "eeddea50",
+   "hintAudio": "fb46e86a"
+  },
+  {
+   "type": "oddOneOut",
+   "question": "Что здесь лишнее: слиток, рельс или доска?",
+   "hint": "Подумай: два из них — это из железа. А третий?",
+   "choices": [
+    {
+     "label": "Рельс",
+     "keywords": [
+      "рельс"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Доска",
+     "keywords": [
+      "доска"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Слиток",
+     "keywords": [
+      "слиток"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "514f3b84",
+   "hintAudio": "e34dc731"
+  },
+  {
+   "type": "oddOneOut",
+   "question": "Что здесь лишнее: тыква, пшеница или слиток?",
+   "hint": "Подумай: два из них — это растёт на грядке. А третий?",
+   "choices": [
+    {
+     "label": "Пшеница",
+     "keywords": [
+      "пшеница"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Тыква",
+     "keywords": [
+      "тыква"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Слиток",
+     "keywords": [
+      "слиток"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "0e8aed6c",
+   "hintAudio": "fb46e86a"
+  },
+  {
+   "type": "oddOneOut",
+   "question": "Что здесь лишнее: решётка, наковальня или шерсть?",
+   "hint": "Подумай: два из них — это из железа. А третий?",
+   "choices": [
+    {
+     "label": "Решётка",
+     "keywords": [
+      "решётка"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Шерсть",
+     "keywords": [
+      "шерсть"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Наковальня",
+     "keywords": [
+      "наковальня"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "d7c90bea",
+   "hintAudio": "e34dc731"
+  },
+  {
+   "type": "oddOneOut",
+   "question": "Что здесь лишнее: рельс, слиток или доска?",
+   "hint": "Подумай: два из них — это из железа. А третий?",
+   "choices": [
+    {
+     "label": "Доска",
+     "keywords": [
+      "доска"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Рельс",
+     "keywords": [
+      "рельс"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Слиток",
+     "keywords": [
+      "слиток"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "13029b8c",
+   "hintAudio": "e34dc731"
+  },
+  {
+   "type": "recipe",
+   "question": "Что нужно, чтобы сделать рельсы: пшеницу и уголёк, слитки железа и палку или шерсть и воду?",
+   "hint": "По рельсам катится вагонетка. Значит, они железные и прямые.",
+   "choices": [
+    {
+     "label": "Пшеницу и уголёк",
+     "keywords": [
+      "пшеницу и уголёк"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Слитки железа и палку",
+     "keywords": [
+      "слитки железа и палку"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Шерсть и воду",
+     "keywords": [
+      "шерсть и воду"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "60664216",
+   "hintAudio": "375dd1fc"
+  },
+  {
+   "type": "recipe",
+   "question": "Что нужно, чтобы сделать рельсы: пшеницу и уголёк, шерсть и воду или слитки железа и палку?",
+   "hint": "По рельсам катится вагонетка. Значит, они железные и прямые.",
+   "choices": [
+    {
+     "label": "Пшеницу и уголёк",
+     "keywords": [
+      "пшеницу и уголёк"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Шерсть и воду",
+     "keywords": [
+      "шерсть и воду"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Слитки железа и палку",
+     "keywords": [
+      "слитки железа и палку"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "8c92bb4a",
+   "hintAudio": "375dd1fc"
+  },
+  {
+   "type": "recipe",
+   "question": "Что нужно, чтобы сделать железного голема: камень и воду, четыре доски и морковку или четыре блока железа и тыкву?",
+   "hint": "Голем весь железный, а голову ему ставят сверху. Что здесь растёт на грядке?",
+   "choices": [
+    {
+     "label": "Камень и воду",
+     "keywords": [
+      "камень и воду"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Четыре доски и морковку",
+     "keywords": [
+      "четыре доски и морковку"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Четыре блока железа и тыкву",
+     "keywords": [
+      "четыре блока железа и тыкву"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "06d8f930",
+   "hintAudio": "91505280"
+  },
+  {
+   "type": "recipe",
+   "question": "Что нужно, чтобы сделать наковальню: блоки железа, шерсть или доски?",
+   "hint": "По наковальне бьют молотом. Что здесь самое твёрдое?",
+   "choices": [
+    {
+     "label": "Блоки железа",
+     "keywords": [
+      "блоки железа"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Шерсть",
+     "keywords": [
+      "шерсть"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Доски",
+     "keywords": [
+      "доски"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "0dcf3842",
+   "hintAudio": "09b57762"
+  },
+  {
+   "type": "recipe",
+   "question": "Что нужно, чтобы сделать наковальню: шерсть, блоки железа или доски?",
+   "hint": "По наковальне бьют молотом. Что здесь самое твёрдое?",
+   "choices": [
+    {
+     "label": "Шерсть",
+     "keywords": [
+      "шерсть"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Блоки железа",
+     "keywords": [
+      "блоки железа"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Доски",
+     "keywords": [
+      "доски"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "b010a31e",
+   "hintAudio": "09b57762"
+  },
+  {
+   "type": "recipe",
+   "question": "Что нужно, чтобы сделать железного голема: четыре доски и морковку, камень и воду или четыре блока железа и тыкву?",
+   "hint": "Голем весь железный, а голову ему ставят сверху. Что здесь растёт на грядке?",
+   "choices": [
+    {
+     "label": "Четыре доски и морковку",
+     "keywords": [
+      "четыре доски и морковку"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Камень и воду",
+     "keywords": [
+      "камень и воду"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Четыре блока железа и тыкву",
+     "keywords": [
+      "четыре блока железа и тыкву"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "0023b3da",
+   "hintAudio": "91505280"
+  },
+  {
+   "type": "recipe",
+   "question": "Что нужно, чтобы сделать рельсы: шерсть и воду, пшеницу и уголёк или слитки железа и палку?",
+   "hint": "По рельсам катится вагонетка. Значит, они железные и прямые.",
+   "choices": [
+    {
+     "label": "Шерсть и воду",
+     "keywords": [
+      "шерсть и воду"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Пшеницу и уголёк",
+     "keywords": [
+      "пшеницу и уголёк"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Слитки железа и палку",
+     "keywords": [
+      "слитки железа и палку"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "4eb62622",
+   "hintAudio": "375dd1fc"
+  },
+  {
+   "type": "recipe",
+   "question": "Что нужно, чтобы сделать рельсы: слитки железа и палку, пшеницу и уголёк или шерсть и воду?",
+   "hint": "По рельсам катится вагонетка. Значит, они железные и прямые.",
+   "choices": [
+    {
+     "label": "Слитки железа и палку",
+     "keywords": [
+      "слитки железа и палку"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Пшеницу и уголёк",
+     "keywords": [
+      "пшеницу и уголёк"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Шерсть и воду",
+     "keywords": [
+      "шерсть и воду"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "211b6b9e",
+   "hintAudio": "375dd1fc"
+  },
+  {
+   "type": "recipe",
+   "question": "Что нужно, чтобы сделать ведро: палки, железные слитки или шерсть?",
+   "hint": "В ведре носят воду. Что не промокнет и не размокнет?",
+   "choices": [
+    {
+     "label": "Палки",
+     "keywords": [
+      "палки"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Железные слитки",
+     "keywords": [
+      "железные слитки"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Шерсть",
+     "keywords": [
+      "шерсть"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "58ea4882",
+   "hintAudio": "267f6bc6"
+  },
+  {
+   "type": "recipe",
+   "question": "Что нужно, чтобы сделать ведро: железные слитки, шерсть или палки?",
+   "hint": "В ведре носят воду. Что не промокнет и не размокнет?",
+   "choices": [
+    {
+     "label": "Железные слитки",
+     "keywords": [
+      "железные слитки"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Шерсть",
+     "keywords": [
+      "шерсть"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Палки",
+     "keywords": [
+      "палки"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "d7411b82",
+   "hintAudio": "267f6bc6"
+  }
+ ],
+ "minecraft|math|10|iron|wide": [
+  {
+   "type": "subtraction",
+   "question": "Было пять блоков, утонуло в реке два блока. Сколько осталось?",
+   "hint": "Было пять, пропало два. Отними и скажи, сколько стало.",
+   "choices": [
+    {
+     "label": "Семь",
+     "keywords": [
+      "семь",
+      "7"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Три",
+     "keywords": [
+      "три",
+      "3"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Один",
+     "keywords": [
+      "один",
+      "1"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "5d6d26b3",
+   "hintAudio": "998a2b2c"
+  },
+  {
+   "type": "subtraction",
+   "question": "Было шесть слитков, утонуло в реке четыре слитка. Сколько осталось?",
+   "hint": "Было шесть, пропало четыре. Отними и скажи, сколько стало.",
+   "choices": [
+    {
+     "label": "Два",
+     "keywords": [
+      "два",
+      "2"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Ноль",
+     "keywords": [
+      "ноль",
+      "0"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Десять",
+     "keywords": [
+      "десять",
+      "10"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "dae16c09",
+   "hintAudio": "e2eb41e0"
+  },
+  {
+   "type": "subtraction",
+   "question": "Было три слитка, утонуло в реке два слитка. Сколько осталось?",
+   "hint": "Было три, пропало два. Отними и скажи, сколько стало.",
+   "choices": [
+    {
+     "label": "Пять",
+     "keywords": [
+      "пять",
+      "5"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Один",
+     "keywords": [
+      "один",
+      "1"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Три",
+     "keywords": [
+      "три",
+      "3"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "93b89ea9",
+   "hintAudio": "6afcd990"
+  },
+  {
+   "type": "subtraction",
+   "question": "Было четыре блока, утонуло в реке один блок. Сколько осталось?",
+   "hint": "Было четыре, пропало один. Отними и скажи, сколько стало.",
+   "choices": [
+    {
+     "label": "Пять",
+     "keywords": [
+      "пять",
+      "5"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Ноль",
+     "keywords": [
+      "ноль",
+      "0"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Три",
+     "keywords": [
+      "три",
+      "3"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "f764ffee",
+   "hintAudio": "097212f7"
+  },
+  {
+   "type": "subtraction",
+   "question": "Было четыре слитка, утонуло в реке два слитка. Сколько осталось?",
+   "hint": "Было четыре, пропало два. Отними и скажи, сколько стало.",
+   "choices": [
+    {
+     "label": "Два",
+     "keywords": [
+      "два",
+      "2"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Шесть",
+     "keywords": [
+      "шесть",
+      "6"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Ноль",
+     "keywords": [
+      "ноль",
+      "0"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "636ed545",
+   "hintAudio": "d9e61adc"
+  },
+  {
+   "type": "subtraction",
+   "question": "Было пять слитков, утонуло в реке три слитка. Сколько осталось?",
+   "hint": "Было пять, пропало три. Отними и скажи, сколько стало.",
+   "choices": [
+    {
+     "label": "Ноль",
+     "keywords": [
+      "ноль",
+      "0"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Два",
+     "keywords": [
+      "два",
+      "2"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Восемь",
+     "keywords": [
+      "восемь",
+      "8"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "2bf0c5bb",
+   "hintAudio": "8f9a9a4c"
+  },
+  {
+   "type": "subtraction",
+   "question": "Было девять блоков, утонуло в реке один блок. Сколько осталось?",
+   "hint": "Было девять, пропало один. Отними и скажи, сколько стало.",
+   "choices": [
+    {
+     "label": "Восемь",
+     "keywords": [
+      "восемь",
+      "8"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Пять",
+     "keywords": [
+      "пять",
+      "5"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Десять",
+     "keywords": [
+      "десять",
+      "10"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "36dfd05e",
+   "hintAudio": "2129049d"
+  },
+  {
+   "type": "subtraction",
+   "question": "Было семь блоков, утонуло в реке один блок. Сколько осталось?",
+   "hint": "Было семь, пропало один. Отними и скажи, сколько стало.",
+   "choices": [
+    {
+     "label": "Восемь",
+     "keywords": [
+      "восемь",
+      "8"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Шесть",
+     "keywords": [
+      "шесть",
+      "6"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Один",
+     "keywords": [
+      "один",
+      "1"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "f012b1a2",
+   "hintAudio": "89eaf1c9"
+  },
+  {
+   "type": "subtraction",
+   "question": "Было семь слитков, утонуло в реке пять слитков. Сколько осталось?",
+   "hint": "Было семь, пропало пять. Отними и скажи, сколько стало.",
+   "choices": [
+    {
+     "label": "Два",
+     "keywords": [
+      "два",
+      "2"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Ноль",
+     "keywords": [
+      "ноль",
+      "0"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Семь",
+     "keywords": [
+      "семь",
+      "7"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "8cc1ad37",
+   "hintAudio": "046ffed0"
+  },
+  {
+   "type": "subtraction",
+   "question": "Было пять блоков, утонуло в реке один блок. Сколько осталось?",
+   "hint": "Было пять, пропало один. Отними и скажи, сколько стало.",
+   "choices": [
+    {
+     "label": "Один",
+     "keywords": [
+      "один",
+      "1"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Шесть",
+     "keywords": [
+      "шесть",
+      "6"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Четыре",
+     "keywords": [
+      "четыре",
+      "4"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "c8a11878",
+   "hintAudio": "571b5587"
+  }
+ ],
  "minecraft|math|10|-": [
   {
    "type": "addition",

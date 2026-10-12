@@ -1,5 +1,12 @@
 [
   {
+    "id": "golem",
+    "title": "Железный друг",
+    "subtitle": "Девятый день Стива · пять игр",
+    "cover": "assets/covers/golem.webp",
+    "story": "stories/golem.json"
+  },
+  {
     "id": "smoke",
     "title": "Дым над лугом",
     "subtitle": "Восьмой день Стива · пять игр",

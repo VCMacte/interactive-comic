@@ -2603,6 +2603,113 @@ function nearVillage(seed = 371) {
 ${out.join('\n')}
 ${torch(gx + B * 3.4, GROUND - B * 2)}`);
 }
+
+/* ---- девятый день ---- */
+
+/**
+ * Ритуальная площадка. Железо складывают крестом — четыре блока, как
+ * в самой игре, — и оставляют пустое место под тыкву: иначе из кадра
+ * не видно, чего не хватает, а сцена ровно про это.
+ *
+ * Крест стоит справа, книга на подставке слева, центр пустой: туда
+ * встают Стив с Алекс, а потом поднимается голем — он выше Стива
+ * в полтора раза и широкий, и любая постройка в центре оказалась бы
+ * у него за спиной.
+ */
+function nearRitual(seed = 379) {
+  const rand = rng(seed);
+  const out = [];
+  const IRON = { base: '#c9ccd2', dark: '#9a9ea8', light: '#e4e7ec' };
+  const EDGE = '#5d6068';
+  const WOOD = '#8a6334', WOOD_DARK = '#5e4322';
+  const PAGE = '#efe6c8', PAGE_DARK = '#cdbf98', INK = '#5a4a38';
+
+  // Блоки крупнее обычных и с тёмной обводкой. Первый предпросмотр показал,
+  // почему: серое железо на буром склоне дальнего плана читалось блёклым
+  // пятном, и креста в кадре попросту не было видно.
+  const S = B * 1.4;
+  const ironBlock = (x, y) => {
+    out.push(`<rect x="${n(x - 5)}" y="${n(y - 5)}" width="${n(S + 10)}" height="${n(S + 10)}" fill="${EDGE}"/>`);
+    out.push(block(x, y, IRON, rand, S));
+  };
+
+  // Крест из четырёх блоков, как в самой игре: столб из двух и две руки.
+  // Верхнее место пустое и обведено пунктиром — туда в сцене ритуала
+  // встаёт тыква, и из кадра видно, чего не хватает.
+  const rx = W * 0.72;
+  ironBlock(rx, GROUND - S);
+  ironBlock(rx, GROUND - S * 2);
+  ironBlock(rx - S, GROUND - S * 2);
+  ironBlock(rx + S, GROUND - S * 2);
+  out.push(`<rect x="${n(rx)}" y="${n(GROUND - S * 3)}" width="${n(S)}" height="${n(S)}" fill="none" stroke="${IRON.light}" stroke-width="7" stroke-dasharray="18 12"/>`);
+
+  // Выложенная дорожка: площадка, а не случайная трава. Ровно один ряд
+  // обычных блоков — крупные перекрывали травяную кромку и читались
+  // серой полосой поперёк кадра.
+  for (let c = -3; c <= 4; c++) out.push(block(rx - S + c * B, GROUND, P.brick, rand));
+
+  // Подставка с книгой. Высокая и светлая: страницы — единственное светлое
+  // пятно слева, и глаз находит книгу раньше, чем рассказчик про неё скажет.
+  const lx = W * 0.18, lh = B * 2.8;
+  out.push(`<rect x="${n(lx)}" y="${n(GROUND - lh)}" width="${n(B * 0.8)}" height="${n(lh)}" fill="${WOOD}"/>`);
+  out.push(`<rect x="${n(lx + B * 0.56)}" y="${n(GROUND - lh)}" width="${n(B * 0.24)}" height="${n(lh)}" fill="${WOOD_DARK}"/>`);
+  out.push(`<rect x="${n(lx - B * 0.8)}" y="${n(GROUND - lh - B * 0.5)}" width="${n(B * 2.4)}" height="${n(B * 0.5)}" fill="${WOOD_DARK}"/>`);
+  out.push(`<rect x="${n(lx - B * 0.75)}" y="${n(GROUND - lh - B * 1.1)}" width="${n(B * 1.15)}" height="${n(B * 0.6)}" fill="${PAGE}"/>`);
+  out.push(`<rect x="${n(lx + B * 0.45)}" y="${n(GROUND - lh - B * 1.1)}" width="${n(B * 1.15)}" height="${n(B * 0.6)}" fill="${PAGE_DARK}"/>`);
+  for (const dy of [0.18, 0.34]) {
+    out.push(`<rect x="${n(lx - B * 0.6)}" y="${n(GROUND - lh - B * (1.1 - dy))}" width="${n(B * 0.85)}" height="5" fill="${INK}"/>`);
+  }
+
+  // Запасные блоки горкой: в сцене их приносит Алекс, и считать ребёнок
+  // должен то, что видит.
+  // Горка стоит правее середины: на первом предпросмотре её закрывала
+  // собой Алекс, а считать ребёнок должен то, что видит.
+  const px0 = W * 0.56;
+  ironBlock(px0, GROUND - S);
+  ironBlock(px0 + S, GROUND - S);
+  ironBlock(px0 + S * 0.5, GROUND - S * 2);
+
+  return svg(`${groundRows(rand)}
+${out.join('\n')}
+${torch(W * 0.88, GROUND - B * 2)}
+${torch(W * 0.08, GROUND - B * 2)}`, GLOW_DEF);
+}
+
+/**
+ * Тыква — отдельный персонаж, а не часть слоя: предмет, который называет
+ * текст, обязан быть в кадре, а красить слой ради одной сцены незачем.
+ * Тот же приём, что у телеги восьмого дня.
+ *
+ * Лицо вырезано: у целой тыквы и у вырезанной в игре разные рецепты,
+ * а ребёнок узнаёт именно вырезанную.
+ */
+function pumpkin() {
+  const U = 20;
+  const skin = '#d97a1e', skinDark = '#b35f12', skinLight = '#eb9a3c';
+  const stem = '#5e7f3a', stemDark = '#46603c', hole = '#3a2410';
+
+  const body = `
+<!-- стебель -->
+${px(4.5 * U, 0, 3 * U, 1.6 * U, stem)}
+${px(4.5 * U, 1.2 * U, 3 * U, 0.6 * U, stemDark)}
+
+<!-- тело с рёбрами: ровный квадрат читался бы просто ящиком -->
+${px(0.5 * U, 1.6 * U, 11 * U, 9.4 * U, skin)}
+${px(0.5 * U, 1.6 * U, 11 * U, 0.8 * U, skinLight)}
+${px(2.6 * U, 1.6 * U, 0.6 * U, 9.4 * U, skinDark)}
+${px(5.7 * U, 1.6 * U, 0.6 * U, 9.4 * U, skinDark)}
+${px(8.8 * U, 1.6 * U, 0.6 * U, 9.4 * U, skinDark)}
+${px(0.5 * U, 10.2 * U, 11 * U, 0.8 * U, skinDark)}
+
+<!-- вырезанное лицо -->
+${px(1.8 * U, 4 * U, 2.4 * U, 1.8 * U, hole)}
+${px(7.8 * U, 4 * U, 2.4 * U, 1.8 * U, hole)}
+${px(3.4 * U, 7.2 * U, 5.2 * U, 1.4 * U, hole)}
+${px(4.6 * U, 6.4 * U, 1.1 * U, 0.9 * U, hole)}
+${px(6.4 * U, 6.4 * U, 1.1 * U, 0.9 * U, hole)}`;
+
+  return charSvg(body, 12 * U, 11 * U);
+}
 /* ---------------- сборка ---------------- */
 
 console.log('Небо:');
@@ -2655,6 +2762,7 @@ write('assets/mc/near-frame.svg', nearFrame());
 write('assets/mc/near-end-pillar.svg', nearEndPillar());
 write('assets/mc/near-end-gate.svg', nearEndGate());
 write('assets/mc/near-village.svg', nearVillage());
+write('assets/mc/near-ritual.svg', nearRitual());
 
 console.log('Персонажи:');
 write('assets/mc/steve.svg', steve());
@@ -2669,6 +2777,7 @@ write('assets/mc/dragon.svg', dragon());
 write('assets/mc/alex.svg', alex());
 write('assets/mc/golem.svg', golem());
 write('assets/mc/cart.svg', cart());
+write('assets/mc/pumpkin.svg', pumpkin());
 write('assets/mc/pillager-axe.svg', pillager('axe'));
 write('assets/mc/pillager-mace.svg', pillager('mace'));
 write('assets/mc/pillager-bow.svg', pillager('bow'));

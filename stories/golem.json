@@ -1,0 +1,146 @@
+{
+  "title": "Железный друг",
+  "viewer": "Матвей",
+  "theme": "minecraft",
+  "voice": "hero",
+  "start": "morning",
+  "scenes": {
+    "morning": {
+      "bg": { "sky": "assets/mc/sky-dawn.webp", "stars": "assets/mc/sun-dawn.svg",
+              "far": "assets/mc/far-hills.webp", "near": "assets/mc/near-village.svg" },
+      "cast": [ { "src": "assets/mc/steve.svg", "x": 42, "y": 28, "w": 8 },
+                { "src": "assets/mc/alex.svg", "x": 54, "y": 28, "w": 8 },
+                { "src": "assets/mc/wolf.svg", "x": 32, "y": 28, "w": 7 } ],
+      "voice": "ally",
+      "text": "Светало. Стена залатана, колокол на месте, а людей всё равно трое. Алекс считала на пальцах у ворот. «Железо, {{имя}}. Четыре блока. И книга из крепости».",
+      "prompt": "С чего начнём: пойдём в кузницу или сначала переберём сундуки?",
+      "choices": [
+        { "label": "В кузницу", "keywords": ["кузница", "кузницу", "наковальня", "ковать", "плавить"],
+          "say": "«В кузницу». Алекс закинула меч за спину и пошла первой. Волк обогнал её у самого порога и уселся там, будто кузница была его.",
+          "dir": "left", "next": "forge" },
+        { "label": "Перебрать сундуки", "keywords": ["сундуки", "сундук", "перебрать", "посмотреть", "поискать"],
+          "say": "«Сундуки так сундуки». В двух нашлась труха, а в третьем — целая горсть помятого железа. Алекс сгребла всё в мешок и кивнула на кузницу: «Вот теперь туда».",
+          "dir": "right", "next": "forge" }
+      ]
+    },
+
+    "forge": {
+      "bg": { "near": "assets/mc/near-anvil.svg" },
+      "cast": [ { "src": "assets/mc/steve.svg", "x": 46, "y": 28, "w": 8 },
+                { "src": "assets/mc/alex.svg", "x": 58, "y": 28, "w": 8 } ],
+      "text": "В кузнице жарко. Стив разложил переплавленное железо двумя горками: что принесли из дома и что нашлось в сундуках. «Считать молотком неудобно, {{имя}}. Посчитай ты».",
+      "task": { "kind": "math", "max": 20, "types": ["addition"], "topic": "iron", "spread": "wide" },
+      "next": "library"
+    },
+
+    "library": {
+      "bg": { "near": "assets/mc/near-library.svg" },
+      "cast": [ { "src": "assets/mc/steve.svg", "x": 36, "y": 28, "w": 8 },
+                { "src": "assets/mc/villager.svg", "x": 52, "y": 28, "w": 8 },
+                { "src": "assets/mc/alex.svg", "x": 66, "y": 28, "w": 8 } ],
+      "voice": "friend",
+      "text": "Библиотекарь их помнил и обрадовался. Нужную книгу нашёл не сразу, зато она оказалась вся про железо: наковальни, вёдра, рельсы — и в самом конце голем. Библиотекарь подвинул свечу поближе: «Хм-хм! Читайте вслух, а я проверю».",
+      "task": { "kind": "logic", "max": 10, "types": ["recipe"], "topic": "iron" },
+      "next": "fork"
+    },
+
+    "fork": {
+      "bg": { "sky": "assets/mc/sky-day.webp", "stars": "assets/mc/sun-day.svg",
+              "far": "assets/mc/far-hills.webp", "near": "assets/mc/near-meadow.svg" },
+      "cast": [ { "src": "assets/mc/steve.svg", "x": 38, "y": 28, "w": 8 },
+                { "src": "assets/mc/alex.svg", "x": 50, "y": 28, "w": 8 },
+                { "src": "assets/mc/wolf.svg", "x": 28, "y": 28, "w": 7 } ],
+      "voice": "ally",
+      "text": "На последней странице был рисунок: четыре блока крестом и тыква сверху. Алекс оглядела луг. «Ставить надо на ровном, {{имя}}».",
+      "prompt": "Где поставим: прямо у деревни или сначала поднимемся на холм?",
+      "choices": [
+        { "label": "У деревни", "keywords": ["деревня", "у деревни", "здесь", "тут", "рядом"],
+          "dir": "forward", "next": "platform" },
+        { "label": "Сначала на холм", "keywords": ["холм", "на холм", "подняться", "посмотреть", "сначала"],
+          "dir": "left", "next": "ridge" }
+      ]
+    },
+
+    "ridge": {
+      "bg": { "sky": "assets/mc/sky-day.webp", "stars": "assets/mc/sun-day.svg",
+              "far": "assets/mc/far-smoke.webp", "near": "assets/mc/near-meadow.svg" },
+      "cast": [ { "src": "assets/mc/steve.svg", "x": 44, "y": 28, "w": 8 },
+                { "src": "assets/mc/alex.svg", "x": 56, "y": 28, "w": 8 },
+                { "src": "assets/mc/wolf.svg", "x": 34, "y": 28, "w": 7 } ],
+      "voice": "ally",
+      "text": "С холма были видны река и брод — две мели, по которым можно перейти. Волк долго нюхал ветер с той стороны и не лёг, как ложился обычно. Алекс сказала совсем тихо: «Ставим у деревни. Отсюда нас видно со всех сторон».",
+      "prompt": "Возвращаемся вниз?",
+      "choices": [
+        { "label": "Возвращаемся", "keywords": ["да", "вниз", "возвращаемся", "пошли", "идём"],
+          "dir": "forward", "next": "platform" }
+      ]
+    },
+
+    "platform": {
+      "bg": { "sky": "assets/mc/sky-day.webp", "stars": "assets/mc/sun-day.svg",
+              "far": "assets/mc/far-hills.webp", "near": "assets/mc/near-ritual.svg" },
+      "cast": [ { "src": "assets/mc/wolf.svg", "x": 20, "y": 28, "w": 7 },
+                { "src": "assets/mc/steve.svg", "x": 30, "y": 28, "w": 8 },
+                { "src": "assets/mc/alex.svg", "x": 41, "y": 28, "w": 8 } ],
+      "text": "Стив выложил дорожку и начал крест. Блоков на горке было видно по пальцам, а потом Алекс сходила к кузнице и принесла ещё. Горка подросла прямо на глазах.",
+      "task": { "kind": "math", "max": 20, "types": ["missing"], "topic": "iron", "spread": "wide" },
+      "next": "ritual"
+    },
+
+    "ritual": {
+      "bg": { "sky": "assets/mc/sky-day.webp", "stars": "assets/mc/sun-day.svg",
+              "far": "assets/mc/far-hills.webp", "near": "assets/mc/near-ritual.svg" },
+      "cast": [ { "src": "assets/mc/steve.svg", "x": 30, "y": 28, "w": 8 },
+                { "src": "assets/mc/alex.svg", "x": 41, "y": 28, "w": 8 },
+                { "src": "assets/mc/pumpkin.svg", "x": 56, "y": 28, "w": 5 } ],
+      "text": "Крест стоял, верхнее место пустовало. Стив вывалил рядом всё, что они притащили, и присел над кучей. «Помогай, {{имя}}: железное в дело, остальное в сторону».",
+      "task": { "kind": "logic", "max": 10, "types": ["oddOneOut"], "topic": "iron" },
+      "next": "alive"
+    },
+
+    "alive": {
+      "bg": { "sky": "assets/mc/sky-day.webp", "stars": "assets/mc/sun-day.svg",
+              "far": "assets/mc/far-hills.webp", "near": "assets/mc/near-ritual.svg" },
+      "cast": [ { "src": "assets/mc/wolf.svg", "x": 20, "y": 28, "w": 7 },
+                { "src": "assets/mc/steve.svg", "x": 30, "y": 28, "w": 8 },
+                { "src": "assets/mc/alex.svg", "x": 41, "y": 28, "w": 8 },
+                { "src": "assets/mc/golem.svg", "x": 65, "y": 28, "w": 15 } ],
+      "voice": "golem",
+      "text": "Тыква встала на место. Сначала ничего. Потом железо под ней дрогнуло, крест поднялся на две ноги, и на всю площадку скрипнуло так, что волк прижал уши и зарычал. Железный повернул голову и сказал совсем не страшно: «Тише. Свои».",
+      "prompt": "Волк всё рычит. Подойдём к железному или сначала успокоим пса?",
+      "choices": [
+        { "label": "Успокоить волка", "keywords": ["волк", "волка", "пса", "успокоить", "собаку"],
+          "dir": "forward", "next": "river" },
+        { "label": "Подойти потрогать", "keywords": ["подойти", "потрогать", "железный", "ближе", "руку"],
+          "say": "Стив протянул руку и тронул холодное плечо. Железный опустил голову и посмотрел на него сверху вниз. «Не бойся. Я прочный». Волк перестал рычать первым: раз хозяин трогает — значит, можно.",
+          "dir": "right", "next": "river" }
+      ]
+    },
+
+    "river": {
+      "bg": { "sky": "assets/mc/sky-sunset.webp", "stars": "assets/mc/sun-sunset.svg",
+              "far": "assets/mc/far-river.webp", "near": "assets/mc/near-river.svg" },
+      "cast": [ { "src": "assets/mc/steve.svg", "x": 24, "y": 28, "w": 8 },
+                { "src": "assets/mc/alex.svg", "x": 34, "y": 28, "w": 8 },
+                { "src": "assets/mc/golem.svg", "x": 48, "y": 28, "w": 13 },
+                { "src": "assets/mc/pillager-mace.svg", "x": 70, "y": 28, "w": 8 },
+                { "src": "assets/mc/pillager-sword.svg", "x": 80, "y": 28, "w": 8 } ],
+      "voice": "ally",
+      "fx": "impact",
+      "text": "У брода их ждали двое серых. Волка Стив отправил назад и сказал это вслух: в драке собаке не место. Железный шагнул вперёд сам. Алекс крикнула: «Считай, сколько у нас осталось, {{имя}}! Что упало в воду — уже не наше!»",
+      "task": { "kind": "math", "max": 10, "types": ["subtraction"], "topic": "iron", "spread": "wide" },
+      "next": "cross"
+    },
+
+    "cross": {
+      "bg": { "sky": "assets/mc/sky-sunset.webp", "stars": "assets/mc/sun-sunset.svg",
+              "far": "assets/mc/far-river.webp", "near": "assets/mc/near-river.svg" },
+      "cast": [ { "src": "assets/mc/wolf.svg", "x": 22, "y": 28, "w": 7 },
+                { "src": "assets/mc/steve.svg", "x": 32, "y": 28, "w": 8 },
+                { "src": "assets/mc/alex.svg", "x": 43, "y": 28, "w": 8 },
+                { "src": "assets/mc/golem.svg", "x": 62, "y": 28, "w": 13 } ],
+      "voice": "golem",
+      "text": "Серые убежали, не оглядываясь. Брод был волку глубоковат, и железный присел и подставил ладонь. «Держись», — сказал он и понёс. А на том берегу, на старом пне, лежал камень с нацарапанным знаком — тем же, что на знамени с глазом. Железный показал пальцем в сторону леса: «Там. Чужой знак»."
+    }
+  }
+}

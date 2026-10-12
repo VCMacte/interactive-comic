@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 220" width="240" height="220">
+<style>
+  .idle { animation: idle 3.2s ease-in-out infinite; transform-origin: 50% 100%; }
+  @keyframes idle { 0%,100% { transform: translateY(0) } 50% { transform: translateY(-6px) } }
+  @media (prefers-reduced-motion: reduce) { .idle { animation: none } }
+  
+</style>
+<g class="idle">
+
+<!-- стебель -->
+<rect x="90" y="0" width="60" height="32" fill="#5e7f3a"/>
+<rect x="90" y="24" width="60" height="12" fill="#46603c"/>
+
+<!-- тело с рёбрами: ровный квадрат читался бы просто ящиком -->
+<rect x="10" y="32" width="220" height="188" fill="#d97a1e"/>
+<rect x="10" y="32" width="220" height="16" fill="#eb9a3c"/>
+<rect x="52" y="32" width="12" height="188" fill="#b35f12"/>
+<rect x="114" y="32" width="12" height="188" fill="#b35f12"/>
+<rect x="176" y="32" width="12" height="188" fill="#b35f12"/>
+<rect x="10" y="204" width="220" height="16" fill="#b35f12"/>
+
+<!-- вырезанное лицо -->
+<rect x="36" y="80" width="48" height="36" fill="#3a2410"/>
+<rect x="156" y="80" width="48" height="36" fill="#3a2410"/>
+<rect x="68" y="144" width="104" height="28" fill="#3a2410"/>
+<rect x="92" y="128" width="22" height="18" fill="#3a2410"/>
+<rect x="128" y="128" width="22" height="18" fill="#3a2410"/>
+</g>
+</svg>

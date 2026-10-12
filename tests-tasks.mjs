@@ -139,6 +139,7 @@ if (failed) process.exitCode = 1;
     fuel: { allow: /слит|уголёк|угольк|факел/, deny: /алмаз|блок/ },
     blocks: { allow: /блок|камень|камн/, deny: /алмаз|факел|уголёк/ },
     nether: { allow: /стерж|кирпич|гриб|слит/, deny: /блок|факел|алмаз|уголёк/ },
+    iron: { allow: /блок|слит/, deny: /алмаз|факел|уголёк/ },
   };
   for (const [topic, { allow, deny }] of Object.entries(TOPICS)) {
     for (let i = 0; i < 120; i++) {
@@ -178,6 +179,12 @@ if (failed) process.exitCode = 1;
     if (/стерж|гриб|кварц|Нижнего мира/.test(t.question + t.hint)) {
       console.log('FAIL: Нижний мир протёк в задание без области:', t.question); bad++;
     }
+
+    // То же про железо девятого дня: наковальня, решётка и голем живут
+    // только в области `iron`, и на лугу первого дня им делать нечего.
+    if (/наковальн|решётк|голем/.test(t.question + t.hint)) {
+      console.log('FAIL: железо протекло в задание без области:', t.question); bad++;
+    }
   }
   // То же про откат: незнакомая область падает на общий набор, а не на полный.
   for (let i = 0; i < 150; i++) {
@@ -189,7 +196,7 @@ if (failed) process.exitCode = 1;
 
   // У каждой области, где считают предметы, свой глагол потери: иначе
   // в сцене зазвучит «взорвал крипер» там, где вещь упала в лаву.
-  for (const topic of ['ore', 'fuel', 'blocks', 'nether']) {
+  for (const topic of ['ore', 'fuel', 'blocks', 'nether', 'iron']) {
     for (let i = 0; i < 40; i++) {
       const t = makeTask('math', { theme: 'minecraft', max: 10, topic, types: ['subtraction'] });
       if (/взорвал крипер/.test(t.question)) {
@@ -359,5 +366,52 @@ if (failed) process.exitCode = 1;
   if (poolKey('minecraft', 'math', 10, 'ore', undefined) !== 'minecraft|math|10|ore') { console.log('FAIL: ключ пула без разброса изменился'); bad++; }
 
   console.log(bad ? `\n${bad} провалено в разбросе и рейде` : '\nширокий разброс и область рейда в порядке');
+  if (bad) process.exitCode = 1;
+}
+
+/* ---------------- область железа девятого дня ---------------- */
+{
+  let bad = 0;
+
+  // Считаем только блоки и слитки, и топит их река, а не крипер.
+  for (let i = 0; i < 300; i++) {
+    const t = makeTask('math', { theme: 'minecraft', max: 10, topic: 'iron', types: ['subtraction'], spread: 'wide' });
+    if (!/блок|слит/.test(t.question)) { console.log('FAIL: в железе считаем не железо:', t.question); bad++; }
+    if (!t.question.includes('утонуло в реке')) { console.log('FAIL: чужой глагол потери:', t.question); bad++; }
+  }
+
+  // Загадки и рецепты — только из области. Слова перечислены списком:
+  // утечка в общий набор переписала бы уже озвученный пул первого дня.
+  const IRON_WORDS = ['слиток', 'рельс', 'ведро', 'доска', 'наковальня', 'дверь',
+                      'решётка', 'шерсть', 'тыква', 'морковка', 'пшеница'];
+  for (let i = 0; i < 300; i++) {
+    const t = makeTask('logic', { theme: 'minecraft', max: 10, topic: 'iron', types: ['oddOneOut'] });
+    for (const c of t.choices) {
+      if (!IRON_WORDS.includes(c.label.toLowerCase())) { console.log('FAIL: лишнее не из железа:', c.label, '—', t.question); bad++; }
+    }
+  }
+
+  // Правило «всё или ничего»: вопрос обязан назвать все три варианта сам,
+  // иначе app.js прочитает кнопки второй раз и получится прямая подсказка.
+  for (let i = 0; i < 200; i++) {
+    const t = makeTask('logic', { theme: 'minecraft', max: 10, topic: 'iron', types: ['recipe'] });
+    if (!/голем|наковальн|ведро|рельс/.test(t.question)) { console.log('FAIL: рецепт не из железа:', t.question); bad++; }
+    const said = t.question.toLowerCase();
+    for (const c of t.choices) {
+      if (!said.includes(c.label.toLowerCase())) { console.log('FAIL: вариант не назван в вопросе:', c.label, '—', t.question); bad++; }
+    }
+  }
+
+  // Железо не должно выпадать там, где область не задана.
+  for (let i = 0; i < 400; i++) {
+    const t = makeTask('logic', { theme: 'minecraft', max: 10, types: ['oddOneOut'] });
+    if (/наковальн|решётк/.test(t.question)) { console.log('FAIL: железо протекло в общий набор:', t.question); bad++; break; }
+  }
+
+  // Ключи девятого дня — ровно те три, что записаны в STORYLINE.
+  if (poolKey('minecraft', 'math', 20, 'iron', 'wide') !== 'minecraft|math|20|iron|wide') { console.log('FAIL: ключ сложения девятого дня'); bad++; }
+  if (poolKey('minecraft', 'logic', 10, 'iron', undefined) !== 'minecraft|logic|10|iron') { console.log('FAIL: ключ логики девятого дня'); bad++; }
+
+  console.log(bad ? `\n${bad} провалено в области железа` : '\nобласть железа в порядке');
   if (bad) process.exitCode = 1;
 }

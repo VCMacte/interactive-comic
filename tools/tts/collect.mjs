@@ -103,7 +103,12 @@ for (const file of stories) {
     if (scene.prompt) add(fill(scene.prompt), 'narrator');
 
     for (const c of scene.choices || []) {
-      if (c.say) for (const part of splitDialogue(fill(c.say), c.voice ?? character)) add(part.text, part.role);
+      // Роль реплики варианта считается ровно так же, как в js/app.js:
+      // свой голос варианта, иначе голос сцены, иначе голос истории.
+      // Пока здесь стоял голос истории, записи для сцены со своим голосом
+      // искались под чужим именем и не находились вовсе: Алекс в девятом
+      // дне заговорила Стивом, а голем — браузерным синтезом.
+      if (c.say) for (const part of splitDialogue(fill(c.say), c.voice ?? scene.voice ?? character)) add(part.text, part.role);
       if (c.hint) add(fill(c.hint), 'narrator');
       // Подписи на кнопках проговариваются вслух: мелкий текст с дивана
       // не прочесть, а выбирать ребёнок должен на слух.

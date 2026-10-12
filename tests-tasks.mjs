@@ -382,7 +382,7 @@ if (failed) process.exitCode = 1;
 
   // Загадки и рецепты — только из области. Слова перечислены списком:
   // утечка в общий набор переписала бы уже озвученный пул первого дня.
-  const IRON_WORDS = ['слиток', 'рельс', 'ведро', 'доска', 'наковальня', 'дверь',
+  const IRON_WORDS = ['слиток', 'рельс', 'ножницы', 'доска', 'наковальня', 'дверь',
                       'решётка', 'шерсть', 'тыква', 'морковка', 'пшеница'];
   for (let i = 0; i < 300; i++) {
     const t = makeTask('logic', { theme: 'minecraft', max: 10, topic: 'iron', types: ['oddOneOut'] });
@@ -395,7 +395,7 @@ if (failed) process.exitCode = 1;
   // иначе app.js прочитает кнопки второй раз и получится прямая подсказка.
   for (let i = 0; i < 200; i++) {
     const t = makeTask('logic', { theme: 'minecraft', max: 10, topic: 'iron', types: ['recipe'] });
-    if (!/голем|наковальн|ведро|рельс/.test(t.question)) { console.log('FAIL: рецепт не из железа:', t.question); bad++; }
+    if (!/голем|наковальн|ножниц|рельс/.test(t.question)) { console.log('FAIL: рецепт не из железа:', t.question); bad++; }
     const said = t.question.toLowerCase();
     for (const c of t.choices) {
       if (!said.includes(c.label.toLowerCase())) { console.log('FAIL: вариант не назван в вопросе:', c.label, '—', t.question); bad++; }

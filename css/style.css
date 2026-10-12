@@ -72,6 +72,16 @@ body{
 }
 .resume{display:flex; justify-content:center; width:100%}
 .toggle{display:flex; gap:.5rem; align-items:center; opacity:.8; font-size:.95rem}
+/* Служебная кнопка для взрослого: нарочно не «плакатная», чтобы не спорить
+   за внимание с обложками историй. */
+.small-btn{
+  font-family:inherit; font-weight:600; font-size:.9rem; line-height:1;
+  padding:.55rem 1.2rem; border:.12rem solid rgba(246,241,228,.3);
+  border-radius:999px; background:transparent; color:var(--ink);
+  opacity:.6; cursor:pointer;
+}
+.small-btn:focus-visible,.small-btn:hover{opacity:.9}
+.small-btn[disabled]{opacity:.35; cursor:default}
 .hint{
   margin:0; max-width:34ch; font-size:.9rem; line-height:1.5;
   color:var(--accent); opacity:.85;

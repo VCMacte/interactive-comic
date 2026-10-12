@@ -9,6 +9,7 @@ const el = {
   voiceToggle: $('voiceToggle'), installHint: $('installHint'), noVoiceHint: $('noVoiceHint'),
   resumeBox: $('resumeBox'),
   stage: $('stage'), text: $('text'), choices: $('choices'),
+  update: $('updateBtn'), updateMsg: $('updateMsg'),
   mic: $('mic'), heard: $('heard'), replay: $('replayBtn'), home: $('homeBtn'), skip: $('skipBtn'),
 };
 
@@ -668,5 +669,81 @@ if ('serviceWorker' in navigator) {
     caches.keys?.().then(ks => ks.forEach(k => caches.delete(k)));
   } else {
     navigator.serviceWorker.register('sw.js').catch(() => {});
+  }
+}
+
+/* ---------------- обновление кэша по кнопке ---------------- */
+
+// Новая версия доезжает до телевизора тогда, когда браузер сам решит
+// перечитать sw.js, — ждать этого можно сутки. Кнопка просит проверку
+// немедленно и перезагружает страницу, когда новый воркер взял управление.
+//
+// Кэш руками **не стирается**: если сети нет, стёртый кэш оставил бы ребёнка
+// без приложения вообще. Воркер сначала скачивает всё в новый кэш и только
+// потом удаляет старый — не получилось, значит осталось как было.
+//
+// Подтверждение вторым нажатием: кнопка на том же экране, что и обложки,
+// и случайное нажатие ребёнком не должно уводить в перезагрузку.
+const UPDATE_ARM_MS = 6000;   // сколько кнопка ждёт подтверждения
+const UPDATE_WAIT_MS = 2000;  // сколько ждём, что воркер сменится
+
+const UPDATE_LABEL = el.update.textContent;
+let updateArmed = 0;
+
+el.update.addEventListener('click', () => {
+  if (Date.now() < updateArmed) { runUpdate(); return; }
+  updateArmed = Date.now() + UPDATE_ARM_MS;
+  el.update.textContent = 'Точно обновить?';
+  setTimeout(() => {
+    if (Date.now() >= updateArmed) disarmUpdate();
+  }, UPDATE_ARM_MS + 50);
+});
+
+function disarmUpdate() {
+  updateArmed = 0;
+  el.update.textContent = UPDATE_LABEL;
+}
+
+function updateSays(text) {
+  el.updateMsg.textContent = text;
+  el.updateMsg.hidden = !text;
+}
+
+async function runUpdate() {
+  disarmUpdate();
+  el.update.disabled = true;
+  updateSays('Проверяю обновление…');
+
+  if (navigator.onLine === false) {
+    updateSays('Нет сети. Подключитесь и попробуйте снова.');
+    el.update.disabled = false;
+    return;
+  }
+
+  try {
+    const regs = 'serviceWorker' in navigator
+      ? await navigator.serviceWorker.getRegistrations()
+      : [];
+    // Без воркера (разработка, отказ регистрации) кэша нет вовсе —
+    // достаточно обычной перезагрузки.
+    if (!regs.length) { location.reload(); return; }
+
+    let reloading = false;
+    navigator.serviceWorker.addEventListener('controllerchange', () => {
+      reloading = true;
+      location.reload();
+    }, { once: true });
+
+    await Promise.all(regs.map(r => r.update().catch(() => {})));
+    // update() завершается после установки, но управление воркер забирает
+    // отдельным событием — ему нужно дать мгновение.
+    await sleep(UPDATE_WAIT_MS);
+    if (reloading) return;
+
+    updateSays('Уже установлена последняя версия.');
+    el.update.disabled = false;
+  } catch {
+    updateSays('Не получилось проверить обновление.');
+    el.update.disabled = false;
   }
 }

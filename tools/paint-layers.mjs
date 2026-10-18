@@ -135,6 +135,17 @@ const LAYERS = {
     prompt: `floating island of pale cream cubes hanging in a violet void, tall black obsidian cube pillars rising from it with small magenta crystals glowing on top, smaller islands floating separately in the emptiness, dark rocky underside, faint lilac haze, ${STYLE}`,
     negative: NEG + ', sun, moon, clouds, horizon line, solid ground, grass, trees, water, waterfall, lava, fire, warm orange light, people',
   },
+
+  // ---- десятый день ----
+  // Грозовые сумерки: небо без светила вовсе. Генератор норовит дорисовать
+  // солнце в любую светлую полосу у горизонта, поэтому солнце, луна и
+  // закатные цвета стоят в negative первыми. Тучи обязаны быть ТЕМНЕЕ неба,
+  // иначе выходит обычный пасмурный день, а не вечер перед бедой.
+  'mc/sky-storm': {
+    strength: 0.42,
+    prompt: `heavy overcast storm sky at dusk, thick dark grey-blue square storm clouds hanging low, cold slate colours, pale grey light along the horizon, no sun, no moon, ${STYLE}, no ground, no trees`,
+    negative: NEG + ', sun, moon, stars, rainbow, sunset colours, orange, pink, warm light, clear blue sky, daylight, round clouds, rain streaks, lightning bolt',
+  },
 };
 
 

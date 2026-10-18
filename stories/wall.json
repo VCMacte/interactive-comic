@@ -1,0 +1,151 @@
+{
+  "title": "Стена и колокол",
+  "viewer": "Матвей",
+  "theme": "minecraft",
+  "voice": "hero",
+  "start": "morning",
+  "scenes": {
+    "morning": {
+      "bg": { "sky": "assets/mc/sky-dawn.webp", "stars": "assets/mc/sun-dawn.svg",
+              "far": "assets/mc/far-hills.webp", "near": "assets/mc/near-village.svg" },
+      "cast": [ { "src": "assets/mc/wolf.svg", "x": 20, "y": 28, "w": 7 },
+                { "src": "assets/mc/steve.svg", "x": 30, "y": 28, "w": 8 },
+                { "src": "assets/mc/alex.svg", "x": 41, "y": 28, "w": 8 },
+                { "src": "assets/mc/golem.svg", "x": 58, "y": 28, "w": 13 } ],
+      "voice": "ally",
+      "text": "Железный простоял у ворот всю ночь и не сдвинулся. Алекс считала на пальцах и сбивалась. «До темноты успеем одно, {{имя}}. Стену или колокольню».",
+      "prompt": "С чего начнём: достроим стену или поднимем колокольню?",
+      "choices": [
+        { "label": "Достроить стену", "keywords": ["стена", "стену", "кладка", "кладку", "достроить", "строить"],
+          "say": "«Стену». Алекс закинула меч за спину и пошла к кладке первой. Волк обогнал её и уселся там, где камня не хватало, — будто дыру было велено сторожить ему.",
+          "dir": "left", "next": "wall" },
+        { "label": "Поднять колокольню", "keywords": ["колокольня", "колокольню", "колокол", "башня", "поднять"],
+          "say": "«Колокольню так колокольню. Только камень для неё всё равно лежит у стены, {{имя}}, — заодно и кладку доделаем».",
+          "dir": "right", "next": "wall" }
+      ]
+    },
+
+    "wall": {
+      "bg": { "sky": "assets/mc/sky-day.webp", "stars": "assets/mc/sun-day.svg",
+              "far": "assets/mc/far-hills.webp", "near": "assets/mc/near-wall.svg" },
+      "cast": [ { "src": "assets/mc/wolf.svg", "x": 22, "y": 28, "w": 7 },
+                { "src": "assets/mc/steve.svg", "x": 32, "y": 28, "w": 8 },
+                { "src": "assets/mc/alex.svg", "x": 44, "y": 28, "w": 8 } ],
+      "text": "Кладку Стив вёл по порядку, повторяя один и тот же ряд. Отвернулся на минуту — и сбился. «Посмотри на ряд, {{имя}}. Тебе он виден целиком».",
+      "task": { "kind": "logic", "max": 15, "types": ["pattern"], "topic": "blocks" },
+      "next": "shields"
+    },
+
+    "shields": {
+      "bg": { "sky": "assets/mc/sky-day.webp", "stars": "assets/mc/sun-day.svg",
+              "far": "assets/mc/far-hills.webp", "near": "assets/mc/near-wall.svg" },
+      "cast": [ { "src": "assets/mc/steve.svg", "x": 26, "y": 28, "w": 8 },
+                { "src": "assets/mc/villager.svg", "x": 37, "y": 28, "w": 8 } ],
+      "voice": "friend",
+      "text": "Всё, что годится в бою, снесли на стену двумя штабелями. Житель вытер лоб: «Хм-хм! А сколько всего вышло?»",
+      "task": { "kind": "math", "max": 15, "types": ["addition"], "topic": "raid", "spread": "wide" },
+      "next": "bell"
+    },
+
+    "bell": {
+      "bg": { "sky": "assets/mc/sky-day.webp", "stars": "assets/mc/sun-day.svg",
+              "far": "assets/mc/far-hills.webp", "near": "assets/mc/near-bell.svg" },
+      "cast": [ { "src": "assets/mc/villager.svg", "x": 26, "y": 28, "w": 8 },
+                { "src": "assets/mc/steve.svg", "x": 38, "y": 28, "w": 8 },
+                { "src": "assets/mc/alex.svg", "x": 49, "y": 28, "w": 8 } ],
+      "text": "Колокол подняли под крышу, верёвку спустили до земли. Житель пробовал звон, а Алекс стала гонять Стива вопросами: три похожих, одно чужое.",
+      "task": { "kind": "logic", "max": 15, "types": ["oddOneOut"], "topic": "raid" },
+      "next": "fork"
+    },
+
+    "fork": {
+      "bg": { "sky": "assets/mc/sky-sunset.webp", "stars": "assets/mc/sun-sunset.svg",
+              "far": "assets/mc/far-hills.webp", "near": "assets/mc/near-village.svg" },
+      "cast": [ { "src": "assets/mc/wolf.svg", "x": 20, "y": 28, "w": 7 },
+                { "src": "assets/mc/steve.svg", "x": 30, "y": 28, "w": 8 },
+                { "src": "assets/mc/alex.svg", "x": 41, "y": 28, "w": 8 },
+                { "src": "assets/mc/golem.svg", "x": 58, "y": 28, "w": 13 } ],
+      "voice": "ally",
+      "text": "К закату стена стояла, колокол висел, и делать было нечего. Алекс села на бревно и вытянула ноги. «Полчаса у нас есть, {{имя}}».",
+      "prompt": "Обойдём стену ещё раз или посидим с жителями у костра?",
+      "choices": [
+        { "label": "Обойти стену", "keywords": ["стена", "стену", "обойти", "проверить", "обход"],
+          "dir": "forward", "next": "rounds" },
+        { "label": "К костру", "keywords": ["костёр", "костер", "к костру", "посидеть", "отдохнуть"],
+          "dir": "left", "next": "fire" }
+      ]
+    },
+
+    "fire": {
+      "bg": { "sky": "assets/mc/sky-sunset.webp", "stars": "assets/mc/sun-sunset.svg",
+              "far": "assets/mc/far-hills.webp", "near": "assets/mc/near-village.svg" },
+      "cast": [ { "src": "assets/mc/wolf.svg", "x": 18, "y": 28, "w": 7 },
+                { "src": "assets/mc/steve.svg", "x": 28, "y": 28, "w": 8 },
+                { "src": "assets/mc/villager.svg", "x": 39, "y": 28, "w": 8 },
+                { "src": "assets/mc/golem.svg", "x": 60, "y": 28, "w": 13 } ],
+      "voice": "friend",
+      "text": "У костра дали хлеба и молока. Волк не лёг и хлеба не взял: сидел носом к лесу. Житель перестал жевать первым: «Хм-хм… Пёс знает то, чего мы пока не знаем. Идите-ка к стене».",
+      "prompt": "Идём к стене?",
+      "choices": [
+        { "label": "Идём", "keywords": ["да", "идём", "идем", "пошли", "к стене", "хорошо"],
+          "dir": "forward", "next": "rounds" }
+      ]
+    },
+
+    "rounds": {
+      "bg": { "sky": "assets/mc/sky-storm.webp",
+              "far": "assets/mc/far-hills.webp", "near": "assets/mc/near-wall.svg" },
+      "cast": [ { "src": "assets/mc/steve.svg", "x": 32, "y": 28, "w": 8 },
+                { "src": "assets/mc/alex.svg", "x": 44, "y": 28, "w": 8 } ],
+      "text": "Небо затянуло, и сумерки пришли раньше срока. Пока обходили стену, из деревни успели поднести ещё, и штабель у ворот подрос без Стива. «Сколько было, я помню. Посчитай, {{имя}}, сколько прибавилось».",
+      "task": { "kind": "math", "max": 10, "types": ["missing"], "topic": "raid", "spread": "wide" },
+      "next": "alarm"
+    },
+
+    "alarm": {
+      "bg": { "sky": "assets/mc/sky-storm.webp",
+              "far": "assets/mc/far-hills.webp", "near": "assets/mc/near-wall.svg" },
+      "cast": [ { "src": "assets/mc/wolf.svg", "x": 20, "y": 28, "w": 7 },
+                { "src": "assets/mc/steve.svg", "x": 30, "y": 28, "w": 8 },
+                { "src": "assets/mc/alex.svg", "x": 41, "y": 28, "w": 8 },
+                { "src": "assets/mc/golem.svg", "x": 58, "y": 28, "w": 13 } ],
+      "voice": "ally",
+      "text": "Волк вскочил и залаял. Раньше колокола, раньше, чем кто-нибудь хоть что-то увидел. Алекс была на кладке в два шага: «Он не ошибается, {{имя}}. Они идут».",
+      "prompt": "Ударим в колокол сейчас или подождём, пока их станет видно?",
+      "choices": [
+        { "label": "Звонить сейчас", "keywords": ["колокол", "звонить", "сейчас", "ударить", "бить"],
+          "voice": "golem",
+          "say": "Житель повис на верёвке, и колокол ударил на всю деревню. Захлопали двери, кто-то побежал за щитом, кто-то загонять кур. Железный повернул голову к воротам и сказал одно: «Хорошо. Пусть собираются».",
+          "dir": "forward", "next": "night" },
+        { "label": "Подождать", "keywords": ["подождать", "ждать", "тихо", "потом", "рано"],
+          "dir": "forward", "next": "night" }
+      ]
+    },
+
+    "night": {
+      "bg": { "sky": "assets/mc/sky-night.webp",
+              "far": "assets/mc/far-hills.webp", "near": "assets/mc/near-wall.svg" },
+      "cast": [ { "src": "assets/mc/steve.svg", "x": 24, "y": 28, "w": 8 },
+                { "src": "assets/mc/alex.svg", "x": 35, "y": 28, "w": 8 },
+                { "src": "assets/mc/golem.svg", "x": 66, "y": 28, "w": 13 },
+                { "src": "assets/mc/pillager-axe.svg", "x": 80, "y": 28, "w": 8 },
+                { "src": "assets/mc/pillager-bow.svg", "x": 89, "y": 28, "w": 8 } ],
+      "voice": "ally",
+      "fx": "impact",
+      "text": "Шли они прямо на пролом. Волка Стив отправил в дом и сказал это вслух: в драке собаке не место. Пролом железный закрыл собой. Алекс крикнула со стены: «Считай, {{имя}}! Что сломали — то уже не наше!»",
+      "task": { "kind": "math", "max": 9, "types": ["subtraction"], "topic": "raid", "spread": "wide" },
+      "next": "after"
+    },
+
+    "after": {
+      "bg": { "sky": "assets/mc/sky-night.webp",
+              "far": "assets/mc/far-hills.webp", "near": "assets/mc/near-wall.svg" },
+      "cast": [ { "src": "assets/mc/wolf.svg", "x": 20, "y": 28, "w": 7 },
+                { "src": "assets/mc/steve.svg", "x": 30, "y": 28, "w": 8 },
+                { "src": "assets/mc/alex.svg", "x": 41, "y": 28, "w": 8 },
+                { "src": "assets/mc/golem.svg", "x": 58, "y": 28, "w": 13 } ],
+      "voice": "ally",
+      "text": "Серые ушли сами. Не побежали, не бросили оружие — развернулись и зашагали к лесу ровно, будто так и собирались. Алекс смотрела им вслед и меч не опускала. Она помолчала. «Они не убежали, {{имя}}. Они нас посчитали. Теперь они знают, сколько нас»."
+    }
+  }
+}

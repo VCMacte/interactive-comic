@@ -1,5 +1,12 @@
 [
   {
+    "id": "wall",
+    "title": "Стена и колокол",
+    "subtitle": "Десятый день Стива · пять игр",
+    "cover": "assets/covers/wall.webp",
+    "story": "stories/wall.json"
+  },
+  {
     "id": "golem",
     "title": "Железный друг",
     "subtitle": "Девятый день Стива · пять игр",

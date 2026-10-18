@@ -2710,6 +2710,257 @@ ${px(6.4 * U, 6.4 * U, 1.1 * U, 0.9 * U, hole)}`;
 
   return charSvg(body, 12 * U, 11 * U);
 }
+/* ---- десятый день ---- */
+
+/**
+ * Грозовые сумерки. Светила нет вовсе — это единственное небо сезона без
+ * солнца и без луны, и на обложке по нему история узнаётся с первого
+ * взгляда: у девяти прежних в каталоге либо день, либо закат, либо ночь
+ * со звёздами.
+ *
+ * Тон холодный и ровный: вечером у стены единственный тёплый свет должен
+ * идти от факелов на кладке, а не с неба. Облака тяжёлые и низкие, темнее
+ * самого неба, — иначе сумерки читаются обычным пасмурным днём.
+ */
+function skyStorm() {
+  const defs = `<defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#1b2030"/><stop offset="0.5" stop-color="#36404f"/>
+    <stop offset="0.82" stop-color="#5a6270"/><stop offset="1" stop-color="#7d838c"/></linearGradient></defs>`;
+  return svg(`<rect width="${W}" height="${H}" fill="url(#g)"/>
+${clouds(71, '#242a38', 0.85)}
+${clouds(72, '#454f60', 0.55)}`, defs);
+}
+
+/**
+ * Стена деревни на стройке — слой пяти сцен десятого дня: в нём кладут
+ * кладку, носят щиты, ждут и отбивают первую волну. Поэтому он сделан
+ * фоном-панорамой, а не постройкой в углу: стена идёт через весь кадр
+ * невысокой полосой, и персонажи стоят перед ней, никого не закрывая.
+ *
+ * Гребень намеренно неровный: столбцы разной высоты, слева готовая часть
+ * с воротами, справа пролом в один блок и россыпь булыжника под ним.
+ * Из кадра видно, что стена недостроена, — вся серия ровно про это,
+ * и пролом нужен следующей: в двенадцатом дне его держит голем.
+ *
+ * Пролом справа, а не в центре: в ночной сцене туда встают двое
+ * разбойников, а центр остаётся Стиву с Алекс.
+ */
+function nearWall(seed = 613) {
+  const rand = rng(seed);
+  const out = [];
+  const LOG = '#7a5630', LOG_TOP = '#8f6a40', LOG_DARK = '#5a3f22';
+  const ROOF = '#9c4b3c', ROOF_DARK = '#7a392c';
+  const EDGE = '#3f3c35';
+  const SHIELD = '#8a6334', SHIELD_EDGE = '#45301a', SHIELD_IRON = '#d2d2d8';
+
+  const cols = Math.ceil(W / B) + 1;
+  const gate = [6, 7, 8];          // проём ворот
+  const breach = [23, 24, 25, 26, 27];   // пролом
+  // Высота столбца. Готовая часть высокая, недостроенная ниже, пролом
+  // почти вровень с землёй: из кадра должно читаться, где стена держит,
+  // а где её нет. На первом предпросмотре стена была в три блока и
+  // сливалась с дальними холмами в серую полосу.
+  const heightAt = (c) => {
+    if (gate.includes(c)) return 0;
+    if (breach.includes(c)) return 0;
+    if (c === breach[0] - 1) return 2;
+    if (c === breach[breach.length - 1] + 1) return 3;
+    if (c < 18) return 5;
+    if (c < 23) return 3;
+    return 5;
+  };
+
+  // Крыши деревни ЗА стеной, и потому выше неё: иначе их не видно вовсе,
+  // а деревня должна читаться жилой. Скат ступенькой, как у всех крыш
+  // этого мира.
+  const roof = (hx, hw) => {
+    const base = GROUND - B * 5.6;
+    for (let c = 0; c < hw; c++) {
+      for (let r = 0; r < 2; r++) out.push(block(hx + c * B, base - r * B, P.plank, rand));
+    }
+    for (let step = 0; step < 3; step++) {
+      const y = base - B * (2 + step);
+      for (let c = step; c < hw - step; c++) {
+        out.push(`<rect x="${n(hx + c * B)}" y="${n(y)}" width="${B}" height="${B}" fill="${step % 2 ? ROOF_DARK : ROOF}"/>`);
+      }
+    }
+  };
+  roof(B * 1.5, 5);
+  roof(B * 12, 5);
+
+  // Кладка. Тёмная кромка по верхнему ряду: без неё светлый камень
+  // сливается с дальними холмами, и стены в кадре нет.
+  for (let c = 0; c < cols; c++) {
+    const h = heightAt(c);
+    for (let r = 0; r < h; r++) out.push(block(c * B, GROUND - B * (r + 1), P.sbrick, rand));
+    if (h) out.push(`<rect x="${n(c * B)}" y="${n(GROUND - B * h)}" width="${B}" height="10" fill="${EDGE}"/>`);
+  }
+
+  // Щиты стоят НА гребне, а не у подножия: внизу их закрывает панель
+  // с текстом, а сцена ровно про то, чтобы их посчитать. Разнесены по
+  // краям от центра — на 47% ширины горку девятого дня закрывала собой
+  // Алекс, и урок тот же.
+  const stacks = [{ col: 2.6, k: 3 }, { col: 14.6, k: 4 }];
+  const busy = new Set(stacks.flatMap(st => [0, 1, 2].map(d => Math.floor(st.col) + d)));
+
+  // Зубцы на готовой части — через один. По ним и видно, что это стена,
+  // а не насыпь.
+  for (let c = 0; c < 18; c += 2) {
+    if (gate.includes(c) || gate.includes(c + 1)) continue;
+    if (busy.has(c)) continue;
+    out.push(block(c * B, GROUND - B * 6, P.sbrick, rand));
+    out.push(`<rect x="${n(c * B)}" y="${n(GROUND - B * 6)}" width="${B}" height="10" fill="${EDGE}"/>`);
+  }
+
+  // Пролом: выбитый край с обеих сторон и булыжник под ним. Без камней
+  // это просто незастроенное место, а нужно, чтобы было видно — стену
+  // здесь проломили, и её не успели закрыть.
+  for (const [bx, by, s] of [[22.6, 0.02, 0.9], [23.6, 0.1, 0.7], [24.9, 0.0, 0.95], [26.3, 0.12, 0.65], [27.4, 0.04, 0.8]]) {
+    out.push(block(bx * B, GROUND + by * B, P.stone, rand, B * s));
+  }
+
+  // Ворота: створки по краям проёма и перекладина над ним. Проём пустой —
+  // в него уходят персонажи, и туда же смотрит ребёнок.
+  const gx = gate[0] * B;
+  for (const x of [gx, gx + B * 2]) {
+    out.push(`<rect x="${n(x + 4)}" y="${n(GROUND - B * 4.4)}" width="${n(B - 8)}" height="${n(B * 4.4)}" fill="${LOG}"/>`);
+    out.push(`<rect x="${n(x + 4)}" y="${n(GROUND - B * 4.4)}" width="${n(B - 8)}" height="14" fill="${LOG_TOP}"/>`);
+    out.push(`<rect x="${n(x + B - 11)}" y="${n(GROUND - B * 4.4)}" width="7" height="${n(B * 4.4)}" fill="${LOG_DARK}"/>`);
+  }
+  out.push(`<rect x="${n(gx - 10)}" y="${n(GROUND - B * 4.7)}" width="${n(B * 3 + 20)}" height="22" fill="${LOG_DARK}"/>`);
+
+  // Леса на недостроенном участке: два столба, два настила и раскос.
+  // Без раскоса конструкция читалась столом — это было видно на первом
+  // же предпросмотре.
+  const sx = B * 19;
+  for (const x of [sx, sx + B * 3]) {
+    out.push(`<rect x="${n(x)}" y="${n(GROUND - B * 5.4)}" width="16" height="${n(B * 5.4)}" fill="${LOG}"/>`);
+  }
+  out.push(`<path d="M ${n(sx + 16)} ${n(GROUND - B * 1.2)} L ${n(sx + B * 3)} ${n(GROUND - B * 4.2)} l 0 22 L ${n(sx + 16)} ${n(GROUND - B * 1.2 + 22)} Z" fill="${LOG_DARK}"/>`);
+  for (const h of [5.4, 3.3]) {
+    out.push(`<rect x="${n(sx - 12)}" y="${n(GROUND - B * h)}" width="${n(B * 3 + 40)}" height="16" fill="${LOG_TOP}"/>`);
+  }
+
+  // Щиты у кладки — два штабеля, их в сцене считают. Рисуются силуэтом
+  // с железным умбоном, а не кубиком: серые кубики в предпросмотре
+  // читались камнями, то есть предмета, который называет текст,
+  // в кадре не было.
+  const shield = (x, y, s) => {
+    const h = s * 1.3;
+    out.push(`<path d="M ${n(x)} ${n(y)} h ${n(s)} v ${n(h * 0.6)} l ${n(-s / 2)} ${n(h * 0.4)} l ${n(-s / 2)} ${n(-h * 0.4)} Z" fill="${SHIELD}" stroke="${SHIELD_EDGE}" stroke-width="6"/>`);
+    out.push(`<rect x="${n(x + s * 0.14)}" y="${n(y + h * 0.26)}" width="${n(s * 0.72)}" height="${n(h * 0.16)}" fill="${SHIELD_IRON}"/>`);
+    out.push(`<rect x="${n(x + s * 0.4)}" y="${n(y + h * 0.1)}" width="${n(s * 0.2)}" height="${n(h * 0.52)}" fill="${SHIELD_IRON}"/>`);
+  };
+  for (const st of stacks) {
+    for (let i = 0; i < st.k; i++) {
+      shield(st.col * B + i * B * 0.62, GROUND - B * 5 - B * 0.86 + i * 6, B * 0.78);
+    }
+  }
+
+  // Факелы по гребню. В ночных сценах они единственный свет, поэтому
+  // с ореолом: полупрозрачный прямоугольник на их месте читается
+  // заплаткой (урок шестого дня).
+  const fires = [[B * 3, 6], [B * 11, 6], [B * 15, 6], [B * 22, 3]];
+  const halo = fires.map(([x, h]) => glow(x + B * 0.5, GROUND - B * h - B * 0.2, B * 2.2)).join('\n');
+  const flame = fires.map(([x, h]) => torch(x, GROUND - B * (h + 1))).join('\n');
+
+  return svg(`${groundRows(rand)}
+${out.join('\n')}
+${halo}
+${flame}`, GLOW_DEF);
+}
+
+/**
+ * Колокольня. Колокол висит под крышей и сделан крупным, с тёмной
+ * обводкой: предмет, который называет текст, обязан читаться в кадре —
+ * этому научили телега восьмого дня и тыква девятого. Мелкий колокол
+ * из слоя деревни для такой сцены не годится: там он на столбе у самого
+ * края кадра, а здесь серия названа его именем.
+ *
+ * Башня справа от центра, как крест ритуала: в центр встают Стив с Алекс,
+ * а слева остаётся место жителю, который держит верёвку.
+ */
+function nearBell(seed = 647) {
+  const rand = rng(seed);
+  const out = [];
+  const LOG = '#7a5630', LOG_TOP = '#8f6a40', LOG_DARK = '#5a3f22';
+  const ROOF = '#9c4b3c', ROOF_DARK = '#7a392c';
+  const ROPE = '#c9b68c';
+  const BELL = '#cfae4a', BELL_DARK = '#8f7526', BELL_LIGHT = '#e8ca6a';
+  const EDGE = '#4a3c16';
+
+  // Крыши деревни слева: колокольня стоит не в поле, а над домами.
+  for (const [hx, hw, hh] of [[B * 1.5, 3, 2], [B * 7, 3, 2]]) {
+    for (let c = 0; c < hw; c++) {
+      for (let r = 0; r < hh; r++) out.push(block(hx + c * B, GROUND - B * (r + 1), P.plank, rand));
+    }
+    for (let c = -1; c <= hw; c++) {
+      out.push(`<rect x="${n(hx + c * B)}" y="${n(GROUND - B * (hh + 1))}" width="${B}" height="${B}" fill="${c % 2 ? ROOF : ROOF_DARK}"/>`);
+    }
+  }
+
+  const tx = W * 0.66;        // левый столб
+  const span = B * 3.2;       // расстояние между столбами
+  const top = GROUND - B * 6; // верхняя перекладина
+
+  // Каменное основание: иначе деревянные столбы растут прямо из травы
+  // и башня выглядит воткнутой, а не построенной.
+  for (let c = 0; c < 4; c++) out.push(block(tx - B * 0.5 + c * B, GROUND - B, P.sbrick, rand));
+
+  // Столбы и раскосы. Раскосы нужны: два вертикальных бруса читаются
+  // лестницей, а не каркасом.
+  for (const x of [tx, tx + span]) {
+    out.push(`<rect x="${n(x)}" y="${n(top)}" width="22" height="${n(GROUND - B - top)}" fill="${LOG}"/>`);
+    out.push(`<rect x="${n(x + 15)}" y="${n(top)}" width="7" height="${n(GROUND - B - top)}" fill="${LOG_DARK}"/>`);
+  }
+  out.push(`<path d="M ${n(tx + 22)} ${n(top + B * 1.2)} L ${n(tx + span)} ${n(top + B * 2.6)} l 0 24 L ${n(tx + 22)} ${n(top + B * 1.2 + 24)} Z" fill="${LOG_DARK}"/>`);
+  out.push(`<path d="M ${n(tx + span)} ${n(top + B * 1.2)} L ${n(tx + 22)} ${n(top + B * 2.6)} l 0 24 L ${n(tx + span)} ${n(top + B * 1.2 + 24)} Z" fill="${LOG_DARK}"/>`);
+
+  // Перекладина и крыша. Крыша из блоков доски с красным гребнем —
+  // той же парой цветов, что крыши домов: башня деревенская.
+  out.push(`<rect x="${n(tx - B * 0.4)}" y="${n(top)}" width="${n(span + B * 0.8 + 22)}" height="24" fill="${LOG_DARK}"/>`);
+  for (let c = 0; c < 5; c++) out.push(block(tx - B * 0.9 + c * B, top - B, P.plank, rand));
+  for (let c = -1; c <= 5; c++) {
+    out.push(`<rect x="${n(tx - B * 0.9 + c * B)}" y="${n(top - B * 2)}" width="${B}" height="${B}" fill="${c % 2 ? ROOF : ROOF_DARK}"/>`);
+  }
+
+  // Колокол. Обводка отдельным прямоугольником под ним: на предпросмотре
+  // девятого дня тёплый металл на бурой земле читался блёклым пятном,
+  // и обводка — ровно то, что это починило.
+  const cw = B * 1.5, ch = B * 1.9;
+  const cx = tx + span * 0.5 + 11 - cw * 0.5;
+  const cy = top + 40;
+  // Тулово трапецией, а не прямоугольником: ровный жёлтый прямоугольник
+  // на предпросмотре читался фонарём, а не колоколом. Узкий верх,
+  // широкая губа и язык под ней — три приметы, по которым предмет
+  // узнаётся с одного взгляда.
+  const lip = cw * 0.34;
+  const bodyPath = (ox, oy, ex) =>
+    `M ${n(cx + cw * 0.17 - ex + ox)} ${n(cy + oy)} 
+     L ${n(cx + cw * 0.83 + ex + ox)} ${n(cy + oy)} 
+     L ${n(cx + cw + lip + ex + ox)} ${n(cy + ch + oy)} 
+     L ${n(cx - lip - ex + ox)} ${n(cy + ch + oy)} Z`;
+  out.push(`<path d="${bodyPath(0, 0, 9)}" fill="${EDGE}"/>`);
+  out.push(`<path d="${bodyPath(0, 0, 0)}" fill="${BELL}"/>`);
+  out.push(`<rect x="${n(cx - lip * 0.6)}" y="${n(cy + ch * 0.45)}" width="${n(cw * 0.26)}" height="${n(ch * 0.5)}" fill="${BELL_LIGHT}"/>`);
+  out.push(`<rect x="${n(cx + cw * 0.74)}" y="${n(cy + ch * 0.45)}" width="${n(cw * 0.26)}" height="${n(ch * 0.5)}" fill="${BELL_DARK}"/>`);
+  // Губа и язык.
+  out.push(`<rect x="${n(cx - lip - 9)}" y="${n(cy + ch - 4)}" width="${n(cw + lip * 2 + 18)}" height="26" fill="${BELL_DARK}"/>`);
+  out.push(`<rect x="${n(cx - lip - 9)}" y="${n(cy + ch + 22)}" width="${n(cw + lip * 2 + 18)}" height="12" fill="${EDGE}"/>`);
+  out.push(`<rect x="${n(cx + cw * 0.42)}" y="${n(cy + ch + 34)}" width="${n(cw * 0.16)}" height="30" fill="${EDGE}"/>`);
+  // Серьга, которой колокол висит на перекладине.
+  out.push(`<rect x="${n(cx + cw * 0.38)}" y="${n(top + 18)}" width="${n(cw * 0.24)}" height="26" fill="${EDGE}"/>`);
+
+  // Верёвка до самой земли: за неё в сцене дёргают, и из кадра должно быть
+  // видно, кому до неё дотянуться.
+  out.push(`<rect x="${n(cx + cw * 0.46)}" y="${n(cy + ch + 60)}" width="9" height="${n(GROUND - cy - ch - 60)}" fill="${ROPE}"/>`);
+
+
+  return svg(`${groundRows(rand)}
+${out.join('\n')}
+${glow(cx + cw * 0.5, cy + ch * 0.5, B * 2.4)}`, GLOW_DEF);
+}
+
 /* ---------------- сборка ---------------- */
 
 console.log('Небо:');
@@ -2718,6 +2969,7 @@ write('assets/mc/sky-sunset.svg', skySunset());
 write('assets/mc/sky-night.svg', skyNight());
 write('assets/mc/sky-dawn.svg', skyDawn());
 write('assets/mc/sky-void.svg', skyVoid());
+write('assets/mc/sky-storm.svg', skyStorm());
 write('assets/mc/sun-day.svg', celestial(1500, 220, 88, '#ffe873', '#fff3b0'));
 write('assets/mc/sun-sunset.svg', celestial(1420, 600, 86, '#ffc24d', '#ff9d5c'));
 write('assets/mc/moon-night.svg', celestial(1500, 230, 74, '#f2f5fb', '#c9d8f2', 90));
@@ -2763,6 +3015,8 @@ write('assets/mc/near-end-pillar.svg', nearEndPillar());
 write('assets/mc/near-end-gate.svg', nearEndGate());
 write('assets/mc/near-village.svg', nearVillage());
 write('assets/mc/near-ritual.svg', nearRitual());
+write('assets/mc/near-wall.svg', nearWall());
+write('assets/mc/near-bell.svg', nearBell());
 
 console.log('Персонажи:');
 write('assets/mc/steve.svg', steve());

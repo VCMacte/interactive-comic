@@ -2,6 +2,7 @@ import { speak, speakDialogue, cancelSpeech, createListener, voiceSupported, tts
 import { matchChoice } from './match.js';
 import { makeTask, usePool } from './tasks.js';
 import { setScene, preloadScene, enter, leave, cheer, wobble, impact } from './stage.js';
+import * as log from './log.js';
 
 const $ = (id) => document.getElementById(id);
 const el = {
@@ -10,6 +11,7 @@ const el = {
   resumeBox: $('resumeBox'),
   stage: $('stage'), text: $('text'), choices: $('choices'),
   update: $('updateBtn'), updateMsg: $('updateMsg'),
+  logBtn: $('logBtn'), logMsg: $('logMsg'),
   mic: $('mic'), heard: $('heard'), replay: $('replayBtn'), home: $('homeBtn'), skip: $('skipBtn'),
 };
 
@@ -535,11 +537,16 @@ function listen(my) {
     },
     onEnd: (reason) => {
       if (my !== token) return;
-      if (reason === 'unsupported' || reason === 'not-allowed' || reason === 'service-not-allowed') {
+      if (reason === 'unsupported' || reason === 'not-allowed'
+          || reason === 'service-not-allowed' || reason === 'audio-capture') {
         state.useVoice = false;
         stopListening();
         return;
       }
+      // Распознавание затыкалось: включалось и тут же выключалось. Молчания
+      // при этом не было — был шум, — поэтому немым окном это не считается
+      // и голос на всю историю не выключает. Просто предлагаем кнопки.
+      if (reason === 'flapping') { giveUpToButtons(); return; }
       // Окно кончилось. Если за всё это время микрофон не услышал вообще
       // ничего — скорее всего он и не слышит: на телевизоре звук попадает
       // в браузер только при удержании кнопки на пульте, а её удержание
@@ -745,5 +752,60 @@ async function runUpdate() {
   } catch {
     updateSays('Не получилось проверить обновление.');
     el.update.disabled = false;
+  }
+}
+
+/* ---------------- журнал ---------------- */
+
+log.watchLifecycle();
+
+function logSays(text) {
+  el.logMsg.textContent = text;
+  el.logMsg.hidden = !text;
+}
+
+/* Одна кнопка делает всё: собирает журнал, кладёт файл в «Загрузки»
+   и открывает «Поделиться». Лишний экран здесь — лишний шанс потерять
+   запись: журнал пишется дальше и вытесняет старое. */
+el.logBtn.addEventListener('click', async () => {
+  el.logBtn.disabled = true;
+  logSays('Собираю…');
+  try {
+    const r = await log.save();
+    const freed = await sweepSaved(r);
+    logSays((r.shared === 'shared' ? 'Отправлено' : 'Файл в «Загрузках»')
+      + ` (${Math.round(r.bytes / 1024)} КБ)` + freed);
+  } catch (e) {
+    logSays('Не получилось выгрузить журнал.');
+    log.event('error', { where: 'logBtn', message: String(e?.message || e) });
+  } finally {
+    el.logBtn.disabled = false;
+  }
+});
+
+/* Выгруженное убирается само, но не сразу: удаляется не то, что выгружено
+   сейчас, а то, что было помечено в прошлый раз. Разбор двухфазности —
+   у `sweepExported` в `js/log.js`. Коротко: признак удачной загрузки
+   врёт, браузер отказывает уже после клика и молча.
+
+   Сам факт уборки уходит в журнал: сессии, исчезнувшие без следа,
+   в следующем разборе выглядели бы потерей записей, а не уборкой. */
+async function sweepSaved(r) {
+  if (!r.saved) return '';
+  try {
+    const { sessions, marked, bytes } = await log.sweepExported();
+    if (sessions) {
+      log.event('log.swept', { sessions, bytes });
+      return `, очищено сессий: ${sessions}`;
+    }
+    // Первая выгрузка этих сессий: они помечены и уйдут со следующей.
+    // Сказать об этом надо — иначе «ничего не освободилось» выглядит поломкой.
+    // Фраза безличная нарочно: число сессий здесь любое, а согласовывать
+    // «1 сессия / 2 сессии / 5 сессий» ради подписи не стоит.
+    if (marked) return ', старое очистится со следующей выгрузкой';
+    return '';
+  } catch {
+    // Уборка — подсобное дело: не вышло, значит выгрузка всё равно состоялась.
+    return '';
   }
 }

@@ -2,7 +2,8 @@
 // Главное правило — никогда не слушать, пока говорит рассказчик:
 // звук идёт на телевизор, микрофон слышит его обратно и ловит эхо.
 
-import { playClip, hasClip, stopAudio, loadIndex } from './audio.js';
+import { playClip, hasClip, stopAudio, loadIndex, isPlaying } from './audio.js';
+import * as log from './log.js';
 
 const LANG = 'ru-RU';
 
@@ -277,6 +278,27 @@ export async function speakDialogue(text, { character = 'hero', mood = 'story' }
 const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
 export const voiceSupported = Boolean(SR);
 
+// Пауза перед перезапуском распознавания. Первая короткая — движок на Android
+// обрывается сам после каждой паузы, и ждать там нечего; но если сеанс за
+// сеансом кончается впустую, пауза удваивается до двух секунд. Без этого
+// получается плотный цикл: микрофон мигает, а ребёнка не слышно.
+const RELAUNCH_MIN = 250;
+const RELAUNCH_MAX = 2000;
+// Сеанс короче этого и без единого звука считается провалившимся.
+const EMPTY_MS = 400;
+// Столько провалов подряд — и мы перестаём драться за микрофон.
+const FLAP_LIMIT = 8;
+// Как часто переспрашивать, не замолчал ли рассказчик.
+const QUIET_POLL_MS = 200;
+
+/**
+ * Говорит ли сейчас приложение. Микрофон нельзя поднимать, пока звучит
+ * рассказчик: звук идёт на телевизор и возвращается в телефон. Записи
+ * и браузерный синтез спрашиваются оба — путей озвучки два.
+ */
+const isSpeaking = () => isPlaying()
+  || Boolean(window.speechSynthesis && (speechSynthesis.speaking || speechSynthesis.pending));
+
 // Шум, кашель и шуршание дают короткие обрывки. Если считать их попыткой
 // ответа, прослушивание обрывается, не успев начаться — так и было в первой
 // версии. Поэтому за ответ принимаем только то, где есть настоящее слово.
@@ -303,70 +325,199 @@ const isHesitation = (phrase) => {
  * не истекло. Иначе ребёнок, который задумался на три секунды, обнаруживает,
  * что его уже не слушают.
  *
+ * Весь путь перезапуска переписан по жалобе «прослушивание заедает: само
+ * включается и тут же выключается много раз подряд, а ответ в это время
+ * не слышно». Причин было четыре, и первая достаточна сама по себе:
+ *
+ * 1. **Погашенный слушатель оживал.** Неудачный `rec.start()` уходил
+ *    в `setTimeout(launch, 300)`, таймер нигде не хранился, `stop()` его
+ *    не гасил, а сам `launch()` на флаг остановки не смотрел. Значит после
+ *    `stopListening()` — во время подсказки, похвалы и даже на следующей
+ *    сцене — поднималось новое распознавание и дралось за микрофон
+ *    с законным слушателем: каждый `start()` обрывал чужой сеанс
+ *    (`aborted`), тот немедленно стартовал снова, и выходил пинг-понг.
+ * 2. **Осиротевшие экземпляры не отцеплялись.** `onend` старого объекта
+ *    звал `rec.start()`, а `rec` указывал уже на новый: тот стартовал
+ *    дважды, ловил `InvalidStateError` и плодил третий.
+ * 3. **Перезапуск шёл без паузы и без счёта** — `onend` сразу в `start()`.
+ * 4. **`onerror` молчал обо всём, кроме запрета доступа**, и `no-speech`
+ *    с `aborted` перезапускались мгновенно.
+ *
+ * Лекарство: поколения сеансов, единственная точка перезапуска с отступом,
+ * потолок трепыхания и тишина, пока говорит рассказчик. Каждый переход
+ * пишется в журнал (`js/log.js`) — затык ловится только на живом телефоне,
+ * консоли там нет.
+ *
  * @param {{onInterim?:Function, onResult?:Function, onEnd?:Function, windowMs?:number}} h
  */
 export function createListener({ onInterim, onResult, onEnd, windowMs = 30000 }) {
   if (!SR) return { start() { onEnd?.('unsupported'); }, stop() {} };
 
   let rec = null;
-  let stopped = false;
+  let gen = 0;             // поколение сеанса: событие от чужого игнорируется
+  let stopped = true;
   let deadline = 0;
-  let timer = null;
+  let windowTimer = null;
+  let relaunchTimer = null;
+  let backoff = RELAUNCH_MIN;
+  let emptyRuns = 0;       // сколько сеансов подряд кончились впустую
+  let sessionStart = 0;
+  let sessionHeard = false;
+
+  // Снять обработчики и оборвать. Без этого старый объект продолжает слать
+  // события и трогает уже другой, живой экземпляр.
+  function detach(r) {
+    if (!r) return;
+    r.onresult = r.onerror = r.onend = null;
+    r.onstart = r.onaudiostart = r.onspeechstart = null;
+    try { r.abort(); } catch {}
+  }
+
+  function teardown() {
+    stopped = true;
+    gen++;
+    clearTimeout(windowTimer);
+    clearTimeout(relaunchTimer);
+    windowTimer = relaunchTimer = null;
+    detach(rec);
+    rec = null;
+  }
+
+  // Закрыть окно: и по сроку, и по отказу, и по трепыханию.
+  function finish(reason, detail) {
+    if (stopped) return;
+    teardown();
+    log.event('mic.window.end', { reason, ...(detail || {}) });
+    log.flush();
+    onEnd?.(reason);
+  }
+
+  /* Единственная точка перезапуска. Раньше их было две — `rec.start()`
+     внутри `onend` и неучтённый `setTimeout` в `catch`, — и обе проходили
+     мимо флага остановки. */
+  function scheduleRelaunch(delay) {
+    if (stopped) return;
+    clearTimeout(relaunchTimer);
+    log.event('mic.relaunch', { delay, empty: emptyRuns });
+    relaunchTimer = setTimeout(function tick() {
+      if (stopped) return;
+      if (Date.now() >= deadline) { finish('window'); return; }
+      // Пока звучит рассказчик, микрофон не поднимаем вовсе.
+      if (isSpeaking()) { relaunchTimer = setTimeout(tick, QUIET_POLL_MS); return; }
+      launch();
+    }, delay);
+  }
+
+  /* Пустой сеанс — тот, что кончился быстрее EMPTY_MS и не дал ни звука.
+     Это и есть признак затыка. Отступ после него удваивается, а любой
+     услышанный звук сбрасывает его обратно: ребёнок, который просто
+     помолчал полминуты, под лечение попасть не должен. */
+  function noteSession(lived) {
+    if (!sessionHeard && lived < EMPTY_MS) {
+      emptyRuns++;
+      const delay = backoff;
+      backoff = Math.min(backoff * 2, RELAUNCH_MAX);
+      return delay;
+    }
+    emptyRuns = 0;
+    backoff = RELAUNCH_MIN;
+    return RELAUNCH_MIN;
+  }
+
+  // Общий хвост сеанса: решить, когда перезапускать, и не драться вечно.
+  function afterSession(lived) {
+    const delay = noteSession(lived);
+    // Драться за микрофон бесконечно нельзя: ребёнку это видно как мигание
+    // и слышно как тишина. Честнее предложить кнопки.
+    if (emptyRuns >= FLAP_LIMIT) { finish('flapping', { empty: emptyRuns }); return; }
+    scheduleRelaunch(delay);
+  }
 
   function launch() {
-    rec = new SR();
-    rec.lang = LANG;
-    rec.interimResults = true;
-    rec.continuous = true;          // не обрывать после первой фразы
-    rec.maxAlternatives = 6;
+    if (stopped) return;
+    detach(rec);
+    const my = ++gen;
+    sessionStart = Date.now();
+    sessionHeard = false;
 
-    rec.onresult = (e) => {
+    const r = rec = new SR();
+    r.lang = LANG;
+    r.interimResults = true;
+    r.continuous = true;          // не обрывать после первой фразы
+    r.maxAlternatives = 6;
+
+    const mine = () => my === gen && !stopped;
+
+    r.onstart = () => { if (mine()) log.event('mic.on'); };
+    r.onaudiostart = () => { if (mine()) log.event('mic.audio'); };
+    r.onspeechstart = () => { if (mine()) { sessionHeard = true; log.event('mic.speech'); } };
+
+    r.onresult = (e) => {
+      if (!mine()) return;
+      sessionHeard = true;
       const last = e.results[e.results.length - 1];
       const text = last[0].transcript;
-      if (!last.isFinal) { onInterim?.(text); return; }
+      if (!last.isFinal) {
+        log.event('mic.interim', { chars: text.length });
+        onInterim?.(text);
+        return;
+      }
 
       const all = Array.from(last)
         .map(alt => alt.transcript)
         .filter(t => looksLikeWord(t) && !isHesitation(t));
+      log.event('mic.final', { chars: text.length, kept: all.length });
       if (all.length) onResult?.(text, all);
       // Обрывок без слов или задумчивое «э-э-э» — не ответ: молчим и слушаем дальше.
     };
 
-    rec.onerror = (e) => {
-      // Отказ в доступе лечить перезапуском бессмысленно.
-      if (e.error === 'not-allowed' || e.error === 'service-not-allowed') {
-        stopped = true;
-        onEnd?.(e.error);
+    r.onerror = (e) => {
+      if (!mine()) return;
+      const code = e.error;
+      log.event('mic.error', { code });
+      // Эти перезапуском не лечатся: доступа нет или микрофона нет вовсе.
+      if (code === 'not-allowed' || code === 'service-not-allowed' || code === 'audio-capture') {
+        finish(code);
+        return;
       }
+      // no-speech, aborted, network: сеанс провалился, перезапуск назначит onend.
     };
 
-    rec.onend = () => {
-      if (stopped) return;
-      if (Date.now() < deadline) { try { rec.start(); } catch { setTimeout(launch, 300); } }
-      else onEnd?.('window');
+    r.onend = () => {
+      if (!mine()) return;
+      const lived = Date.now() - sessionStart;
+      log.event('mic.off', { lived, heard: sessionHeard });
+      if (Date.now() >= deadline) { finish('window'); return; }
+      afterSession(lived);
     };
 
-    try { rec.start(); } catch { /* уже запущено — игнорируем */ }
+    try {
+      r.start();
+    } catch (err) {
+      // «Уже запущено» — не повод плодить ещё один экземпляр: считаем сеанс
+      // пустым и перезапускаемся по общему правилу.
+      log.event('mic.start.failed', { name: String(err?.name || err) });
+      sessionHeard = false;
+      afterSession(0);
+    }
   }
 
   function start() {
+    teardown();
     stopped = false;
+    backoff = RELAUNCH_MIN;
+    emptyRuns = 0;
     deadline = Date.now() + windowMs;
-    clearTimeout(timer);
-    timer = setTimeout(() => {
-      if (stopped) return;
-      stopped = true;
-      try { rec?.abort(); } catch {}
-      onEnd?.('window');
-    }, windowMs);
+    log.event('mic.window.start', { windowMs });
+    windowTimer = setTimeout(() => finish('window'), windowMs);
     launch();
   }
 
   function stop() {
-    stopped = true;
-    clearTimeout(timer);
-    try { rec?.abort(); } catch {}
-    rec = null;
+    if (stopped) return;
+    teardown();
+    log.event('mic.window.end', { reason: 'stop' });
+    log.flush();
   }
 
   return { start, stop };

@@ -63,6 +63,14 @@ function enough(el) {
   return el.currentTime >= el.duration * 0.5;
 }
 
+/**
+ * Звучит ли сейчас хоть одна запись. Нужно распознаванию: микрофон нельзя
+ * поднимать, пока говорит рассказчик, — звук идёт на телевизор и
+ * возвращается в телефон. Считается по той же Map, что и остановка:
+ * второй список звучащих разошёлся бы с этим.
+ */
+export const isPlaying = () => playing.size > 0;
+
 export function stopAudio() {
   token++;
   for (const [el, finish] of playing) {

@@ -22,7 +22,7 @@ const ROOT_FILES = [
   './', './index.html', './comics.json', './manifest.webmanifest',
   './css/style.css',
   './js/app.js', './js/voice.js', './js/match.js',
-  './js/tasks.js', './js/stage.js', './js/audio.js',
+  './js/tasks.js', './js/stage.js', './js/audio.js', './js/log.js',
 ];
 
 // Каталоги целиком, с разрешёнными расширениями.

@@ -1,6 +1,6 @@
 // Офлайн-кэш: история и картинки доступны без сети.
 // Распознавание речи сетью всё равно пользуется — оно идёт через серверы Google.
-const CACHE = 'comic-v49';
+const CACHE = 'comic-v51';
 const ASSETS = [
   './',
   './index.html',
@@ -13,6 +13,7 @@ const ASSETS = [
   './js/tasks.js',
   './js/stage.js',
   './js/audio.js',
+  './js/log.js',
   './assets/audio/0023b3da.mp3',
   './assets/audio/006c7299.mp3',
   './assets/audio/0133fdf7.mp3',

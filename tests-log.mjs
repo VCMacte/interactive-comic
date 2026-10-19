@@ -97,6 +97,84 @@ check('события вне окна не считаются', windows([
   { t: 5, type: 'mic.relaunch', delay: 250 },
 ]).length, 0);
 
+/* ---------------- сцена, задание, услышанное ---------------- */
+
+// То, ради чего разметка заводилась. Сегодняшний случай: ответом было
+// «двенадцать», среди вариантов стояло «два», и услышанное уезжало туда.
+// По одному журналу микрофона этого было не видно вовсе — пришлось
+// вспоминать вопрос по памяти.
+const mishear = [
+  { t: 100, type: 'story.open', comic: 'bell', scene: 'gate' },
+  { t: 200, type: 'scene.enter', scene: 'anvil', dir: 'forward' },
+  { t: 210, type: 'task.ask', scene: 'anvil', kind: 'math', max: 20,
+    question: 'Сколько будет пять и семь?', answer: 'Двенадцать',
+    choices: ['Два', 'Четырнадцать', 'Двенадцать'] },
+  { t: 1000, type: 'mic.window.start', windowMs: 30000 },
+  { t: 1010, type: 'mic.on' },
+  { t: 2000, type: 'mic.speech' },
+  { t: 2500, type: 'mic.final', chars: 2, kept: 1 },
+  { t: 2510, type: 'mic.match', heard: '12', alts: [], label: 'Два', score: 0, miss: true },
+  { t: 2600, type: 'mic.window.end', reason: 'stop' },
+];
+
+const mis = report(session(mishear));
+const mw = mis.sessions[0].windows[0];
+// Сцена и задание приходят ДО окна: вопрос сначала читается вслух.
+check('окно знает свою сцену', mw.scene, 'anvil');
+check('окно знает задание', [mw.task.question, mw.task.answer], ['Сколько будет пять и семь?', 'Двенадцать']);
+check('услышанное и вердикт', mw.heard, [{ text: '12', label: 'Два', score: 0, miss: true, times: 1 }]);
+
+// Четыре промаха подряд, потом кнопка — ровно то, что было на телефоне.
+const mishear4 = [...mishear.slice(0, 4)];
+let mt = 1000;
+for (let i = 0; i < 4; i++) {
+  mishear4.push({ t: (mt += 500), type: 'mic.final', chars: 2, kept: 1 });
+  mishear4.push({ t: (mt += 10), type: 'mic.match', heard: '12', alts: [], label: 'Два', score: 0, miss: true });
+}
+mishear4.push({ t: (mt += 10), type: 'mic.giveup', reason: 'misses', misses: 4 });
+mishear4.push({ t: (mt += 10), type: 'mic.window.end', reason: 'stop' });
+mishear4.push({ t: (mt += 3000), type: 'answer.pick', label: 'Двенадцать', by: 'button', correct: true, hint: false });
+
+const four = report(session(mishear4));
+check('не расслышано — одно окно', four.totals.unheard, 1);
+check('голосом не ответили', four.totals.byVoice, 0);
+// Нажатие приходит ПОСЛЕ конца окна: голос уже сдался. Приписывается тому
+// же окну, иначе ответ сцены теряется.
+check('кнопка после окна приписана окну', four.totals.byButton, 1);
+check('повод отказа сохранён', four.sessions[0].windows[0].giveup, 'misses');
+
+// Ответ голосом закрывает окно изнутри.
+const voiced = report(session([
+  { t: 200, type: 'scene.enter', scene: 'anvil', dir: 'forward' },
+  { t: 1000, type: 'mic.window.start', windowMs: 30000 },
+  { t: 2500, type: 'mic.final', chars: 10, kept: 2 },
+  { t: 2510, type: 'mic.match', heard: 'двенадцать', alts: ['12'], label: 'Двенадцать', score: 0, miss: false },
+  { t: 2520, type: 'answer.pick', label: 'Двенадцать', by: 'voice', correct: true, hint: false },
+  { t: 2600, type: 'mic.window.end', reason: 'stop' },
+]));
+check('ответ голосом сосчитан', [voiced.totals.byVoice, voiced.totals.byButton, voiced.totals.unheard], [1, 0, 0]);
+
+// Новая сцена сбрасывает задание: вопрос прошлой сцены к новому окну
+// отношения не имеет.
+const next = windows([
+  { t: 10, type: 'scene.enter', scene: 'anvil' },
+  { t: 20, type: 'task.ask', scene: 'anvil', question: 'раз', answer: 'Два', choices: ['Два'] },
+  { t: 30, type: 'mic.window.start' },
+  { t: 40, type: 'mic.window.end', reason: 'stop' },
+  { t: 50, type: 'scene.enter', scene: 'forge' },
+  { t: 60, type: 'mic.window.start' },
+  { t: 70, type: 'mic.window.end', reason: 'stop' },
+]);
+check('задание не перетекает в следующую сцену', [next[0].task?.question, next[1].task], ['раз', null]);
+
+// Поток одинаковых промахов журнал склеит — считать надо разы.
+const collapsedMatch = windows([
+  { t: 0, type: 'mic.window.start' },
+  { t: 10, type: 'mic.match', heard: '12', label: 'Два', score: 0, miss: true, _n: 7, _lastT: 900 },
+  { t: 1000, type: 'mic.window.end', reason: 'stop' },
+]);
+check('склеенные промахи считаются разами', collapsedMatch[0].heard[0].times, 7);
+
 // Длинное молчаливое окно затыком не является: ребёнок просто думал.
 check('молчание — не затык', isFlapping({
   reason: 'window', relaunches: 3, shortRuns: 0, kept: 0,

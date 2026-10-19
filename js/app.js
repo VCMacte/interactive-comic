@@ -192,6 +192,7 @@ async function openComic(comic, card, startAt) {
 
   state.story = fillViewerName(story);
   state.comicId = comic.id;
+  log.event('story.open', { comic: comic.id, scene: startAt ?? story.start });
   state.sceneId = null;
   state.scene = null;
   // Новая история начинается с чистого листа: иначе её первая сцена
@@ -346,9 +347,16 @@ async function show(id, dir = 'forward') {
   state.narrating = true;   // кнопки новой сцены рисуются уже заблокированными
 
   const raw = state.story.scenes[id];
-  if (!raw) { console.error('нет сцены:', id); return; }
+  if (!raw) {
+    console.error('нет сцены:', id);
+    log.event('scene.missing', { scene: id });   // опечатка в `next` иначе невидима
+    return;
+  }
 
-  const scene = raw.task ? withTask(raw) : raw;
+  // Вход в сцену пишется до разбора задания, чтобы в журнале запись о сцене
+  // стояла перед записью о её задании.
+  log.event('scene.enter', { scene: id, dir });
+  const scene = raw.task ? withTask(raw, id) : raw;
 
   state.sceneId = id;
   state.scene = scene;
@@ -389,7 +397,7 @@ const PRAISE = [
 
 // Сцена с заданием каждый раз получает новый вопрос и новые ответы,
 // поэтому сказку можно слушать много раз подряд.
-function withTask(raw) {
+function withTask(raw, sceneId) {
   // Сцена может задать вид задания строкой ("math") или объектом с пределом
   // счёта: {"kind":"math","max":20}. Так сложность растёт по ходу истории.
   const spec = typeof raw.task === 'string' ? { kind: raw.task } : raw.task;
@@ -400,6 +408,17 @@ function withTask(raw) {
   const choices = task.choices.map(c => c.correct
     ? { label: c.label, keywords: c.keywords, correct: true, fx: raw.fx, say: PRAISE[Math.floor(Math.random() * PRAISE.length)], next: raw.next }
     : { label: c.label, keywords: c.keywords, hint: task.hint });
+
+  // Вопрос и варианты создаются заново на каждом заходе, поэтому по журналу
+  // их иначе не восстановить: жалоба «ответ был верный, а его не приняли»
+  // без этой записи не проверяется вообще никак.
+  log.event('task.ask', {
+    scene: sceneId, kind: spec.kind, max: spec.max ?? null,
+    types: spec.types ?? null, topic: spec.topic ?? null, spread: spec.spread ?? null,
+    question: task.question,
+    answer: task.choices.find(c => c.correct)?.label ?? null,
+    choices: choices.map(c => c.label),
+  });
 
   return {
     ...raw,
@@ -531,7 +550,20 @@ function listen(my) {
       if (my !== token) return;
       state.heard = true;
       state.lastHeardAt = Date.now();
-      const hit = alternatives.map(a => matchChoice(a, scene.choices)).find(Boolean);
+      // Из шести догадок движка берём не первую подошедшую, а самую точную:
+      // первая бывает похожей на ключ лишь приблизительно, а третья совпадает
+      // буква в букву. При равном счёте остаётся более ранняя — догадки идут
+      // по убыванию уверенности.
+      const hits = alternatives.map(a => matchChoice(a, scene.choices)).filter(Boolean);
+      const hit = hits.length ? hits.reduce((a, b) => (b.score < a.score ? b : a)) : null;
+      // Что услышали и куда это уехало. `miss` здесь — «попытка засчитана
+      // ребёнку в минус»: либо не подошло ничего, либо подошёл вариант
+      // с подсказкой, то есть неверный ответ.
+      log.event('mic.match', {
+        heard: alternatives[0], alts: alternatives.slice(1, 6),
+        label: hit?.choice.label ?? null, score: hit?.score ?? null,
+        miss: !hit || !!hit.choice.hint,
+      });
       if (hit) pick(hit.choice);
       else miss(my);
     },
@@ -546,7 +578,7 @@ function listen(my) {
       // Распознавание затыкалось: включалось и тут же выключалось. Молчания
       // при этом не было — был шум, — поэтому немым окном это не считается
       // и голос на всю историю не выключает. Просто предлагаем кнопки.
-      if (reason === 'flapping') { giveUpToButtons(); return; }
+      if (reason === 'flapping') { giveUpToButtons('flapping'); return; }
       // Окно кончилось. Если за всё это время микрофон не услышал вообще
       // ничего — скорее всего он и не слышит: на телевизоре звук попадает
       // в браузер только при удержании кнопки на пульте, а её удержание
@@ -558,7 +590,7 @@ function listen(my) {
         stopListening();
         return;
       }
-      giveUpToButtons();
+      giveUpToButtons('window');
     },
   });
   listener.start();
@@ -577,7 +609,7 @@ async function miss(my) {
   if (my !== token) return;
   state.misses++;
 
-  if (state.misses >= MAX_MISSES) { giveUpToButtons(); return; }
+  if (state.misses >= MAX_MISSES) { giveUpToButtons('misses'); return; }
 
   if (state.misses !== NUDGE_AFTER) return;
 
@@ -598,7 +630,10 @@ async function miss(my) {
   listen(my);
 }
 
-async function giveUpToButtons() {
+async function giveUpToButtons(reason) {
+  // Повод важен: «misses» значит, что ребёнок отвечал, а его не понимали, —
+  // это дефект сопоставления. «window» значит, что он молчал.
+  log.event('mic.giveup', { reason, misses: state.misses });
   stopListening();
   setChoicesEnabled(false);
   await speak('Не расслышал. Нажми на нужный ответ внизу.', 'hint', 'narrator');
@@ -608,6 +643,13 @@ async function giveUpToButtons() {
 /* ---------------- выбор ---------------- */
 
 async function pick(choice, btn) {
+  // Кнопка приходит только из обработчика нажатия — голосовой ответ зовёт
+  // `pick` без неё. Пульт и цифры идут через `.click()`, то есть считаются
+  // нажатием, и это верно: голосом там не отвечали.
+  log.event('answer.pick', {
+    label: choice.label, by: btn ? 'button' : 'voice',
+    correct: !!choice.correct, hint: !!choice.hint,
+  });
   const my = ++token;     // отменяет и текущую озвучку, и её продолжение
   stopListening();
   cancelSpeech();

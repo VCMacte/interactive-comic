@@ -29,7 +29,11 @@ function levenshtein(a, b) {
 }
 
 // Числа ребёнок может назвать словом, а распознавание вернуть цифрой — и наоборот.
-const NUMBERS = ['ноль','один','два','три','четыре','пять','шесть','семь','восемь','девять','десять'];
+// Список обязан доходить до двадцати: предел счёта в заданиях — двадцать, а
+// пока он кончался десяткой, услышанное «12» не узнавало вариант «двенадцать».
+const NUMBERS = ['ноль','один','два','три','четыре','пять','шесть','семь','восемь','девять','десять',
+                 'одиннадцать','двенадцать','тринадцать','четырнадцать','пятнадцать',
+                 'шестнадцать','семнадцать','восемнадцать','девятнадцать','двадцать'];
 function expand(word) {
   const out = [word];
   const asNum = NUMBERS.indexOf(word);
@@ -38,13 +42,25 @@ function expand(word) {
   return out;
 }
 
+/** Идут ли слова ключа подряд среди услышанных слов. */
+function hasWords(said, keys) {
+  if (!keys.length || keys.length > said.length) return false;
+  for (let i = 0; i + keys.length <= said.length; i++) {
+    let all = true;
+    for (let j = 0; j < keys.length; j++) if (said[i + j] !== keys[j]) { all = false; break; }
+    if (all) return true;
+  }
+  return false;
+}
+
 /**
  * @returns {{choice:object, score:number}|null} — score 0 это точное попадание
  */
 export function matchChoice(transcript, choices) {
   const phrase = normalize(transcript);
   if (!phrase) return null;
-  const words = phrase.split(' ').flatMap(expand);
+  const said = phrase.split(' ');
+  const words = said.flatMap(expand);
 
   let best = null;
   let bestScore = Infinity;
@@ -55,8 +71,11 @@ export function matchChoice(transcript, choices) {
       const key = normalize(variant);
       if (!key) continue;
 
-      // вся фраза целиком прозвучала
-      if (phrase.includes(key) && 0 < bestScore) { best = choice; bestScore = 0; continue; }
+      // вся фраза целиком прозвучала — но именно словами, а не буквами
+      // внутри слова. Простым `includes` ключ «2» попадал в услышанное «12»,
+      // и верный ответ «двенадцать» засчитывался вариантом «два»; тем же
+      // путём «двадцать» уходило в «два», а «одиннадцать» — в «один».
+      if (hasWords(said, key.split(' ')) && 0 < bestScore) { best = choice; bestScore = 0; continue; }
 
       for (const kw of key.split(' ').flatMap(expand)) {
         // короткие слова ошибок почти не прощают, длинные — до двух

@@ -28,15 +28,32 @@ const WINDOW_END = 'mic.window.end';
  * Окно — от `mic.window.start` до `mic.window.end`. Незакрытое окно тоже
  * считается: приложение могли закрыть посреди вопроса, и такое окно как раз
  * интересно. Отсутствие конца помечается `reason: null`, а не выдумывается.
+ *
+ * Сцена и задание приходят в журнал **до** открытия окна: вопрос сначала
+ * создаётся и читается вслух, микрофон поднимается после. Поэтому они
+ * запоминаются вне окна и достаются каждому следующему — без этого окно
+ * нельзя связать с вопросом, на который ребёнок отвечал.
+ *
+ * Нажатие кнопки, наоборот, случается уже **после** конца окна: голос сдался,
+ * прослушивание погашено, ребёнок жмёт ответ. Такое нажатие приписывается
+ * последнему закрытому окну той же сцены.
  */
 export function windows(log) {
   const out = [];
   let cur = null;
+  let scene = null;     // в какой сцене мы сейчас
+  let task = null;      // какое задание в ней задано
+  let last = null;      // последнее закрытое окно — для нажатий после него
 
   const blank = (e) => ({
     at: e.t,
     endAt: null,
     reason: null,
+    scene,
+    task,             // { question, answer, choices, … } или null
+    heard: [],        // [{ text, label, score, miss }] — услышанное и куда уехало
+    giveup: null,     // почему ушли на кнопки: misses | window | flapping
+    picked: null,     // { label, by, correct } — чем сцена в итоге ответила
     runs: 0,          // сеансов распознавания внутри окна
     relaunches: 0,    // перезапусков
     delays: [],       // с какими паузами перезапускали
@@ -52,12 +69,29 @@ export function windows(log) {
 
   for (const e of log) {
     const n = occurrences(e);
+
+    // Контекст сцены живёт и вне окон — см. комментарий выше.
+    if (e.type === 'scene.enter') { scene = e.scene ?? null; task = null; continue; }
+    if (e.type === 'task.ask') {
+      task = { question: e.question ?? null, answer: e.answer ?? null,
+               choices: e.choices ?? [], kind: e.kind ?? null, topic: e.topic ?? null };
+      continue;
+    }
+
     if (e.type === WINDOW_START) {
-      if (cur) out.push(cur);          // окно без конца — так и запишем
+      if (cur) { out.push(cur); last = cur; }   // окно без конца — так и запишем
       cur = blank(e);
       continue;
     }
-    if (!cur) continue;                // события вне окна разбору не нужны
+
+    if (!cur) {
+      // Нажатие кнопки после того, как голос сдался: окно уже закрыто,
+      // но ответ принадлежит той же сцене.
+      if (e.type === 'answer.pick' && last && last.scene === scene && !last.picked) {
+        last.picked = { label: e.label ?? null, by: e.by ?? null, correct: !!e.correct };
+      }
+      continue;                        // прочие события вне окна разбору не нужны
+    }
 
     switch (e.type) {
       case 'mic.on': cur.runs += n; break;
@@ -81,10 +115,22 @@ export function windows(log) {
         cur.finals += n;
         cur.kept += (e.kept ? n : 0);
         break;
+      case 'mic.match':
+        // Повторы склеены, поэтому одна запись бывает и сотней разов.
+        cur.heard.push({ text: e.heard ?? '', label: e.label ?? null,
+                         score: e.score ?? null, miss: !!e.miss, times: n });
+        break;
+      case 'mic.giveup': cur.giveup = e.reason ?? null; break;
+      case 'answer.pick':
+        if (!cur.picked) {
+          cur.picked = { label: e.label ?? null, by: e.by ?? null, correct: !!e.correct };
+        }
+        break;
       case WINDOW_END:
         cur.endAt = e.t;
         cur.reason = e.reason ?? null;
         out.push(cur);
+        last = cur;
         cur = null;
         break;
       default: break;
@@ -121,6 +167,12 @@ export function report(data) {
       windows: ws,
       flapping: ws.filter(isFlapping).length,
       answered: ws.filter((w) => w.kept > 0).length,
+      byVoice: ws.filter((w) => w.picked?.by === 'voice').length,
+      byButton: ws.filter((w) => w.picked?.by === 'button').length,
+      // Главное число новой разметки: ребёнок отвечал, его слышали, но ни
+      // один ответ не подошёл — и сцена ушла на кнопки. Молчание сюда не
+      // попадает, у него повод `window`.
+      unheard: ws.filter((w) => w.giveup === 'misses').length,
       errors,
     };
   });
@@ -133,6 +185,9 @@ export function report(data) {
       windows: sessions.reduce((n, s) => n + s.windows.length, 0),
       flapping: sessions.reduce((n, s) => n + s.flapping, 0),
       answered: sessions.reduce((n, s) => n + s.answered, 0),
+      byVoice: sessions.reduce((n, s) => n + s.byVoice, 0),
+      byButton: sessions.reduce((n, s) => n + s.byButton, 0),
+      unheard: sessions.reduce((n, s) => n + s.unheard, 0),
       crashes: sessions.reduce((n, s) => n + s.crashes, 0),
     },
   };
@@ -147,7 +202,9 @@ function print(r) {
   console.log('журнал от ' + (r.exportedAt ?? 'неизвестно когда'));
   const t = r.totals;
   console.log(`сессий ${t.sessions}, окон прослушивания ${t.windows}, `
-    + `с ответом ${t.answered}, с затыком ${t.flapping}, исключений ${t.crashes}\n`);
+    + `с ответом ${t.answered}, с затыком ${t.flapping}, исключений ${t.crashes}`);
+  console.log(`ответов голосом ${t.byVoice}, кнопкой ${t.byButton}`
+    + `, не расслышано ${t.unheard}\n`);
 
   for (const s of r.sessions) {
     console.log(`— сессия ${s.startedAt}`);
@@ -170,6 +227,26 @@ function print(r) {
         + `, принято ${w.kept}`
         + (w.firstSpeechAt != null ? `, первый звук через ${secs(w.firstSpeechAt)}` : '')
         + (Object.keys(w.errors).length ? `, отказы: ${pairs(w.errors)}` : ''));
+
+      if (w.task) {
+        console.log(`      вопрос: ${w.task.question}`);
+        console.log(`      ответ: ${w.task.answer}   из: ${w.task.choices.join(', ')}`);
+      }
+      // Ради этих строк разметка и заводилась: слышно, что сказал ребёнок
+      // и к какому варианту это уехало. «ПРОМАХ» напротив верного ответа
+      // из строки выше — это и есть дефект сопоставления.
+      for (const h of w.heard) {
+        const to = h.label == null ? 'не подошло ничему'
+          : `«${h.label}»` + (h.score ? ` (с ошибкой на ${h.score})` : '');
+        console.log(`      услышано «${h.text}» -> ${to}`
+          + (h.miss ? '   ПРОМАХ' : '')
+          + (h.times > 1 ? `   ×${h.times}` : ''));
+      }
+      if (w.giveup) console.log(`      ушло на кнопки: ${w.giveup}`);
+      if (w.picked) {
+        console.log(`      ответили ${w.picked.by === 'voice' ? 'голосом' : 'кнопкой'}`
+          + `: «${w.picked.label}»${w.picked.correct ? ' (верно)' : ''}`);
+      }
     }
     console.log('');
   }

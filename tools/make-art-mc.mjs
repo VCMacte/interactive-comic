@@ -2961,6 +2961,299 @@ ${out.join('\n')}
 ${glow(cx + cw * 0.5, cy + ch * 0.5, B * 2.4)}`, GLOW_DEF);
 }
 
+/* ---- одиннадцатый день ---- */
+
+// Трава и грунт в тумане. Обычные P.grass и P.dirt дают яркий дневной луг,
+// и на обложке одиннадцатый день становился неотличим от девятого
+// и восьмого — ребёнок выбирает историю по картинке, а не по подписи.
+// Тона холоднее и глуше: туман съедает насыщенность у самой земли тоже,
+// а не только на дальнем плане.
+const FOG_GRASS = { base: '#5c7a4e', dark: '#47603c', light: '#6d8b5d' };
+const FOG_DIRT = { base: '#6d5740', dark: '#544331', light: '#7f674d' };
+
+/** Полоса дымки над линией земли: туман виден и внизу, а не только в небе. */
+const fogBand = () => {
+  const out = [`<defs><linearGradient id="fogband" x1="0" y1="0" x2="0" y2="1">`
+    + `<stop offset="0" stop-color="#cdd6c6" stop-opacity="0.42"/>`
+    + `<stop offset="1" stop-color="#cdd6c6" stop-opacity="0"/>`
+    + `</linearGradient></defs>`];
+  out.push(`<rect x="0" y="${n(GROUND - B * 2.6)}" width="${W}" height="${n(B * 3.2)}" fill="url(#fogband)"/>`);
+  return out.join('');
+};
+
+/**
+ * Туманное утро. Светила нет, как в грозовом небе десятого дня, но повод
+ * другой: там тучи, здесь молоко. Градиент снизу светлее верха —
+ * у настоящего тумана свет идёт от земли, а не с неба, и без этого
+ * переворота кадр читается обычным пасмурным днём.
+ *
+ * Облака двумя слоями и оба мягкие: туман не даёт им кромки. Это
+ * подложка под нейросеть — дымку рисует она, вектору она недоступна.
+ */
+function skyFog() {
+  const defs = `<defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#55615c"/><stop offset="0.42" stop-color="#78857c"/>
+    <stop offset="0.76" stop-color="#a1ac9f"/><stop offset="1" stop-color="#c6cdc0"/></linearGradient></defs>`;
+  return svg(`<rect width="${W}" height="${H}" fill="url(#g)"/>
+${clouds(83, '#8b978d', 0.4)}
+${clouds(84, '#b8c1b3', 0.3)}`, defs);
+}
+
+/**
+ * Сосняк в тумане. От `far-pines` отличается не деревьями, а глубиной:
+ * три яруса от бледного к тёмному, и чем дальше, тем выше стоит основание.
+ * Один ярус дал бы ровную гребёнку, а нужна именно даль — ею потом
+ * и займётся нейросеть.
+ *
+ * Фона нет нарочно: подложку заливает `rasterInit` цветом `#0a1430`,
+ * и `composeLayer` снимает его по `chromaKey` — сквозь дальний план
+ * должно быть видно небо.
+ */
+function farPinesFog(seed = 653) {
+  const rand = rng(seed);
+  const out = [];
+  const BANDS = [
+    { lift: B * 2.6, pal: { base: '#6f7d72', dark: '#637066', light: '#7d8a7e' }, count: 16, tiers: 2 },
+    { lift: B * 1.3, pal: { base: '#54654f', dark: '#495a46', light: '#5f7158' }, count: 13, tiers: 3 },
+    { lift: 0, pal: P.pine, count: 10, tiers: 4 },
+  ];
+  for (const band of BANDS) {
+    const baseY = GROUND - B - band.lift;
+    for (let col = 0; col * B < W; col++) out.push(block(col * B, baseY, band.pal, rand));
+    for (let t = 0; t < band.count; t++) {
+      const x = Math.floor(rand() * (W / B)) * B;
+      const tiers = band.tiers + Math.floor(rand() * 2);
+      for (let r = 0; r < tiers; r++) {
+        const wide = tiers - r;
+        for (let c = -wide + 1; c < wide; c++) {
+          out.push(block(x + c * B, baseY - (r + 1) * B, band.pal, rand));
+        }
+      }
+    }
+  }
+  return svg(out.join('\n'));
+}
+
+/**
+ * Тропа с ловушками. Сцена ровно про чередование, и оно обязано читаться
+ * из кадра: колышек, нить, колышек, нить — иначе вопрос «что дальше»
+ * висит в воздухе.
+ *
+ * Высота кольев взята замером, а не на глаз. Текст сцены занимает
+ * 3…65% ширины и всё, что ниже 56% высоты; свободны, значит, две полосы:
+ * выше 56% по всей ширине и правее 65% до самого низа. Первая версия
+ * ставила колышки в полтора блока — их верх приходился на 62%, то есть
+ * под текст, и ровно то, что надо было сосчитать, было не видно. Это
+ * второй раз та же ошибка: на десятом дне так ушли под панель щиты.
+ * Теперь колья в три блока, их верхушки и нить — на 53…55%.
+ *
+ * Ветка и камень — остальные два слова чередования, и они тоже в кадре:
+ * ветки прислонены к кольям на той же высоте, камни лежат правее 70%.
+ *
+ * Ели кулисами по краям, как в `near-pines`: середина остаётся троим.
+ * Яма на 70% — в правой чистой полосе, и там никто не стоит ни в одной
+ * сцене; по тексту её как раз закладывают блоками.
+ */
+function nearTraps(seed = 659) {
+  const rand = rng(seed);
+  const out = [groundRows(rand, FOG_GRASS, FOG_DIRT)];
+  const PEG = '#7a5630', PEG_DARK = '#5a3f22', STRING = '#d8d2bc';
+
+  // Тропа светлее дёрна: без неё ловушки стоят просто в траве.
+  out.push(`<rect x="0" y="${n(GROUND)}" width="${W}" height="${n(B * 0.8)}" fill="#8d7b4e" opacity="0.75"/>`);
+
+  // Ели кулисами. Не вплотную к краю — у обрезанной ели ярусы не читаются.
+  for (const [x, tiers] of [[B, 5], [B * 4, 4], [W - B * 2, 5], [W - B * 5, 4]]) {
+    out.push(block(x, GROUND - B, P.wood, rand));
+    for (let r = 0; r < tiers; r++) {
+      const wide = tiers - r;
+      for (let c = -wide + 1; c < wide; c++) {
+        out.push(block(x + c * B, GROUND - B * 2 - r * B, P.pine, rand));
+      }
+    }
+  }
+
+  // Колья с нитью. Шаг два блока: при шаге в один блок нить получается
+  // короче самого кола, и чередования не видно.
+  const pegH = B * 3, top = GROUND - pegH;
+  for (let i = 0; i * B * 2 < W; i++) {
+    const x = i * B * 2 + B * 0.6;
+    out.push(`<rect x="${n(x)}" y="${n(top)}" width="14" height="${n(pegH)}" fill="${PEG}"/>`);
+    out.push(`<rect x="${n(x)}" y="${n(top)}" width="14" height="12" fill="${PEG_DARK}"/>`);
+    // Нить у самых верхушек: ниже она уходит под текст.
+    const nx = x + B * 2;
+    if (nx < W) {
+      out.push(`<path d="M ${n(x + 14)} ${n(top + 16)} Q ${n(x + B)} ${n(top + 34)} ${n(nx)} ${n(top + 16)}"`
+        + ` stroke="${STRING}" stroke-width="5" fill="none"/>`);
+    }
+    // Ветка, прислонённая к колу через один: третье слово чередования.
+    if (i % 2) {
+      out.push(`<path d="M ${n(x + 6)} ${n(top + 10)} L ${n(x - B * 0.8)} ${n(GROUND)}"`
+        + ` stroke="${PEG_DARK}" stroke-width="10" fill="none"/>`);
+      out.push(`<path d="M ${n(x - B * 0.3)} ${n(top + B * 0.9)} L ${n(x - B * 0.75)} ${n(top + B * 0.6)}"`
+        + ` stroke="${PEG_DARK}" stroke-width="7" fill="none"/>`);
+    }
+  }
+
+  // Яма, прикрытая ветками: тёмный проём в дёрне и три жерди поперёк.
+  const pitX = W * 0.7, pitW = B * 4;
+  out.push(`<rect x="${n(pitX)}" y="${n(GROUND)}" width="${n(pitW)}" height="${n(B * 1.2)}" fill="#1d1a14"/>`);
+  for (let i = 0; i < 3; i++) {
+    out.push(`<rect x="${n(pitX - 6)}" y="${n(GROUND + 8 + i * 16)}" width="${n(pitW + 12)}" height="9" fill="${PEG}"/>`);
+  }
+
+  // Камни-грузики: четвёртое слово чередования. Только в правой чистой
+  // полосе — слева их закрыл бы текст.
+  for (const sx of [W * 0.67, W * 0.86, W * 0.93]) {
+    out.push(block(sx, GROUND - B * 0.6, P.stone, rand, B * 0.6));
+  }
+
+  // Дымка кладётся ПОСЛЕ ловушек: туман стоит между зрителем и тропой,
+  // а не за ней. Колья от этого не пропадают — градиент сходит в ноль
+  // к их верхушкам.
+  out.push(fogBand());
+
+  return svg(out.join('\n'));
+}
+
+/**
+ * Аванпост: частокол во весь кадр, бревенчатая башня со знаменем, шатёр
+ * и две горки снаряжения караула. Слой держит пять сцен из десяти,
+ * поэтому он панорама, а не постройка в углу.
+ *
+ * Расстановка считана замером, а не на глаз: текст занимает 3…65% ширины
+ * и всё ниже 56% высоты. Свободны две полосы — выше 56% по всей ширине
+ * и правее 65% до низа. Поэтому горки щитов стоят на 74 и 78.5%: на 44%,
+ * как было в первой версии, их целиком закрывал текст, а сцена `cage`
+ * ровно про то, чтобы их сосчитать. Та же ошибка уже случалась дважды:
+ * на девятом дне горку закрыла Алекс, на десятом щиты ушли под панель.
+ *
+ * Башня с 66% — она высокая, её верх и знамя приходятся на 22…40%, то
+ * есть в верхнюю чистую полосу. Шатёр с 84%: он низкий, и ему нужна
+ * именно правая полоса. Разбойники в сцене боя встают на 72 и 84%, то
+ * есть против светлого полотна и тумана, а не против кладки, — серого
+ * на сером не получается.
+ *
+ * Знамя на верхушке, а не на частоколе: его должно быть «видно из самой
+ * деревни», и на обложке оно работает опознавательным знаком истории.
+ */
+function nearOutpost(seed = 661) {
+  const rand = rng(seed);
+  const out = [groundRows(rand, FOG_GRASS, FOG_DIRT)];
+  const LOG = '#7a5630', LOG_TOP = '#8f6a40', LOG_DARK = '#5a3f22';
+  const CLOTH = '#5d4a66', CLOTH_DARK = '#473854';
+  const BANNER = '#4a4f57', EYE = '#d8d2bc', EYE_DARK = '#2b2f36';
+  const SHIELD = '#8a6334', SHIELD_EDGE = '#45301a', SHIELD_IRON = '#d2d2d8';
+
+  // Частокол: заострённые брёвна в два блока. Проём слева — через него
+  // троица и входит, и без него аванпост читается глухим забором.
+  const gap = [1, 2];
+  for (let c = 0; c * B < W; c++) {
+    if (gap.includes(c)) continue;
+    const x = c * B;
+    for (let r = 0; r < 2; r++) {
+      out.push(`<rect x="${n(x + 4)}" y="${n(GROUND - B * (r + 1))}" width="${n(B - 8)}" height="${B}" fill="${LOG}"/>`);
+      out.push(`<rect x="${n(x + 4)}" y="${n(GROUND - B * (r + 1))}" width="${n(B - 8)}" height="8" fill="${LOG_TOP}"/>`);
+      out.push(`<rect x="${n(x + B - 12)}" y="${n(GROUND - B * (r + 1))}" width="8" height="${B}" fill="${LOG_DARK}"/>`);
+    }
+    // Острый верх: ступенька из двух полос, круглого в этом мире не бывает.
+    out.push(`<rect x="${n(x + 10)}" y="${n(GROUND - B * 2 - 12)}" width="${n(B - 20)}" height="12" fill="${LOG_TOP}"/>`);
+    out.push(`<rect x="${n(x + 20)}" y="${n(GROUND - B * 2 - 22)}" width="${n(B - 40)}" height="10" fill="${LOG_TOP}"/>`);
+  }
+
+  // Башня. Пять венцов, площадка и флагшток со знаменем.
+  const tx = W * 0.66, tw = B * 2;
+  for (let r = 0; r < 5; r++) {
+    for (let c = 0; c < 2; c++) out.push(block(tx + c * B, GROUND - B * (r + 1), P.wood, rand));
+  }
+  out.push(`<rect x="${n(tx - B * 0.5)}" y="${n(GROUND - B * 6)}" width="${n(tw + B)}" height="${B}" fill="${LOG}"/>`);
+  out.push(`<rect x="${n(tx - B * 0.5)}" y="${n(GROUND - B * 6)}" width="${n(tw + B)}" height="10" fill="${LOG_TOP}"/>`);
+  out.push(`<rect x="${n(tx + tw * 0.5 - 6)}" y="${n(GROUND - B * 8.6)}" width="12" height="${n(B * 2.6)}" fill="${LOG_DARK}"/>`);
+  // Знамя с глазом — тот же знак, что на знамени восьмого дня.
+  out.push(`<rect x="${n(tx + tw * 0.5)}" y="${n(GROUND - B * 8.6)}" width="${n(B * 1.6)}" height="${n(B * 1.8)}" fill="${BANNER}"/>`);
+  out.push(`<rect x="${n(tx + tw * 0.5 + B * 0.3)}" y="${n(GROUND - B * 8.1)}" width="${n(B)}" height="${n(B * 0.5)}" fill="${EYE}"/>`);
+  out.push(`<rect x="${n(tx + tw * 0.5 + B * 0.65)}" y="${n(GROUND - B * 8.05)}" width="${n(B * 0.3)}" height="${n(B * 0.4)}" fill="${EYE_DARK}"/>`);
+
+  // Шатёр: скат ступенькой, как все крыши этого мира.
+  const sx = W * 0.84, sw = B * 4;
+  out.push(`<rect x="${n(sx)}" y="${n(GROUND - B * 1.6)}" width="${n(sw)}" height="${n(B * 1.6)}" fill="${CLOTH}"/>`);
+  for (let step = 0; step < 3; step++) {
+    out.push(`<rect x="${n(sx + step * B * 0.6)}" y="${n(GROUND - B * (2.2 + step * 0.6))}"`
+      + ` width="${n(sw - step * B * 1.2)}" height="${n(B * 0.6)}" fill="${step % 2 ? CLOTH_DARK : CLOTH}"/>`);
+  }
+  out.push(`<rect x="${n(sx + sw * 0.42)}" y="${n(GROUND - B * 1.6)}" width="${n(B * 0.7)}" height="${n(B * 1.6)}" fill="${CLOTH_DARK}"/>`);
+
+  // Две горки щитов. Силуэт с железным умбоном, а не кубик палитры iron:
+  // кубики читались камнями, это выяснилось на десятом дне.
+  // Щит крупнее блока частокола и с тёмной кромкой: в первой версии он был
+  // в 0.8 блока, стоял вровень с кольями забора и читался их тенью.
+  const SW = B * 1.1, SH = B * 1.2;
+  const shield = (x, y) => {
+    out.push(`<rect x="${n(x - 4)}" y="${n(y - 4)}" width="${n(SW + 8)}" height="${n(SH + 8)}" fill="${SHIELD_EDGE}"/>`);
+    out.push(`<rect x="${n(x)}" y="${n(y)}" width="${n(SW)}" height="${n(SH)}" fill="${SHIELD}"/>`);
+    out.push(`<rect x="${n(x)}" y="${n(y)}" width="${n(SW)}" height="10" fill="${SHIELD_EDGE}"/>`);
+    out.push(`<rect x="${n(x + SW * 0.3)}" y="${n(y + SH * 0.34)}" width="${n(SW * 0.4)}" height="${n(SH * 0.34)}" fill="${SHIELD_IRON}"/>`);
+    out.push(`<rect x="${n(x + SW * 0.3)}" y="${n(y + SH * 0.34)}" width="${n(SW * 0.4)}" height="8" fill="#f0f0f4"/>`);
+  };
+  // Горки в три и в два щита: вершина верхнего поднимается до 48% высоты,
+  // то есть выше частокола и выше текста. Считать ребёнок должен то,
+  // что видит целиком.
+  for (let i = 0; i < 3; i++) shield(W * 0.735 + i * 10, GROUND - SH - i * SH * 0.72);
+  for (let i = 0; i < 2; i++) shield(W * 0.785 + i * 10, GROUND - SH - i * SH * 0.72);
+
+  // Дымка поверх построек, но под факелами: иначе их свет гаснет в тумане,
+  // а он здесь единственный тёплый.
+  out.push(fogBand());
+
+  // Факелы на частоколе: единственный тёплый свет в этом тумане.
+  return svg(`${out.join('\n')}
+${torch(B * 6, GROUND - B * 3)}
+${torch(W - B * 3, GROUND - B * 3)}`, GLOW_DEF);
+}
+
+/**
+ * Клетка — персонажем, а не частью слоя: предмет, который называет текст,
+ * обязан быть в кадре, а красить слой ради одной сцены незачем. Тот же
+ * приём, что у телеги восьмого дня и тыквы девятого.
+ *
+ * Прутья редкие и тёмные: сквозь них видно жителя, который в сценарии
+ * встаёт персонажем ЗА клеткой (в `cast` он идёт раньше). При плотной
+ * решётке пленника в кадре просто нет.
+ */
+function cage() {
+  const U = 20;
+  const iron = '#9a9aa2', ironDark = '#6e6e76', ironLight = '#c2c2ca';
+  const lock = '#d9a93a', lockDark = '#a87c1c';
+
+  const bars = [];
+  for (let i = 0; i < 5; i++) {
+    bars.push(px((0.8 + i * 2.1) * U, 0.9 * U, 0.5 * U, 9.2 * U, iron));
+  }
+
+  const body = `
+<!-- верхняя и нижняя обвязка -->
+${px(0.3 * U, 0, 9.4 * U, 1 * U, iron)}
+${px(0.3 * U, 0, 9.4 * U, 0.3 * U, ironLight)}
+${px(0.3 * U, 9.9 * U, 9.4 * U, 1.1 * U, iron)}
+${px(0.3 * U, 10.6 * U, 9.4 * U, 0.4 * U, ironDark)}
+
+<!-- стойки по углам толще прутьев -->
+${px(0.3 * U, 0.9 * U, 0.9 * U, 9.2 * U, iron)}
+${px(8.8 * U, 0.9 * U, 0.9 * U, 9.2 * U, iron)}
+${px(8.8 * U, 0.9 * U, 0.3 * U, 9.2 * U, ironDark)}
+
+<!-- прутья -->
+${bars.join('\n')}
+
+<!-- поперечина и замок: по тексту он поддаётся с третьего раза -->
+${px(0.3 * U, 5 * U, 9.4 * U, 0.5 * U, ironDark)}
+${px(4.1 * U, 5.4 * U, 1.8 * U, 1.6 * U, lock)}
+${px(4.1 * U, 6.5 * U, 1.8 * U, 0.5 * U, lockDark)}
+${px(4.7 * U, 5.9 * U, 0.6 * U, 0.7 * U, lockDark)}`;
+
+  return charSvg(body, 10 * U, 11 * U);
+}
+
 /* ---------------- сборка ---------------- */
 
 console.log('Небо:');
@@ -2970,6 +3263,7 @@ write('assets/mc/sky-night.svg', skyNight());
 write('assets/mc/sky-dawn.svg', skyDawn());
 write('assets/mc/sky-void.svg', skyVoid());
 write('assets/mc/sky-storm.svg', skyStorm());
+write('assets/mc/sky-fog.svg', skyFog());
 write('assets/mc/sun-day.svg', celestial(1500, 220, 88, '#ffe873', '#fff3b0'));
 write('assets/mc/sun-sunset.svg', celestial(1420, 600, 86, '#ffc24d', '#ff9d5c'));
 write('assets/mc/moon-night.svg', celestial(1500, 230, 74, '#f2f5fb', '#c9d8f2', 90));
@@ -2988,6 +3282,7 @@ write('assets/mc/far-ravine.svg', farRavine());
 write('assets/mc/far-stronghold.svg', farStronghold());
 write('assets/mc/far-end-island.svg', farEndIsland());
 write('assets/mc/far-smoke.svg', farSmoke());
+write('assets/mc/far-pines-fog.svg', farPinesFog());
 
 console.log('Ближний план:');
 write('assets/mc/near-forest.svg', nearForest());
@@ -3017,6 +3312,8 @@ write('assets/mc/near-village.svg', nearVillage());
 write('assets/mc/near-ritual.svg', nearRitual());
 write('assets/mc/near-wall.svg', nearWall());
 write('assets/mc/near-bell.svg', nearBell());
+write('assets/mc/near-traps.svg', nearTraps());
+write('assets/mc/near-outpost.svg', nearOutpost());
 
 console.log('Персонажи:');
 write('assets/mc/steve.svg', steve());
@@ -3036,5 +3333,6 @@ write('assets/mc/pillager-axe.svg', pillager('axe'));
 write('assets/mc/pillager-mace.svg', pillager('mace'));
 write('assets/mc/pillager-bow.svg', pillager('bow'));
 write('assets/mc/pillager-sword.svg', pillager('sword'));
+write('assets/mc/cage.svg', cage());
 
 console.log('\nГотово.');

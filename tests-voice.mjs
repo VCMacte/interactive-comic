@@ -60,5 +60,72 @@ for (const c of cases) {
   if (!ok) failed++;
   console.log(`${ok ? 'ok  ' : 'FAIL'}  ${c.название}: ${got}`);
 }
+/* ---------------- индекс готовой озвучки ---------------- */
+
+// Здесь ловится самый коварный отказ озвучки: не тишина, а чужой голос.
+// Если загрузка `assets/audio/index.json` сорвалась и пустой результат
+// запомнился, `hasClip` отвечает «нет» на всё, и каждая реплика до конца
+// сеанса идёт браузерным синтезом. Рассказчик при этом звучит встроенным
+// голосом телефона вместо ровной `baya` — именно это и услышали.
+
+const audioEnv = (fetchImpl) => {
+  globalThis.indexedDB = undefined;      // журнал молча выключится
+  globalThis.fetch = fetchImpl;
+};
+
+const check = (name, got, want) => {
+  const ok = JSON.stringify(got) === JSON.stringify(want);
+  if (!ok) failed++;
+  console.log(`${ok ? 'ok  ' : 'FAIL'}  ${name}`
+    + (ok ? '' : `\n      вышло ${JSON.stringify(got)}, ждали ${JSON.stringify(want)}`));
+};
+
+{
+  // Первый запрос падает, второй отвечает. Пустой индекс не должен
+  // запомниться: следующая реплика обязана попробовать снова.
+  let calls = 0;
+  audioEnv(async () => {
+    calls++;
+    if (calls === 1) throw new Error('сеть моргнула');
+    return { json: async () => ['aaaa0001', 'aaaa0002'] };
+  });
+  const audio = await import('./js/audio.js?v=' + Math.random());
+
+  const first = await audio.loadIndex();
+  check('сбой сети не запоминается: индекс пуст, но не окончателен', first.size, 0);
+
+  const second = await audio.loadIndex();
+  check('следующая реплика загружает индекс заново', [second.size, calls], [2, 2]);
+
+  const third = await audio.loadIndex();
+  check('удачная загрузка больше не повторяется', calls, 2);
+}
+
+{
+  // Одна сцена зовёт loadIndex на каждую реплику. Запрос должен быть один.
+  let calls = 0;
+  audioEnv(async () => {
+    calls++;
+    await new Promise(r => setTimeout(r, 5));
+    return { json: async () => ['bbbb0001'] };
+  });
+  const audio = await import('./js/audio.js?v=' + Math.random());
+  await Promise.all([audio.loadIndex(), audio.loadIndex(), audio.loadIndex()]);
+  check('одновременные вызовы шлют один запрос', calls, 1);
+}
+
+{
+  // И то, ради чего индекс существует: по тексту и роли находится запись.
+  audioEnv(async () => ({ json: async () => [] }));
+  const audio = await import('./js/audio.js?v=' + Math.random());
+  const id = audio.clipId('Верно! Молодец.', 'narrator');
+  audioEnv(async () => ({ json: async () => [id] }));
+  const audio2 = await import('./js/audio.js?v=' + Math.random());
+  await audio2.loadIndex();
+  check('запись находится по тексту и роли', audio2.hasClip('Верно! Молодец.', 'narrator'), true);
+  check('та же реплика другой ролью — другая запись',
+    audio2.hasClip('Верно! Молодец.', 'hero'), false);
+}
+
 console.log(failed ? `\n${failed} провалено` : '\nвсе проверки пройдены');
 process.exit(failed ? 1 : 0);

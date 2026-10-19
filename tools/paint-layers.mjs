@@ -146,6 +146,29 @@ const LAYERS = {
     prompt: `heavy overcast storm sky at dusk, thick dark grey-blue square storm clouds hanging low, cold slate colours, pale grey light along the horizon, no sun, no moon, ${STYLE}, no ground, no trees`,
     negative: NEG + ', sun, moon, stars, rainbow, sunset colours, orange, pink, warm light, clear blue sky, daylight, round clouds, rain streaks, lightning bolt',
   },
+
+  // ---- одиннадцатый день ----
+  // Туманное утро. Светила тоже нет, но беда другая, чем у грозы: генератор
+  // норовит разогнать туман и вернуть ясное утро, поэтому молоко названо
+  // трижды, а «clear sky» и «sunrise» стоят в negative первыми. Свет идёт
+  // снизу — у настоящего тумана он от земли, и без этого выходит обычная
+  // пасмурная серость.
+  'mc/sky-fog': {
+    strength: 0.42,
+    prompt: `thick morning fog sky, pale grey-green mist, soft milky haze filling the whole frame, `
+      + `cold damp light coming from below near the horizon, no sun, no moon, ${STYLE}, no ground, no trees`,
+    negative: NEG + ', clear sky, sunrise, sun, moon, stars, blue sky, orange, pink, warm light, dark storm clouds, rain streaks',
+  },
+  // Сосняк, тонущий в дымке. От far-pines отличается не деревьями, а
+  // глубиной: туман должен съесть дальние ярусы и оставить ближний чётким.
+  // Ради этого слой и красится отдельно от готового far-pines.
+  'mc/far-pines-fog': {
+    strength: 0.24,
+    prompt: `distant blocky spruce forest drowning in thick morning fog, dark green cubic conifers in tiers, `
+      + `the farthest rows almost dissolved in pale grey mist, the nearest row still sharp, `
+      + `cold damp grey-green haze between the trunks, ${STYLE}`,
+    negative: NEG + ', round treetops, sun, moon, clear air, blue sky, warm light, sunset colours',
+  },
 };
 
 

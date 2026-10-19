@@ -16,6 +16,8 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 // Вариантов поровну на каждый вид задачи. Раньше генератор выбирал вид
 // случайно, и при ограничении сцены одним видом вариантов могло остаться
 // вчетверо меньше, чем кажется.
+import { clipId, splitDialogue } from './clip.mjs';
+
 const PER_TYPE = 10;
 
 // Генератор заданий берёт числа из Math.random, поэтому каждый запуск
@@ -37,37 +39,11 @@ function seedRandom(seed) {
   };
 }
 
-/**
- * Идентификатор реплики — от её текста и роли. Так приложение находит
- * нужный файл, ничего не зная о структуре сцен: совпал текст — нашлась
- * озвучка. Задания из пула подхватываются тем же механизмом.
- */
-export function clipId(text, role) {
-  let h = 0x811c9dc5;
-  const s = role + '|' + text.trim();
-  for (let i = 0; i < s.length; i++) {
-    h ^= s.charCodeAt(i);
-    h = Math.imul(h, 0x01000193) >>> 0;
-  }
-  return h.toString(16).padStart(8, '0');
-}
-
-/** Прямая речь в «ёлочках» — голос персонажа, остальное — рассказчик. */
-export function splitDialogue(text, character) {
-  const out = [];
-  const re = /«([^»]*)»/g;
-  let last = 0, m;
-  while ((m = re.exec(text)) !== null) {
-    if (m.index > last) out.push({ role: 'narrator', text: text.slice(last, m.index) });
-    out.push({ role: character, text: m[1] });
-    last = m.index + m[0].length;
-  }
-  if (last < text.length) out.push({ role: 'narrator', text: text.slice(last) });
-
-  return out
-    .map(s => ({ role: s.role, text: s.text.replace(/^[\s—,.:;-]+/, '').trim() }))
-    .filter(s => s.text);
-}
+// Расчёт имени файла и разбор «ёлочек» живут отдельным модулем: его
+// импортирует проверка `tools/check-voices.mjs`, а импорт самого
+// коллектора пересобирал бы манифест и пул — весь разбор у него на
+// верхнем уровне. Переэкспорт оставлен, чтобы прежние импорты работали.
+export { clipId, splitDialogue } from './clip.mjs';
 
 /* ---------------- сбор ---------------- */
 

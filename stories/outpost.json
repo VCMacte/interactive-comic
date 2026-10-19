@@ -1,0 +1,159 @@
+{
+  "title": "Аванпост в лесу",
+  "viewer": "Матвей",
+  "theme": "minecraft",
+  "voice": "hero",
+  "start": "gate",
+  "scenes": {
+
+    "gate": {
+      "bg": { "sky": "assets/mc/sky-fog.webp",
+              "far": "assets/mc/far-pines-fog.webp", "near": "assets/mc/near-village.svg" },
+      "cast": [ { "src": "assets/mc/wolf.svg", "x": 18, "y": 28, "w": 7 },
+                { "src": "assets/mc/steve.svg", "x": 28, "y": 28, "w": 8 },
+                { "src": "assets/mc/alex.svg", "x": 39, "y": 28, "w": 8 },
+                { "src": "assets/mc/golem.svg", "x": 58, "y": 28, "w": 13 } ],
+      "voice": "golem",
+      "text": "Разбойники не побежали, а ушли строем — значит, они нас посчитали. Теперь наша очередь посчитать их. Железный заступил ворота и сказал коротко: «Я останусь здесь, {{имя}}. Идите втроём».",
+      "prompt": "Как пойдём к аванпосту: по ручью или через бурелом?",
+      "choices": [
+        { "label": "По ручью", "keywords": ["ручей", "ручью", "по ручью", "вода", "по воде"],
+          "voice": "ally",
+          "say": "Алекс шагнула в воду первой: «По ручью следов не остаётся. И слышно только воду». Волк пошёл по берегу, нос в туман.",
+          "dir": "left", "next": "traps" },
+        { "label": "Через бурелом", "keywords": ["бурелом", "бурелому", "через бурелом", "лес", "через лес"],
+          "voice": "ally",
+          "say": "Алекс пригнулась под еловой лапой: «Бурелом так бурелом. Зато оттуда нас точно не ждут». Волк протиснулся между корнями первым.",
+          "dir": "right", "next": "traps" }
+      ]
+    },
+
+    "traps": {
+      "bg": { "sky": "assets/mc/sky-fog.webp",
+              "far": "assets/mc/far-pines-fog.webp", "near": "assets/mc/near-traps.svg" },
+      "cast": [ { "src": "assets/mc/steve.svg", "x": 31, "y": 28, "w": 8 },
+                { "src": "assets/mc/alex.svg", "x": 42, "y": 28, "w": 8 },
+                { "src": "assets/mc/wolf.svg", "x": 67, "y": 28, "w": 7 } ],
+      "text": "Волк встал как вкопанный и дальше не пустил. Поперёк тропы торчали колышки с натянутой нитью, к ним были прислонены ветки, а на земле лежали камни — и так до самого поворота.",
+      "task": { "kind": "logic", "max": 10, "types": ["pattern"], "topic": "outpost" },
+      "next": "pit"
+    },
+
+    "pit": {
+      "bg": { "sky": "assets/mc/sky-fog.webp",
+              "far": "assets/mc/far-pines-fog.webp", "near": "assets/mc/near-traps.svg" },
+      "cast": [ { "src": "assets/mc/steve.svg", "x": 26, "y": 28, "w": 8 },
+                { "src": "assets/mc/alex.svg", "x": 37, "y": 28, "w": 8 },
+                { "src": "assets/mc/wolf.svg", "x": 48, "y": 28, "w": 7 } ],
+      "text": "За нитями тропа обрывалась ямой, прикрытой ветками. Стив поглядел вниз и полез в сумку: «Перепрыгивать не будем. Заложим блоками и перейдём, как по мостику».",
+      "task": { "kind": "math", "max": 20, "types": ["missing"], "topic": "blocks", "spread": "wide" },
+      "next": "cage"
+    },
+
+    "cage": {
+      "bg": { "sky": "assets/mc/sky-fog.webp",
+              "far": "assets/mc/far-pines-fog.webp", "near": "assets/mc/near-outpost.svg" },
+      "cast": [ { "src": "assets/mc/wolf.svg", "x": 16, "y": 28, "w": 7 },
+                { "src": "assets/mc/steve.svg", "x": 26, "y": 28, "w": 8 },
+                { "src": "assets/mc/alex.svg", "x": 36, "y": 28, "w": 8 },
+                { "src": "assets/mc/villager.svg", "x": 55, "y": 28, "w": 7 },
+                { "src": "assets/mc/cage.svg", "x": 52, "y": 28, "w": 11 } ],
+      "text": "За частоколом стояла клетка, а в клетке сидел житель. Рядом караул сложил своё добро в две горки, прямо на траве — будто вернётся через минуту.",
+      "task": { "kind": "math", "max": 18, "types": ["addition"], "topic": "raid", "spread": "wide" },
+      "next": "fork"
+    },
+
+    "fork": {
+      "bg": { "sky": "assets/mc/sky-fog.webp",
+              "far": "assets/mc/far-pines-fog.webp", "near": "assets/mc/near-outpost.svg" },
+      "cast": [ { "src": "assets/mc/wolf.svg", "x": 18, "y": 28, "w": 7 },
+                { "src": "assets/mc/steve.svg", "x": 28, "y": 28, "w": 8 },
+                { "src": "assets/mc/alex.svg", "x": 39, "y": 28, "w": 8 },
+                { "src": "assets/mc/villager.svg", "x": 58, "y": 28, "w": 7 },
+                { "src": "assets/mc/cage.svg", "x": 55, "y": 28, "w": 11 } ],
+      "voice": "ally",
+      "text": "Алекс присела у клетки, но смотрела не на замок, а на башню. Сказала она совсем тихо: «Сначала решим, {{имя}}. Откроем сейчас — он закричит от радости, и нас услышат».",
+      "prompt": "Открываем клетку сразу или сперва осмотримся из овражка?",
+      "choices": [
+        { "label": "Открыть сразу", "keywords": ["открыть", "открываем", "сразу", "клетку", "выпустить"],
+          "dir": "forward", "next": "free" },
+        { "label": "Осмотреться", "keywords": ["осмотреться", "овражек", "овраг", "посмотреть", "сперва"],
+          "dir": "left", "next": "gully" }
+      ]
+    },
+
+    "gully": {
+      "bg": { "sky": "assets/mc/sky-fog.webp",
+              "far": "assets/mc/far-pines-fog.webp", "near": "assets/mc/near-pines.svg" },
+      "cast": [ { "src": "assets/mc/wolf.svg", "x": 20, "y": 28, "w": 7 },
+                { "src": "assets/mc/steve.svg", "x": 30, "y": 28, "w": 8 },
+                { "src": "assets/mc/alex.svg", "x": 41, "y": 28, "w": 8 } ],
+      "text": "Из овражка аванпост был виден весь: башня, знамя на верхушке и шатёр под ней. У шатра стоял дозорный и глядел в нашу сторону — но глядел он сквозь туман.",
+      "prompt": "Возвращаемся к клетке?",
+      "choices": [
+        { "label": "Возвращаемся", "keywords": ["да", "возвращаемся", "идём", "идем", "к клетке", "пошли"],
+          "dir": "right", "next": "free" }
+      ]
+    },
+
+    "free": {
+      "bg": { "sky": "assets/mc/sky-fog.webp",
+              "far": "assets/mc/far-pines-fog.webp", "near": "assets/mc/near-outpost.svg" },
+      "cast": [ { "src": "assets/mc/wolf.svg", "x": 16, "y": 28, "w": 7 },
+                { "src": "assets/mc/steve.svg", "x": 26, "y": 28, "w": 8 },
+                { "src": "assets/mc/villager.svg", "x": 37, "y": 28, "w": 8 },
+                { "src": "assets/mc/alex.svg", "x": 48, "y": 28, "w": 8 },
+                { "src": "assets/mc/cage.svg", "x": 62, "y": 28, "w": 11 } ],
+      "voice": "friend",
+      "text": "Замок поддался с третьего раза. Житель вылез, отдышался и начал разбирать чужое добро на траве: «Хм-хм… Тут был один. Он делает двойников: их много, а он один».",
+      "task": { "kind": "logic", "max": 10, "types": ["oddOneOut"], "topic": "outpost" },
+      "next": "tower"
+    },
+
+    "tower": {
+      "bg": { "sky": "assets/mc/sky-fog.webp",
+              "far": "assets/mc/far-pines-fog.webp", "near": "assets/mc/near-outpost.svg" },
+      "cast": [ { "src": "assets/mc/steve.svg", "x": 24, "y": 28, "w": 8 },
+                { "src": "assets/mc/alex.svg", "x": 35, "y": 28, "w": 8 },
+                { "src": "assets/mc/villager.svg", "x": 46, "y": 28, "w": 7 },
+                { "src": "assets/mc/wolf.svg", "x": 57, "y": 28, "w": 7 },
+                { "src": "assets/mc/pillager-bow.svg", "x": 88, "y": 28, "w": 8 } ],
+      "voice": "ally",
+      "text": "Знамя с глазом висело на верхушке, и видно его было из самой деревни. Алекс уже держала руку на кладке: «Снимем — они поймут, что мы были. Оставим — не поймут».",
+      "prompt": "Снимаем знамя или идём низом, прямо к шатру?",
+      "choices": [
+        { "label": "Снять знамя", "keywords": ["снять", "снимаем", "знамя", "сорвать", "наверх"],
+          "say": "Алекс полезла по кладке и сдёрнула полотно одним движением. Дозорный у шатра обернулся на звук и заорал так, что туман вздрогнул.",
+          "dir": "forward", "next": "fight" },
+        { "label": "Низом к шатру", "keywords": ["низом", "шатёр", "шатер", "к шатру", "мимо"],
+          "say": "Они пошли низом, вдоль самого частокола. Низом было тише — только дозорный стоял как раз у шатра и увидел их первым.",
+          "dir": "right", "next": "fight" }
+      ]
+    },
+
+    "fight": {
+      "bg": { "sky": "assets/mc/sky-fog.webp",
+              "far": "assets/mc/far-pines-fog.webp", "near": "assets/mc/near-outpost.svg" },
+      "cast": [ { "src": "assets/mc/steve.svg", "x": 24, "y": 28, "w": 8 },
+                { "src": "assets/mc/alex.svg", "x": 35, "y": 28, "w": 8 },
+                { "src": "assets/mc/pillager-sword.svg", "x": 52, "y": 28, "w": 8 },
+                { "src": "assets/mc/pillager-bow.svg", "x": 88, "y": 28, "w": 8 } ],
+      "fx": "impact",
+      "text": "Стив сказал волку одно слово, и тот увёл жителя в лес: в драке зверю не место. А потом Стив ударил по столбу башни, и кладка начала осыпаться рядами.",
+      "task": { "kind": "math", "max": 20, "types": ["subtraction"], "topic": "blocks", "spread": "wide" },
+      "next": "tent"
+    },
+
+    "tent": {
+      "bg": { "sky": "assets/mc/sky-fog.webp",
+              "far": "assets/mc/far-pines-fog.webp", "near": "assets/mc/near-outpost.svg" },
+      "cast": [ { "src": "assets/mc/wolf.svg", "x": 18, "y": 28, "w": 7 },
+                { "src": "assets/mc/steve.svg", "x": 28, "y": 28, "w": 8 },
+                { "src": "assets/mc/alex.svg", "x": 39, "y": 28, "w": 8 },
+                { "src": "assets/mc/villager.svg", "x": 50, "y": 28, "w": 8 } ],
+      "voice": "ally",
+      "text": "Дозорные ушли в лес, а башня осталась стоять на трёх столбах. В шатре на столе лежал рисунок: деревня, стена, колокольня — и на колоколе стоял крест. Алекс смотрела на него долго. Потом сказала совсем тихо: «Они придут за колоколом, {{имя}}. Значит, знают, где он»."
+    }
+
+  }
+}

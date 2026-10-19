@@ -9,10 +9,13 @@
 // озвучка. Поэтому ни сцены, ни задания не нужно нигде перечислять:
 // достаточно, чтобы текст совпадал с тем, что озвучили на сборке.
 
+import * as log from './log.js';
+
 const DIR = 'assets/audio/';
 const EXT = '.mp3';   // MP3 играет везде, включая браузер телевизора
 
 let index = null;          // множество доступных идентификаторов
+let indexLoading = null;   // запрос в полёте — чтобы не слать его на каждую реплику
 let token = 0;
 
 // Все запущенные записи, а не только последняя. Раньше остановка глушила
@@ -41,13 +44,35 @@ export function clipId(text, role) {
  */
 export async function loadIndex() {
   if (index) return index;
-  try {
-    const list = await fetch(DIR + 'index.json').then(r => r.json());
-    index = new Set(list);
-  } catch {
-    index = new Set();
+
+  /* Неудачную загрузку запоминать НЕЛЬЗЯ. Раньше `catch` клал в `index`
+     пустое множество, а `if (index) return index` считает пустое множество
+     готовым ответом — то есть один моргнувший запрос означал «записей нет
+     вовсе» до конца сеанса. Дальше `hasClip` отвечал «нет» на всё, и каждая
+     реплика шла браузерным синтезом.
+
+     Симптом при этом не тишина, а ЧУЖОЙ ГОЛОС у всех подряд, и громче
+     всего это слышно на рассказчике: вместо ровной `baya` вдруг
+     встроенный голос телефона. Поймано на слух, воспроизведено на
+     заглушке (`tests-voice.mjs`).
+
+     Запрос держим один: без этого первая же сцена шлёт его столько раз,
+     сколько в ней реплик. */
+  if (!indexLoading) {
+    indexLoading = fetch(DIR + 'index.json')
+      .then(r => r.json())
+      .then(list => { index = new Set(list); return index; })
+      .catch((e) => {
+        // Журнал — единственный свидетель: консоли у телефона нет.
+        log.event('audio.index.failed', { message: String(e?.message || e) });
+        return null;
+      })
+      .finally(() => { indexLoading = null; });
   }
-  return index;
+
+  // Пока не получилось — отвечаем пустым множеством, но не запоминаем его:
+  // следующая реплика попробует снова.
+  return (await indexLoading) || new Set();
 }
 
 export function hasClip(text, role) {

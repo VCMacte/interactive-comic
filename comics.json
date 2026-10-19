@@ -1,5 +1,12 @@
 [
   {
+    "id": "outpost",
+    "title": "Аванпост в лесу",
+    "subtitle": "Одиннадцатый день Стива · пять игр",
+    "cover": "assets/covers/outpost.webp",
+    "story": "stories/outpost.json"
+  },
+  {
     "id": "wall",
     "title": "Стена и колокол",
     "subtitle": "Десятый день Стива · пять игр",

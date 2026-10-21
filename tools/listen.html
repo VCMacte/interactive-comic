@@ -1,0 +1,310 @@
+<!doctype html>
+<meta charset="utf-8">
+<title>Прослушивание историй</title>
+<!--
+  Стенд для прослушивания истории целиком: повествование, развилки,
+  задания со всеми вариантами и ответами. У каждой реплики показан её
+  идентификатор — то самое имя файла в assets/audio, по которому реплику
+  можно найти и переозвучить.
+
+  Открывается через локальный сервер: node serve.js, затем
+  http://localhost:8099/tools/listen.html
+
+  Порядок реплик берётся из tools/tts/utterances.mjs — того же модуля,
+  которым пользуется сверка tools/check-voices.mjs. Идентификатор — из
+  js/audio.js, ключ пула — из js/tasks.js, то есть из авторских копий,
+  которыми пользуется само приложение. Своих копий здесь нет нарочно:
+  стенд должен показывать то, что услышит ребёнок, а не то, что я думаю
+  про порядок реплик.
+-->
+<style>
+  :root { color-scheme: light dark }
+  body { font: 15px/1.55 system-ui, sans-serif; margin: 0; padding: 1.2rem 1.4rem 4rem; }
+  h1 { font-size: 1.3rem; margin: 0 0 .8rem }
+  .pick { display: flex; flex-wrap: wrap; gap: .4rem; margin-bottom: 1rem }
+  .pick button { font: inherit; padding: .35rem .7rem; cursor: pointer; border: 1px solid #8884;
+                 border-radius: 6px; background: #8881 }
+  .pick button[aria-current="true"] { background: #4a90d9; color: #fff; border-color: #4a90d9 }
+  .bar { position: sticky; top: 0; background: Canvas; padding: .5rem 0; border-bottom: 1px solid #8883;
+         display: flex; gap: .6rem; align-items: center; flex-wrap: wrap; z-index: 2 }
+  .bar button { font: inherit; padding: .3rem .6rem; cursor: pointer }
+  .muted { color: #8889 }
+  .scene { margin: 1.1rem 0 0; border-top: 1px solid #8883; padding-top: .6rem }
+  .scene h2 { font-size: 1rem; margin: 0 0 .3rem; display: flex; gap: .5rem; align-items: baseline }
+  .sid { font-family: ui-monospace, monospace; background: #8882; padding: 0 .3rem; border-radius: 3px }
+  .goes { font-weight: 400; font-size: .85em; color: #8889 }
+  ul { list-style: none; margin: .2rem 0; padding: 0 }
+  li { display: flex; gap: .5rem; align-items: baseline; padding: .18rem 0 }
+  li.playing { background: #4a90d933; border-radius: 4px }
+  .play { font: inherit; cursor: pointer; border: 0; background: #8882; border-radius: 4px;
+          width: 1.7rem; height: 1.5rem; flex: 0 0 auto }
+  .id { font-family: ui-monospace, monospace; font-size: .85em; cursor: copy; flex: 0 0 5.2rem;
+        color: #4a90d9 }
+  .role { font-size: .8em; flex: 0 0 5rem; color: #8889 }
+  .why { font-size: .8em; color: #8889; flex: 0 0 9rem }
+  .txt { flex: 1 1 auto }
+  .none { color: #d9534f; font-weight: 600 }
+  details { margin: .25rem 0 .25rem 1rem }
+  summary { cursor: pointer; color: #8889; font-size: .9em }
+  .task { background: #8881; border-radius: 6px; padding: .4rem .6rem; margin: .3rem 0 }
+  .key { font-family: ui-monospace, monospace; font-size: .85em }
+</style>
+
+<h1>Прослушивание историй</h1>
+<div class="pick" id="pick">загружаю каталог…</div>
+<div class="bar" id="bar" hidden>
+  <button id="playAll">▶ слушать историю</button>
+  <button id="stop">■ стоп</button>
+  <label><input type="checkbox" id="allVariants"> все варианты заданий</label>
+  <span class="muted" id="stat"></span>
+</div>
+<div id="out"></div>
+
+<script type="module">
+import { clipId } from '../js/audio.js';
+import { poolKey } from '../js/tasks.js';
+import { utterances, runsOf, fillViewer, SYSTEM, PRAISE, taskSpec } from './tts/utterances.mjs';
+
+const $ = (s) => document.querySelector(s);
+const el = (tag, cls, text) => {
+  const n = document.createElement(tag);
+  if (cls) n.className = cls;
+  if (text != null) n.textContent = text;
+  return n;
+};
+
+const get = (p) => fetch('/' + p).then(r => {
+  if (!r.ok) throw new Error(p + ': ' + r.status);
+  return r.json();
+});
+
+const [comics, pool, index] = await Promise.all([
+  get('comics.json'), get('stories/tasks-pool.json'), get('assets/audio/index.json'),
+]);
+const have = new Set(index);
+
+/* ---------------- порядок сцен: от начала, по развилкам ---------------- */
+
+// Сцены выстраиваются обходом от `start`, в том порядке, в котором до них
+// доходит игра. Так развилка видна целиком: сначала левый путь, потом
+// правый, и каждая сцена показана один раз. Недостижимые идут в конец —
+// это либо опечатка в `next`, либо остаток от правки сюжета.
+function order(story) {
+  const seen = new Set();
+  const out = [];
+  const walk = (id) => {
+    if (!id || seen.has(id) || !story.scenes[id]) return;
+    seen.add(id);
+    const scene = story.scenes[id];
+    out.push({ id, scene, reachable: true });
+    for (const next of nextsOf(scene)) walk(next);
+  };
+  walk(story.start);
+  for (const [id, scene] of Object.entries(story.scenes)) {
+    if (!seen.has(id)) out.push({ id, scene, reachable: false });
+  }
+  return out;
+}
+
+const nextsOf = (scene) => [
+  ...(scene.next ? [scene.next] : []),
+  ...(scene.choices || []).map(c => c.next).filter(Boolean),
+];
+
+/* ---------------- проигрывание ---------------- */
+
+let audio = null;
+let current = null;
+// У каждого запуска своё поколение — тем же приёмом, которым в js/voice.js
+// разведены сеансы распознавания. Без него нажатие «слушать сцену» во время
+// другого прослушивания оставляло прежний цикл висеть на обещании, которое
+// уже никто не разрешит: `pause()` события `ended` не присылает.
+let generation = 0;
+
+function highlight(node, on) {
+  if (!node) return;
+  node.classList.toggle('playing', on);
+  if (on) node.scrollIntoView({ block: 'center', behavior: 'smooth' });
+}
+
+function stop() {
+  generation++;
+  if (audio) { audio.onended = audio.onerror = null; audio.pause(); audio = null; }
+  highlight(current, false);
+  current = null;
+}
+
+function playOne({ id, node }, mine) {
+  return new Promise((done) => {
+    if (!have.has(id)) return done();          // записи нет — просто пропускаем
+    const a = new Audio('/assets/audio/' + id + '.mp3');
+    audio = a;
+    current = node; highlight(node, true);
+    const finish = () => {
+      a.onended = a.onerror = null;
+      highlight(node, false);
+      if (generation === mine) current = null;
+      done();
+    };
+    a.onended = finish;
+    a.onerror = finish;
+    a.play().catch(finish);
+  });
+}
+
+async function playQueue(items) {
+  stop();
+  const mine = generation;
+  for (const item of items) {
+    if (generation !== mine) return;           // нас сменили — молча уходим
+    await playOne(item, mine);
+  }
+}
+
+/* ---------------- отрисовка ---------------- */
+
+function row(u, { noNumber } = {}) {
+  const id = clipId(u.text, u.role);
+  const li = el('li');
+  const play = el('button', 'play', have.has(id) ? '▶' : '—');
+  play.title = have.has(id) ? 'послушать' : 'записи нет';
+  play.onclick = () => playQueue([{ id, node: li }]);
+  const idSpan = el('span', 'id', id);
+  idSpan.title = 'щёлкните, чтобы скопировать';
+  idSpan.onclick = () => navigator.clipboard?.writeText(id);
+  // Похвала приезжает как «реплика варианта» (движок вешает её на верный
+  // ответ), но читателю понятнее назвать вещи своими именами.
+  const why = PRAISE.includes(u.text) ? 'похвала' : (u.why || '');
+  li.append(play, idSpan, el('span', 'role', u.role), el('span', 'why', why));
+  const txt = el('span', 'txt', u.text);
+  if (!have.has(id)) txt.classList.add('none');
+  li.append(txt);
+  return { li, id, node: li };
+}
+
+function renderStory(story) {
+  const out = $('#out');
+  out.textContent = '';
+  const all = [];           // очередь «слушать историю»
+  let count = 0, missing = 0;
+
+  for (const { id, scene, reachable } of order(story)) {
+    const box = el('div', 'scene');
+    const h = el('h2');
+    h.append(el('span', 'sid', id));
+    if (!reachable) h.append(el('span', 'goes', '— недостижима из начала'));
+    const goes = nextsOf(scene);
+    if (!goes.length) h.append(el('span', 'goes', '— финал'));
+    else h.append(el('span', 'goes', '→ ' + goes.join(', ')));
+    box.append(h);
+
+    const sceneQueue = [];
+    // Одна и та же реплика в пределах варианта показывается один раз:
+    // подсказка у задания одна на оба неверных ответа, и движок читает её
+    // ту же самую. Два одинаковых плеера подряд выглядели бы как дефект.
+    const add = (list, holder, seen = new Set()) => {
+      const ul = el('ul');
+      for (const u of list) {
+        const id = clipId(u.text, u.role);
+        if (seen.has(id)) continue;
+        seen.add(id);
+        const r = row(u);
+        ul.append(r.li);
+        count++;
+        if (!have.has(r.id)) missing++;
+        holder.push({ id: r.id, node: r.li });
+      }
+      return ul;
+    };
+
+    if (!scene.task) {
+      box.append(add(utterances(scene, story, null), sceneQueue));
+    } else {
+      const spec = taskSpec(scene);
+      const key = poolKey(story.theme ?? 'forest', spec.kind, spec.max ?? 10, spec.topic, spec.spread);
+      const runs = runsOf(scene, pool[key] || []);
+
+      const info = el('div', 'task');
+      info.append(el('span', 'key', key));
+      info.append(el('span', 'goes', `  ·  ${spec.kind}, предел ${spec.max ?? 10}`
+        + (spec.types ? ', виды: ' + spec.types.join('/') : '')
+        + `  ·  вариантов ${runs.length}`));
+      box.append(info);
+
+      // Текст сцены звучит один раз, до вопроса, и от варианта не зависит.
+      const sceneText = utterances({ ...scene, task: null, choices: [] }, story, null);
+      box.append(add(sceneText, sceneQueue));
+
+      runs.forEach((run, i) => {
+        const d = el('details');
+        if (i === 0) d.open = true;
+        const correct = run.meta?.correct ? `  верно: ${run.meta.correct}` : '';
+        d.append(el('summary', null, `вариант ${i + 1} из ${runs.length} · ${run.meta?.type || ''}${correct}`));
+        const holder = [];
+        const list = utterances(scene, story, run).slice(sceneText.length);
+        d.append(add(list, holder));
+        // В очередь истории по умолчанию идёт только первый вариант:
+        // иначе прослушивание растянулось бы на часы.
+        if (i === 0 || $('#allVariants').checked) sceneQueue.push(...holder);
+        d.dataset.variant = String(i);
+        box.append(d);
+      });
+    }
+
+    const btn = el('button', 'play', '▶');
+    btn.title = 'слушать сцену подряд';
+    btn.onclick = () => playQueue([...sceneQueue]);
+    h.prepend(btn);
+    all.push(...sceneQueue);
+    out.append(box);
+  }
+
+  // Служебные реплики: похвалы и подсказки про микрофон. В сценах их нет,
+  // но ребёнок их слышит, и озвучены они должны быть.
+  const sys = el('div', 'scene');
+  const sysH = el('h2');
+  sys.append(sysH);
+  sysH.append(el('span', 'sid', 'служебные'), el('span', 'goes', '— похвалы и подсказки, вне сцен'));
+  const holder = [];
+  const ul = el('ul');
+  for (const text of SYSTEM) {
+    const r = row({ text, role: 'narrator', why: 'системная реплика' });
+    ul.append(r.li); count++; if (!have.has(r.id)) missing++;
+    holder.push({ id: r.id, node: r.li });
+  }
+  sys.append(ul);
+  const sysBtn = el('button', 'play', '▶');
+  sysBtn.onclick = () => playQueue([...holder]);
+  sysH.prepend(sysBtn);
+  out.append(sys);
+  all.push(...holder);
+
+  $('#stat').textContent = `реплик ${count}`
+    + (missing ? `, без записи ${missing}` : ', все озвучены');
+  $('#playAll').onclick = () => playQueue([...all]);
+  $('#bar').hidden = false;
+}
+
+/* ---------------- выбор истории ---------------- */
+
+const pick = $('#pick');
+pick.textContent = '';
+for (const c of comics) {
+  const b = el('button', null, c.title);
+  b.title = c.subtitle || '';
+  b.onclick = async () => {
+    stop();
+    for (const o of pick.children) o.setAttribute('aria-current', String(o === b));
+    $('#out').textContent = 'загружаю…';
+    renderStory(fillViewer(await get(c.story)));
+  };
+  pick.append(b);
+}
+
+$('#stop').onclick = stop;
+$('#allVariants').onchange = () => {
+  const cur = [...pick.children].find(b => b.getAttribute('aria-current') === 'true');
+  if (cur) cur.onclick();
+};
+window.addEventListener('keydown', (e) => { if (e.key === 'Escape') stop(); });
+</script>

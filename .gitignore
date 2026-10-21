@@ -24,3 +24,8 @@ tools/tts/wav/
 # Кэш импорта Python: check-accents.py и audit-accents.py тянут
 # соседний accents.py, и рядом заводится __pycache__.
 tools/tts/__pycache__/
+
+# Ключ к fish.audio: личный, в репозиторий не идёт.
+tools/tts/fish-key.txt
+# Список «озвучено, но не сжато» — рабочий файл одного прогона.
+tools/tts/fish-pending.json

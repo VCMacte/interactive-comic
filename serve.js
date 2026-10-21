@@ -8,6 +8,10 @@ const ROOT = __dirname;
 const PORT = process.env.PORT || 8099;
 const TYPES = {
   '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8',
+  // .mjs нужен странице tools/listen.html: она импортирует общий модуль
+  // обхода сцен, а браузер отказывается грузить модуль, отданный как
+  // application/octet-stream, — проверка MIME у модулей строгая.
+  '.mjs': 'text/javascript; charset=utf-8',
   '.css': 'text/css; charset=utf-8', '.json': 'application/json; charset=utf-8',
   '.webmanifest': 'application/manifest+json; charset=utf-8',
   '.svg': 'image/svg+xml', '.webp': 'image/webp', '.png': 'image/png', '.jpg': 'image/jpeg',

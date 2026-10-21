@@ -44,6 +44,10 @@ function seedRandom(seed) {
 // коллектора пересобирал бы манифест и пул — весь разбор у него на
 // верхнем уровне. Переэкспорт оставлен, чтобы прежние импорты работали.
 export { clipId, splitDialogue } from './clip.mjs';
+// Правило «всё или ничего» и сборка вопроса из подписей берутся из общего
+// модуля: пока коллектор знал их по-своему, он озвучивал подписи всегда,
+// и 111 записей ложились в офлайн-кэш, ни разу не прозвучав.
+import { askLine, spokenLabels } from './utterances.mjs';
 
 /* ---------------- сбор ---------------- */
 
@@ -76,9 +80,12 @@ for (const file of stories) {
     for (const part of splitDialogue(fill(scene.speak ?? scene.text), scene.voice ?? character)) {
       add(part.text, part.role);
     }
-    if (scene.prompt) add(fill(scene.prompt), 'narrator');
+    const sceneChoices = scene.choices || [];
+    // Вопрос у сцены с выбором есть всегда: свой или собранный из подписей.
+    const scenePrompt = scene.prompt ?? (sceneChoices.length ? askLine(sceneChoices) : null);
+    if (scenePrompt) add(fill(scenePrompt), 'narrator');
 
-    for (const c of scene.choices || []) {
+    for (const c of sceneChoices) {
       // Роль реплики варианта считается ровно так же, как в js/app.js:
       // свой голос варианта, иначе голос сцены, иначе голос истории.
       // Пока здесь стоял голос истории, записи для сцены со своим голосом
@@ -86,10 +93,11 @@ for (const file of stories) {
       // дне заговорила Стивом, а голем — браузерным синтезом.
       if (c.say) for (const part of splitDialogue(fill(c.say), c.voice ?? scene.voice ?? character)) add(part.text, part.role);
       if (c.hint) add(fill(c.hint), 'narrator');
-      // Подписи на кнопках проговариваются вслух: мелкий текст с дивана
-      // не прочесть, а выбирать ребёнок должен на слух.
-      add(c.label, 'narrator');
     }
+    // Подписи на кнопках проговариваются вслух: мелкий текст с дивана
+    // не прочесть, а выбирать ребёнок должен на слух. Но только если
+    // вопрос не назвал их все — иначе движок их и не читает.
+    for (const label of spokenLabels(fill(scenePrompt), sceneChoices)) add(label, 'narrator');
 
     if (scene.task) {
       const spec = typeof scene.task === 'string' ? { kind: scene.task } : scene.task;
@@ -172,7 +180,7 @@ for (const [key, spec] of taskSpecs) {
   for (const t of pool[key]) {
     add(t.question, 'narrator');
     add(t.hint, 'narrator');
-    for (const c of t.choices) add(c.label, 'narrator');
+    for (const label of spokenLabels(t.question, t.choices)) add(label, 'narrator');
   }
   const byType = {};
   for (const t of pool[key]) byType[t.type] = (byType[t.type] ?? 0) + 1;

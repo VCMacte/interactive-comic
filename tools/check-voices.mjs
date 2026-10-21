@@ -21,7 +21,9 @@ import { readFileSync, readdirSync } from 'node:fs';
 // это та самая копия, которой приложение ищет файл. Если две копии
 // разойдутся, проверка это и покажет — своей копии у неё нет.
 import { clipId } from '../js/audio.js';
-import { splitDialogue } from './tts/clip.mjs';
+// Обход сцены вынесен в общий модуль: им пользуется ещё и tools/listen.html,
+// а третья копия порядка реплик рано или поздно разошлась бы с движком.
+import { utterances, runsOf, fillViewer, PRAISE, SYSTEM, taskSpec } from './tts/utterances.mjs';
 
 const read = (p) => JSON.parse(readFileSync(p, 'utf8'));
 
@@ -31,12 +33,6 @@ const pool = read('stories/tasks-pool.json');
 
 /* ---------------- то же, что в js/app.js ---------------- */
 
-// voiceOf: scene.voice ?? story.voice ?? 'hero'  (js/app.js)
-const voiceOf = (scene, story) => scene.voice ?? story.voice ?? 'hero';
-
-// askLine: что произносится, когда у сцены с выбором нет своего `prompt`.
-const askLine = (choices) => 'Что выберем: ' + choices.map(c => c.label).join(', или ');
-
 // Ключ пула — повторён здесь, а не импортирован, нарочно: если он
 // разойдётся с `js/tasks.js`, проверка обязана это заметить, а не
 // повторить ошибку следом.
@@ -45,60 +41,14 @@ const poolKey = (theme, kind, max, topic, spread) => {
   return spread === 'wide' ? `${base}|wide` : base;
 };
 
-// Похвалы и служебные реплики — из js/app.js; произносятся рассказчиком.
-const PRAISE = [
-  'Верно! Молодец.',
-  'Правильно! Отлично справился.',
-  'Точно! Ты внимательный.',
-  'Да, именно так. Умница!',
-];
-const SYSTEM = [
-  ...PRAISE,
-  'Скажи ещё раз, только погромче. Или нажми ответ внизу.',
-  'Не расслышал. Нажми на нужный ответ внизу.',
-];
-
 /* ---------------- обход историй ---------------- */
 
-/** Все реплики сцены в том порядке и с теми ролями, как их просит движок. */
-function utterances(scene, story, tasks) {
-  const out = [];
-  const say = (text, role, why) => { if (text) out.push({ text, role, why }); };
-  const dialogue = (text, character, why) => {
-    for (const seg of splitDialogue(text, character)) say(seg.text, seg.role, why);
-  };
-
-  // Задание рисует сцене новый `prompt` и новые `choices`, поэтому
-  // разбирать надо то, что получится после `withTask`, а не сырую сцену.
-  const spoken = scene.speak ?? scene.text;
-  dialogue(spoken, voiceOf(scene, story), 'текст сцены');
-
-  const choices = scene.task ? tasks.choices : (scene.choices || []);
-  const prompt = scene.task ? tasks.prompt : (scene.prompt ?? (choices.length ? askLine(choices) : null));
-
-  if (choices.length) {
-    say(prompt, 'narrator', scene.prompt || scene.task ? 'вопрос' : 'вопрос собран из подписей (askLine)');
-
-    // Правило «всё или ничего»: подписи читаются, только если вопрос
-    // не назвал их все.
-    const said = (prompt || '').toLowerCase();
-    const allNamed = choices.every(c => said.includes(c.label.toLowerCase()));
-    if (!allNamed) for (const c of choices) say(c.label, 'narrator', 'подпись кнопки');
-
-    for (const c of choices) {
-      if (c.say) dialogue(c.say, c.voice ?? voiceOf(scene, story), 'реплика варианта');
-      if (c.hint) say(c.hint, 'narrator', 'подсказка');
-    }
-  }
-  return out;
-}
-
-/** Все варианты задания сцены — из готового пула. */
+/** Записи пула под ключом сцены — ключ считается своей копией (см. выше). */
 function tasksOf(scene, story) {
-  const spec = typeof scene.task === 'string' ? { kind: scene.task } : scene.task;
+  if (!scene.task) return { key: null, entries: [] };
+  const spec = taskSpec(scene);
   const key = poolKey(story.theme ?? 'forest', spec.kind, spec.max ?? 10, spec.topic, spec.spread);
-  const entries = (pool[key] || []).filter(t => !spec.types || spec.types.includes(t.type));
-  return { key, entries };
+  return { key, entries: pool[key] || [] };
 }
 
 const problems = [];
@@ -108,24 +58,10 @@ let total = 0;
 const files = readdirSync('stories').filter(f => f.endsWith('.json') && f !== 'tasks-pool.json');
 
 for (const file of files) {
-  const story = read('stories/' + file);
-  const fill = (t) => (story.viewer ? String(t).replaceAll('{{имя}}', story.viewer) : t);
+  const story = fillViewer(read('stories/' + file));
 
-  for (const [id, raw] of Object.entries(story.scenes)) {
-    const scene = { ...raw, text: fill(raw.text), speak: raw.speak ? fill(raw.speak) : undefined,
-                    prompt: raw.prompt ? fill(raw.prompt) : undefined };
-    if (scene.choices) scene.choices = scene.choices.map(c => ({ ...c, say: c.say ? fill(c.say) : undefined }));
-
-    // Сцена без задания — один проход. Сцена с заданием — по проходу
-    // на каждый вариант из пула: вопросы там разные, и каждый свой файл.
-    const runs = scene.task
-      ? tasksOf(scene, story).entries.map(t => ({
-          prompt: t.question,
-          choices: t.choices.map(c => (c.correct
-            ? { label: c.label, say: PRAISE[0] }     // похвала одна на всех по разбору
-            : { label: c.label, hint: t.hint })),
-        }))
-      : [null];
+  for (const [id, scene] of Object.entries(story.scenes)) {
+    const runs = runsOf(scene, tasksOf(scene, story).entries);
 
     if (scene.task && !runs.length) {
       problems.push({ file, scene: id, why: 'ключ пула пуст', text: tasksOf(scene, story).key, role: '—' });

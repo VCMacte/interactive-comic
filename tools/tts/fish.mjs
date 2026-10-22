@@ -45,6 +45,28 @@ const force = args.includes('--force');
 const dry = args.includes('--dry');
 
 /**
+ * Точка в конце — только для синтеза.
+ *
+ * Реплика в «ёлочках» кончается без знака: точка стоит снаружи кавычек
+ * и в запись не попадает. Модель читает такой текст с интонацией
+ * продолжения — фраза звучит оборванной на полуслове. Лечится точкой,
+ * но дописать её можно только здесь, на последнем шаге: имя файла
+ * считается от «роль|текст» в двух местах сразу (`js/audio.js` и
+ * `collect.mjs`), и правка текста в любом из них разводит их между собой.
+ * Здесь же не меняется ни идентификатор, ни то, что видно на экране.
+ *
+ * Одно слово под правило не попадает: подписи кнопок («Шесть», «Нить»)
+ * предложением никто не писал, и точка там ни к чему — так решено
+ * на прослушивании.
+ */
+function finished(text) {
+  const t = text.trim();
+  if (!/\p{L}$/u.test(t)) return text;   // знак уже есть
+  if (!/\s/.test(t)) return text;        // одно слово — подпись кнопки
+  return t + '.';
+}
+
+/**
  * Текст для синтеза: правила из fish-say-as.json или сам текст.
  *
  * Правило бывает двух видов. `from` — вся реплика целиком: так лечится
@@ -60,7 +82,7 @@ const dry = args.includes('--dry');
  */
 function sayAs(clip) {
   const exact = sayAsRules.find((r) => r.from && r.role === clip.role && r.from === clip.text);
-  if (exact) return exact.to;
+  if (exact) return finished(exact.to);
 
   let text = clip.text;
   for (const rule of sayAsRules) {
@@ -72,7 +94,7 @@ function sayAs(clip) {
       return upper ? rule.to[0].toUpperCase() + rule.to.slice(1) : rule.to;
     });
   }
-  return text;
+  return finished(text);
 }
 
 const voiceOf = (role) => cfg.voices[role]?.id;

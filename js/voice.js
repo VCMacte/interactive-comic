@@ -367,12 +367,22 @@ export function createListener({ onInterim, onResult, onEnd, windowMs = 30000 })
   let sessionStart = 0;
   let sessionHeard = false;
 
+  // Замер, а не работа движка: по журналу надо отличать сеанс, который
+  // услышал речь и ВЕРНУЛ ответ, от сеанса, который услышал и промолчал.
+  // Признак здоровья сейчас — «был ли звук», а ломается другое — «дал ли
+  // результат», и из выгрузки это пока не видно: приходится сшивать
+  // `mic.on`/`mic.off` вручную, а склейка повторов делает сшивку ненадёжной.
+  let sessionFinals = 0;   // сколько окончательных результатов отдал сеанс
+  let sessionKept = 0;     // сколько из них уцелело после фильтра слов
+  let sessionSpeechAt = 0; // когда в сеансе начали говорить
+  let sessionSpeechEnd = false; // дошло ли до onspeechend или сеанс оборвали
+
   // Снять обработчики и оборвать. Без этого старый объект продолжает слать
   // события и трогает уже другой, живой экземпляр.
   function detach(r) {
     if (!r) return;
     r.onresult = r.onerror = r.onend = null;
-    r.onstart = r.onaudiostart = r.onspeechstart = null;
+    r.onstart = r.onaudiostart = r.onspeechstart = r.onspeechend = null;
     try { r.abort(); } catch {}
   }
 
@@ -401,7 +411,11 @@ export function createListener({ onInterim, onResult, onEnd, windowMs = 30000 })
   function scheduleRelaunch(delay) {
     if (stopped) return;
     clearTimeout(relaunchTimer);
-    log.event('mic.relaunch', { delay, empty: emptyRuns });
+    // `speaking` — для замера: картинка с телевизора уходит зеркалированием,
+    // и звук возвращается в микрофон с задержкой. Если перезапуски окажутся
+    // привязаны к моментам, когда рассказчик ещё слышен, лечить надо паузу
+    // после озвучки, а не отступ. По нынешней выгрузке это не проверяется.
+    log.event('mic.relaunch', { delay, empty: emptyRuns, speaking: isSpeaking() });
     relaunchTimer = setTimeout(function tick() {
       if (stopped) return;
       if (Date.now() >= deadline) { finish('window'); return; }
@@ -442,6 +456,10 @@ export function createListener({ onInterim, onResult, onEnd, windowMs = 30000 })
     const my = ++gen;
     sessionStart = Date.now();
     sessionHeard = false;
+    sessionFinals = 0;
+    sessionKept = 0;
+    sessionSpeechAt = 0;
+    sessionSpeechEnd = false;
 
     const r = rec = new SR();
     r.lang = LANG;
@@ -453,7 +471,15 @@ export function createListener({ onInterim, onResult, onEnd, windowMs = 30000 })
 
     r.onstart = () => { if (mine()) log.event('mic.on'); };
     r.onaudiostart = () => { if (mine()) log.event('mic.audio'); };
-    r.onspeechstart = () => { if (mine()) { sessionHeard = true; log.event('mic.speech'); } };
+    r.onspeechstart = () => {
+      if (!mine()) return;
+      sessionHeard = true;
+      sessionSpeechAt = Date.now();
+      log.event('mic.speech');
+    };
+    // Нужен замеру: «речь кончилась» и «сеанс оборвали на полуслове» —
+    // разные беды, а в журнале они выглядели одинаково.
+    r.onspeechend = () => { if (mine()) { sessionSpeechEnd = true; log.event('mic.speechend'); } };
 
     r.onresult = (e) => {
       if (!mine()) return;
@@ -469,6 +495,8 @@ export function createListener({ onInterim, onResult, onEnd, windowMs = 30000 })
       const all = Array.from(last)
         .map(alt => alt.transcript)
         .filter(t => looksLikeWord(t) && !isHesitation(t));
+      sessionFinals++;
+      sessionKept += all.length;
       log.event('mic.final', { chars: text.length, kept: all.length });
       if (all.length) onResult?.(text, all);
       // Обрывок без слов или задумчивое «э-э-э» — не ответ: молчим и слушаем дальше.
@@ -489,7 +517,17 @@ export function createListener({ onInterim, onResult, onEnd, windowMs = 30000 })
     r.onend = () => {
       if (!mine()) return;
       const lived = Date.now() - sessionStart;
-      log.event('mic.off', { lived, heard: sessionHeard });
+      // `finals`/`kept` — чтобы «услышал и промолчал» было видно прямо здесь,
+      // а не сшивкой соседних записей. `sinceSpeech` различает «движок думал
+      // и не нашёл слов» и «сеанс оборвали сразу после первого звука».
+      log.event('mic.off', {
+        lived,
+        heard: sessionHeard,
+        finals: sessionFinals,
+        kept: sessionKept,
+        speechEnd: sessionSpeechEnd,
+        sinceSpeech: sessionSpeechAt ? Date.now() - sessionSpeechAt : null,
+      });
       if (Date.now() >= deadline) { finish('window'); return; }
       afterSession(lived);
     };

@@ -153,6 +153,19 @@ const LAYERS = {
   // трижды, а «clear sky» и «sunrise» стоят в negative первыми. Свет идёт
   // снизу — у настоящего тумана он от земли, и без этого выходит обычная
   // пасмурная серость.
+  // Ночь пожара двенадцатого дня. Светила нет, как у грозы: луна над
+  // горящим лесом не нужна, а из белого круга нейросеть делает второе
+  // солнце. Главное здесь — ОТКУДА свет: зарево идёт снизу, от земли,
+  // поэтому в промпте это сказано дважды, а в негативе закрыт закат —
+  // иначе выходит обычный тёплый вечер, а не ночь, в которой горит.
+  'mc/sky-fire': {
+    strength: 0.42,
+    prompt: `night sky above a burning forest, deep dark blue-black at the top, `
+      + `heavy square smoke clouds lit from below by orange firelight, `
+      + `hot ember-orange glow along the bottom edge of the frame, `
+      + `no sun, no moon, no stars, ${STYLE}, no ground, no trees`,
+    negative: NEG + ', sun, moon, stars, rainbow, sunset over water, clear blue sky, daylight, round clouds, campfire, lightning bolt',
+  },
   'mc/sky-fog': {
     strength: 0.42,
     prompt: `thick morning fog sky, pale grey-green mist, soft milky haze filling the whole frame, `
@@ -162,6 +175,18 @@ const LAYERS = {
   // Сосняк, тонущий в дымке. От far-pines отличается не деревьями, а
   // глубиной: туман должен съесть дальние ярусы и оставить ближний чётким.
   // Ради этого слой и красится отдельно от готового far-pines.
+  // Дальний план той же ночи. Холмы здесь СИЛУЭТОМ: цвета у них ночью
+  // нет, есть только край, за которым светло. Поэтому в промпте дважды
+  // сказано про backlit и про тёмный передний край — без этого генератор
+  // освещает холмы спереди и зарево перестаёт читаться источником.
+  'mc/far-fire': {
+    strength: 0.24,
+    prompt: `distant blocky hills as a dark silhouette against a wall of fire behind them, `
+      + `backlit cubic hills and cubic trees, almost black in front, bright orange glow behind the ridge, `
+      + `three ragged columns of smoke rising from the fire, glowing orange at the base and turning grey higher up, `
+      + `layered depth, ${STYLE}`,
+    negative: NEG + ', chimney, house, campfire ring, clouds, green grass, daylight, front lighting, blue sky',
+  },
   'mc/far-pines-fog': {
     strength: 0.24,
     prompt: `distant blocky spruce forest drowning in thick morning fog, dark green cubic conifers in tiers, `

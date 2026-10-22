@@ -1,0 +1,154 @@
+{
+  "title": "Ночь рейда",
+  "theme": "minecraft",
+  "voice": "hero",
+  "start": "dusk",
+  "scenes": {
+
+    "dusk": {
+      "bg": { "sky": "assets/mc/sky-fire.webp", "stars": "assets/mc/stars-embers.svg",
+              "far": "assets/mc/far-fire.webp", "near": "assets/mc/near-village.svg" },
+      "cast": [ { "src": "assets/mc/wolf.svg", "x": 17, "y": 28, "w": 7 },
+                { "src": "assets/mc/steve.svg", "x": 27, "y": 28, "w": 8 },
+                { "src": "assets/mc/alex.svg", "x": 38, "y": 28, "w": 8 },
+                { "src": "assets/mc/villager.svg", "x": 49, "y": 28, "w": 7 },
+                { "src": "assets/mc/golem.svg", "x": 66, "y": 28, "w": 13 } ],
+      "voice": "ally",
+      "text": "За ёлками горело. Отрядов три. Стив вслух отослал волка в дом — чтобы зверь не решил, что его забыли. Алекс затянула ремень и сказала глухо. «Значит, трижды».",
+      "prompt": "С чего начнём: раздадим факелы или заложим старый пролом?",
+      "choices": [
+        { "label": "Раздать факелы", "keywords": ["факелы", "факел", "раздать", "свет", "огонь"],
+          "voice": "hero",
+          "say": "Стив прошёл вдоль кладки и всунул факел в каждую щель. Светлее не стало, зато стало видно, куда бить.",
+          "dir": "left", "next": "walls" },
+        { "label": "Заложить пролом", "keywords": ["пролом", "заложить", "дырку", "стену", "закрыть"],
+          "voice": "hero",
+          "say": "Пролом с прошлого раза так и зиял. Стив заложил его наскоро и сам себе не поверил.",
+          "dir": "right", "next": "walls" }
+      ]
+    },
+
+    "walls": {
+      "bg": { "sky": "assets/mc/sky-fire.webp", "stars": "assets/mc/stars-embers.svg",
+              "far": "assets/mc/far-fire.webp", "near": "assets/mc/near-wall.svg" },
+      "cast": [ { "src": "assets/mc/steve.svg", "x": 26, "y": 28, "w": 8 },
+                { "src": "assets/mc/villager.svg", "x": 37, "y": 28, "w": 8 } ],
+      "voice": "friend",
+      "text": "Наверх тащили всё, что пригодится, и складывали к подножию. Житель перебирал кучу и проверял себя вслух. «Хм-хм… Три сюда, а одно сюда совсем не годится».",
+      "task": { "kind": "logic", "max": 10, "types": ["oddOneOut"], "topic": "siege" },
+      "next": "first"
+    },
+
+    "first": {
+      "bg": { "sky": "assets/mc/sky-fire.webp", "stars": "assets/mc/stars-embers.svg",
+              "far": "assets/mc/far-fire.webp", "near": "assets/mc/near-wall.svg" },
+      "cast": [ { "src": "assets/mc/steve.svg", "x": 24, "y": 28, "w": 8 },
+                { "src": "assets/mc/alex.svg", "x": 35, "y": 28, "w": 8 },
+                { "src": "assets/mc/pillager-axe.svg", "x": 79, "y": 28, "w": 8 },
+                { "src": "assets/mc/pillager-mace.svg", "x": 88, "y": 28, "w": 8 } ],
+      "fx": "impact",
+      "text": "Первый отряд дошёл до ворот и ударил без разговоров! Стив держал створку и кричал, чтобы считали огни на гребне! «Темнота им друг, не нам! Сколько всего?!»",
+      "task": { "kind": "math", "max": 12, "types": ["addition"], "topic": "fuel", "spread": "wide" },
+      "next": "breath"
+    },
+
+    "breath": {
+      "bg": { "sky": "assets/mc/sky-fire.webp", "stars": "assets/mc/stars-embers.svg",
+              "far": "assets/mc/far-fire.webp", "near": "assets/mc/near-wall.svg" },
+      "cast": [ { "src": "assets/mc/steve.svg", "x": 25, "y": 28, "w": 8 },
+                { "src": "assets/mc/alex.svg", "x": 36, "y": 28, "w": 8 },
+                { "src": "assets/mc/golem.svg", "x": 64, "y": 28, "w": 13 } ],
+      "text": "Первый отряд отошёл за ёлки — не разбит, а просто отошёл. Железный вышел из-под ворот в засечках, одно плечо погнуто, и встал так, будто ничего и не было.",
+      "prompt": "Пока тихо — поднимемся к Алекс или поглядим, крепко ли досталось железному?",
+      "choices": [
+        { "label": "К Алекс", "keywords": ["алекс", "наверх", "к алекс", "на стену", "подняться"],
+          "dir": "forward", "next": "fork" },
+        { "label": "Поглядеть на железного", "keywords": ["железного", "голема", "вмятину", "поглядеть", "плечо"],
+          "voice": "golem",
+          "say": "Стив провёл рукой по вмятине на плече. Железный повернул голову и сказал это так, будто речь про погоду. «Это не больно. Железо терпит».",
+          "dir": "forward", "next": "fork" }
+      ]
+    },
+
+    "fork": {
+      "bg": { "sky": "assets/mc/sky-fire.webp", "stars": "assets/mc/stars-embers.svg",
+              "far": "assets/mc/far-fire.webp", "near": "assets/mc/near-bell.svg" },
+      "cast": [ { "src": "assets/mc/steve.svg", "x": 27, "y": 28, "w": 8 },
+                { "src": "assets/mc/alex.svg", "x": 38, "y": 28, "w": 8 },
+                { "src": "assets/mc/villager.svg", "x": 49, "y": 28, "w": 7 } ],
+      "voice": "ally",
+      "text": "Второй отряд вышел из ёлок и шёл ровным шагом — не бежал, а шёл. Алекс не обернулась и сказала сквозь зубы. «Это не разведка. Это всерьёз!»",
+      "prompt": "Куда пойдём: к Алекс на кладку или наверх, на колокольню?",
+      "choices": [
+        { "label": "На кладку", "keywords": ["кладку", "на кладку", "стена", "к алекс", "вниз"],
+          "dir": "right", "next": "second" },
+        { "label": "На колокольню", "keywords": ["колокольню", "наверх", "на колокольню", "башню", "выше"],
+          "dir": "left", "next": "tower" }
+      ]
+    },
+
+    "tower": {
+      "bg": { "sky": "assets/mc/sky-fire.webp", "stars": "assets/mc/stars-embers.svg",
+              "far": "assets/mc/far-fire.webp", "near": "assets/mc/near-bell.svg" },
+      "cast": [ { "src": "assets/mc/steve.svg", "x": 30, "y": 28, "w": 8 },
+                { "src": "assets/mc/villager.svg", "x": 41, "y": 28, "w": 7 } ],
+      "text": "С колокольни было видно дальше всех. Огни в ёлках выстроились рядами и всё не кончались, а житель держался за верёвку и молчал.",
+      "prompt": "Спускаемся на кладку?",
+      "choices": [
+        { "label": "Спускаемся", "keywords": ["да", "спускаемся", "вниз", "идём", "идем", "пошли"],
+          "dir": "right", "next": "second" }
+      ]
+    },
+
+    "second": {
+      "bg": { "sky": "assets/mc/sky-fire.webp", "stars": "assets/mc/stars-embers.svg",
+              "far": "assets/mc/far-fire.webp", "near": "assets/mc/near-wall.svg" },
+      "cast": [ { "src": "assets/mc/steve.svg", "x": 23, "y": 28, "w": 8 },
+                { "src": "assets/mc/alex.svg", "x": 34, "y": 28, "w": 8 },
+                { "src": "assets/mc/pillager-sword.svg", "x": 78, "y": 28, "w": 8 },
+                { "src": "assets/mc/pillager-bow.svg", "x": 88, "y": 28, "w": 8 } ],
+      "voice": "ally",
+      "fx": "impact",
+      "text": "Второй отряд полез на кладку с двух концов разом! Щиты лежали на гребне двумя горками, и Алекс крикнула сверху! «Щитов меньше, чем рук!»",
+      "task": { "kind": "math", "max": 19, "types": ["missing"], "topic": "raid", "spread": "wide" },
+      "next": "breach"
+    },
+
+    "breach": {
+      "bg": { "sky": "assets/mc/sky-fire.webp", "stars": "assets/mc/stars-embers.svg",
+              "far": "assets/mc/far-fire.webp", "near": "assets/mc/near-breach.svg" },
+      "cast": [ { "src": "assets/mc/steve.svg", "x": 22, "y": 28, "w": 8 },
+                { "src": "assets/mc/alex.svg", "x": 33, "y": 28, "w": 8 },
+                { "src": "assets/mc/pillager-axe.svg", "x": 63, "y": 28, "w": 8 },
+                { "src": "assets/mc/golem.svg", "x": 57, "y": 28, "w": 13 } ],
+      "voice": "golem",
+      "fx": "impact",
+      "text": "Кладка не выдержала и раскрылась широко! Булыжник разлетелся по правую руку, рядами. Железный шагнул в дыру и загудел на весь пролом! «Стойте за мной! Я держу!»",
+      "task": { "kind": "math", "max": 8, "types": ["subtraction"], "topic": "blocks", "spread": "wide" },
+      "next": "hold"
+    },
+
+    "hold": {
+      "bg": { "sky": "assets/mc/sky-fire.webp", "stars": "assets/mc/stars-embers.svg",
+              "far": "assets/mc/far-fire.webp", "near": "assets/mc/near-breach.svg" },
+      "cast": [ { "src": "assets/mc/steve.svg", "x": 24, "y": 28, "w": 8 },
+                { "src": "assets/mc/alex.svg", "x": 35, "y": 28, "w": 8 },
+                { "src": "assets/mc/golem.svg", "x": 57, "y": 28, "w": 13 } ],
+      "text": "Второй отряд отполз передохнуть, и пролом надо было закрыть сейчас же! Стив укладывал ряд за рядом и велел не сбиваться! «Собьёшься — и кладка снова ляжет!»",
+      "task": { "kind": "logic", "max": 10, "types": ["pattern"], "topic": "siege" },
+      "next": "quiet"
+    },
+
+    "quiet": {
+      "bg": { "sky": "assets/mc/sky-fire.webp", "stars": "assets/mc/stars-embers.svg",
+              "far": "assets/mc/far-fire.webp", "near": "assets/mc/near-breach.svg" },
+      "cast": [ { "src": "assets/mc/steve.svg", "x": 25, "y": 28, "w": 8 },
+                { "src": "assets/mc/alex.svg", "x": 36, "y": 28, "w": 8 },
+                { "src": "assets/mc/villager.svg", "x": 47, "y": 28, "w": 7 },
+                { "src": "assets/mc/golem.svg", "x": 58, "y": 28, "w": 13 } ],
+      "voice": "ally",
+      "text": "Пролом закрыт, все целы — и железный тоже, хоть засечек на нём не счесть. Третий отряд из ёлок так и не вышел. Алекс сказала тихо. «Два отбили. А третий не пришёл»."
+    }
+
+  }
+}

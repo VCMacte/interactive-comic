@@ -65,6 +65,9 @@ export function windows(log) {
     kept: 0,          // сколько раз распознанное прошло фильтр слов
     firstSpeechAt: null,
     shortRuns: 0,     // сеансов короче полусекунды
+    mute: 0,          // сеансов «услышал речь, но не дал ни одного результата»
+    lived: [],        // длительности сеансов, мс
+    speaking: 0,      // перезапусков, назначенных пока звучал рассказчик
   });
 
   for (const e of log) {
@@ -97,10 +100,17 @@ export function windows(log) {
       case 'mic.on': cur.runs += n; break;
       case 'mic.off':
         if (typeof e.lived === 'number' && e.lived < 500) cur.shortRuns += n;
+        // Сеанс, который услышал речь и не вернул ни одного результата, —
+        // и есть настоящий отказ. Прежняя выгрузка про это молчала, и
+        // «затыком» считалось совсем другое: сеанс короче 400 мс без звука,
+        // а таких не бывает вовсе — движок на Android живёт минимум секунду.
+        if (e.heard && e.finals === 0) cur.mute += n;
+        if (typeof e.lived === 'number') cur.lived.push(e.lived);
         break;
       case 'mic.relaunch':
         cur.relaunches += n;
         if (typeof e.delay === 'number') cur.delays.push(e.delay);
+        if (e.speaking) cur.speaking += n;
         break;
       case 'mic.error':
         cur.errors[e.code] = (cur.errors[e.code] || 0) + n;
@@ -227,6 +237,12 @@ function print(r) {
         + `, принято ${w.kept}`
         + (w.firstSpeechAt != null ? `, первый звук через ${secs(w.firstSpeechAt)}` : '')
         + (Object.keys(w.errors).length ? `, отказы: ${pairs(w.errors)}` : ''));
+      if (w.mute || w.speaking || w.lived.length) {
+        const l = w.lived.slice().sort((a, b) => a - b);
+        console.log(`      немых сеансов (услышал, но смолчал) ${w.mute}`
+          + (w.speaking ? `, перезапусков под голос рассказчика ${w.speaking}` : '')
+          + (l.length ? `, сеанс жил ${l[0]}…${l[l.length - 1]} мс` : ''));
+      }
 
       if (w.task) {
         console.log(`      вопрос: ${w.task.question}`);

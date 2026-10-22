@@ -3254,6 +3254,200 @@ ${px(4.7 * U, 5.9 * U, 0.6 * U, 0.7 * U, lockDark)}`;
   return charSvg(body, 10 * U, 11 * U);
 }
 
+
+/* ---------------- двенадцатый день: ночь рейда ---------------- */
+
+// Небо пожара. Градиент перевёрнут не по светлоте, как у тумана, а по
+// теплу: верх — остывшая ночь, низ — зарево от того, что горит за ёлками.
+// Светила нет, как у грозы и у ночи: луну над пожаром искать незачем,
+// а нейросеть из белого круга делает второе солнце.
+//
+// Облака двумя слоями, как в skyStorm, но нижний тёплый: дым над огнём
+// подсвечен снизу, и без этого слоя небо читается обычным закатом.
+//
+// Жар поднят в полосу 34…52% высоты, и это замер, а не вкус. Первая
+// версия держала оранжевое у самого низа кадра — как у заката, — и небо
+// само по себе выходило отличным, а в сцене не читалось вовсе: кладка
+// стены занимает 42…70% высоты и весь жар закрывала. Над стеной
+// оставался только тёмный верх, то есть обычная ночь. Видимая полоса
+// неба в сценах у стены — это 0…42%, в неё зарево и уложено.
+function skyFire() {
+  const defs = `<defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#090c1a"/><stop offset="0.16" stop-color="#141025"/>
+    <stop offset="0.34" stop-color="#4a2418"/><stop offset="0.52" stop-color="#9c461a"/>
+    <stop offset="0.74" stop-color="#cf6520"/><stop offset="1" stop-color="#e07a24"/></linearGradient></defs>`;
+  return svg(`<rect width="${W}" height="${H}" fill="url(#g)"/>
+${clouds(81, '#17131f', 0.82)}
+${clouds(82, '#8a4420', 0.5)}`, defs);
+}
+
+// Искры — вектором и отдельным слоем, как звёзды Края.
+//
+// Через img2img такая крапина либо раздувается во второе светило, либо
+// вымывается начисто — это записано в таблице «что чем рисуется». Поэтому
+// слой прозрачный и в покраску не идёт вовсе.
+//
+// Ограничены линией земли: на седьмом дне крапины легли и на камень
+// острова, и кадр стал грязным. Смещены к правой половине — туда, где
+// у дальнего плана горит; слева искр заметно меньше.
+function starsEmbers(seed = 820) {
+  const rand = rng(seed);
+  const out = [];
+  for (let i = 0; i < 90; i++) {
+    const x = W * (0.08 + Math.pow(rand(), 0.62) * 0.9);
+    const y = rand() * (GROUND - B * 1.2);
+    const s = 3 + rand() * 4;
+    // чем выше, тем бледнее: искра остывает, пока летит
+    const hot = 1 - y / GROUND;
+    const fill = rand() < 0.35 ? '#ffd27a' : '#ff8a3d';
+    out.push(`<rect x="${n(x)}" y="${n(y)}" width="${n(s)}" height="${n(s)}" fill="${fill}" opacity="${n(0.25 + hot * 0.55)}"/>`);
+  }
+  return svg(out.join('\n'));
+}
+
+// Дальний план в зареве. Геометрия взята у farSmoke — те же холмы и те же
+// три столба дыма выше гребня, — но холмы здесь силуэтом: ночью цвета
+// у них нет, есть только край, за которым светло.
+//
+// Полоса зарева лежит ПОД гребнем холмов и просвечивает сквозь дым. Без
+// неё на init-картинке нет указания, откуда свет, и нейросеть красит
+// обычную ночь.
+function farFire(seed = 821) {
+  const rand = rng(seed);
+  const out = [];
+  const HILL = { base: '#1d1a22', dark: '#15131a', light: '#27222b' };
+  const GLOW = '#e8742a';
+  let height = 2;
+
+  // зарево за холмами — первым, холмы закрывают его снизу
+  out.push(`<defs><linearGradient id="fg" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="${GLOW}" stop-opacity="0"/>
+    <stop offset="0.55" stop-color="${GLOW}" stop-opacity="0.55"/>
+    <stop offset="1" stop-color="#ffb04a" stop-opacity="0.8"/></linearGradient></defs>`);
+  out.push(`<rect x="0" y="${n(GROUND - B * 7.5)}" width="${W}" height="${n(B * 7.5)}" fill="url(#fg)"/>`);
+
+  for (let col = 0; col * B < W; col++) {
+    const x = col * B;
+    if (rand() < 0.3) height += rand() < 0.5 ? 1 : -1;
+    height = Math.max(1, Math.min(5, height));
+    for (let i = 0; i < height; i++) out.push(block(x, GROUND - B - i * B, HILL, rand));
+    if (rand() < 0.1) out.push(cubeTree(x, GROUND - height * B, 2, rand, HILL, HILL));
+  }
+
+  // Столбы дыма — как у farSmoke, но подсвечены снизу: у основания они
+  // почти оранжевые и остывают кверху. Ровный серый столб над пожаром
+  // читается печной трубой.
+  for (const [bx, lean] of [[W * 0.52, 0.14], [W * 0.68, 0.07], [W * 0.84, 0.2]]) {
+    const base = GROUND - B * 5.4;
+    out.push(`<rect x="${n(bx - B * 0.35)}" y="${n(base)}" width="${n(B * 1.7)}" height="${n(B * 1.1)}" fill="#ffae46" opacity="0.85"/>`);
+    let w = B * 0.85;
+    for (let r = 0; r < 11; r++) {
+      const y = base - B * 0.6 - r * B * 0.95;
+      const x = bx + r * B * lean + (rand() - 0.5) * B * 0.9;
+      const fill = r < 3 ? '#b5663a' : '#6e6159';
+      out.push(`<rect x="${n(x)}" y="${n(y)}" width="${n(w)}" height="${n(B * 0.95)}" fill="${fill}" opacity="${n(0.74 - r * 0.056)}"/>`);
+      if (rand() < 0.55) {
+        out.push(`<rect x="${n(x + (rand() < 0.5 ? -B * 0.7 : w - B * 0.2))}" y="${n(y + B * 0.2)}" width="${n(B * 0.8)}" height="${n(B * 0.7)}" fill="${fill}" opacity="${n(0.5 - r * 0.04)}"/>`);
+      }
+      w += B * 0.22;
+    }
+  }
+
+  return svg(out.join('\n'));
+}
+
+// Стена с проломом — тот же приём, что nearWall, и намеренно та же кладка:
+// ребёнок должен узнать стену, которую строил в десятом дне.
+//
+// Два замера держат этот слой, и оба про чистую зону кадра (текст занимает
+// 3…65% ширины и всё ниже 56% высоты):
+//
+// * пролом на столбцах 18…23, то есть 56…75% ширины. Шире дневного (там
+//   было пять столбцов) и доходит до земли: вторая волна прошла насквозь;
+// * БУЛЫЖНИК — то, что в сцене считают, — вынесен за пролом направо,
+//   на 75.6…88.8% ширины. На земле он лежит ниже 56% высоты, и левее 65%
+//   его закрыла бы панель с текстом. Это тот же промах, что прятал горку
+//   железа за Алекс и щиты под панелью. Голем в сцене стоит левее, в самом
+//   проломе, и кучу собой не закрывает — это проверено по `cast`.
+function nearBreach(seed = 822) {
+  const rand = rng(seed);
+  const out = [];
+  const EDGE = '#3f3c35';
+  const SHIELD = '#8a6334', SHIELD_EDGE = '#45301a', SHIELD_IRON = '#d2d2d8';
+  const LOG = '#7a5630', LOG_DARK = '#5a3f22';
+
+  const cols = Math.ceil(W / B) + 1;
+  const gate = [6, 7, 8];
+  const breach = [18, 19, 20, 21, 22, 23];
+
+  const heightAt = (c) => {
+    if (gate.includes(c)) return 0;
+    if (breach.includes(c)) return 0;
+    if (c === breach[0] - 1) return 2;                   // выбитый край слева
+    if (c === breach[breach.length - 1] + 1) return 3;   // выбитый край справа
+    return 5;
+  };
+
+  for (let c = 0; c < cols; c++) {
+    const h = heightAt(c);
+    for (let r = 0; r < h; r++) out.push(block(c * B, GROUND - B * (r + 1), P.sbrick, rand));
+    if (h) out.push(`<rect x="${n(c * B)}" y="${n(GROUND - B * h)}" width="${B}" height="10" fill="${EDGE}"/>`);
+  }
+
+  // Зубцы через один по уцелевшей части. Горка щитов занимает три столбца,
+  // и зубец там не ставится: он торчал бы прямо из щитов.
+  const stacks = [{ col: 2.6, k: 3 }, { col: 14.6, k: 4 }];
+  const busy = new Set(stacks.flatMap(st => [0, 1, 2].map(d => Math.floor(st.col) + d)));
+  for (let c = 0; c < 18; c += 2) {
+    if (gate.includes(c) || gate.includes(c + 1)) continue;
+    if (busy.has(c)) continue;
+    out.push(block(c * B, GROUND - B * 6, P.sbrick, rand));
+    out.push(`<rect x="${n(c * B)}" y="${n(GROUND - B * 6)}" width="${B}" height="10" fill="${EDGE}"/>`);
+  }
+
+  // Сломанные леса у правого края пролома: стойка держится, раскос вырван
+  // и повис. Целые леса десятого дня здесь читались бы «стройка идёт».
+  const sx = (breach[breach.length - 1] + 2) * B;
+  out.push(`<rect x="${n(sx)}" y="${n(GROUND - B * 4.4)}" width="16" height="${n(B * 4.4)}" fill="${LOG}"/>`);
+  out.push(`<path d="M ${n(sx + 16)} ${n(GROUND - B * 3.6)} L ${n(sx + B * 2.2)} ${n(GROUND - B * 1.1)} l 0 22 L ${n(sx + 16)} ${n(GROUND - B * 3.6 + 22)} Z" fill="${LOG_DARK}"/>`);
+
+  // Булыжник: рядами, а не кучей — кучу не посчитать. Два ряда, нижний
+  // на земле, верхний чуть выше, чтобы читались отдельные камни.
+  for (const [bx, by, s] of [
+    [24.2, 0.04, 0.95], [25.3, 0.12, 0.72], [26.4, 0.02, 0.88], [27.5, 0.14, 0.66],
+    [24.8, -0.52, 0.7], [26.0, -0.6, 0.8], [27.1, -0.5, 0.62],
+  ]) {
+    out.push(block(bx * B, GROUND + by * B, P.stone, rand, B * s));
+  }
+
+  // Ворота: одна створка держится, вторая сорвана и валяется плашмя.
+  out.push(`<rect x="${n(gate[0] * B)}" y="${n(GROUND - B * 3)}" width="${n(B * 1.5)}" height="${n(B * 3)}" fill="${LOG}"/>`);
+  out.push(`<rect x="${n(gate[0] * B + B * 1.7)}" y="${n(GROUND - B * 0.5)}" width="${n(B * 2.6)}" height="${n(B * 0.5)}" fill="${LOG_DARK}"/>`);
+
+  const shield = (x, y, s) => {
+    const h = s * 1.3;
+    out.push(`<path d="M ${n(x)} ${n(y)} h ${n(s)} v ${n(h * 0.6)} l ${n(-s / 2)} ${n(h * 0.4)} l ${n(-s / 2)} ${n(-h * 0.4)} Z" fill="${SHIELD}" stroke="${SHIELD_EDGE}" stroke-width="6"/>`);
+    out.push(`<rect x="${n(x + s * 0.14)}" y="${n(y + h * 0.26)}" width="${n(s * 0.72)}" height="${n(h * 0.16)}" fill="${SHIELD_IRON}"/>`);
+    out.push(`<rect x="${n(x + s * 0.4)}" y="${n(y + h * 0.1)}" width="${n(s * 0.2)}" height="${n(h * 0.52)}" fill="${SHIELD_IRON}"/>`);
+  };
+  for (const st of stacks) {
+    for (let i = 0; i < st.k; i++) {
+      shield(st.col * B + i * B * 0.62, GROUND - B * 5 - B * 0.86 + i * 6, B * 0.78);
+    }
+  }
+
+  // Факелы по гребню — в ночных сценах единственный свет, поэтому с
+  // ореолом. Над проломом факела нет: там кладки больше нет.
+  const fires = [[B * 3, 6], [B * 11, 6], [B * 15, 6], [B * 25, 5]];
+  const halo = fires.map(([x, h]) => glow(x + B * 0.5, GROUND - B * h - B * 0.2, B * 2.2)).join('\n');
+  const flame = fires.map(([x, h]) => torch(x, GROUND - B * (h + 1))).join('\n');
+
+  return svg(`${groundRows(rand)}
+${out.join('\n')}
+${halo}
+${flame}`, GLOW_DEF);
+}
+
 /* ---------------- сборка ---------------- */
 
 console.log('Небо:');
@@ -3264,11 +3458,13 @@ write('assets/mc/sky-dawn.svg', skyDawn());
 write('assets/mc/sky-void.svg', skyVoid());
 write('assets/mc/sky-storm.svg', skyStorm());
 write('assets/mc/sky-fog.svg', skyFog());
+write('assets/mc/sky-fire.svg', skyFire());
 write('assets/mc/sun-day.svg', celestial(1500, 220, 88, '#ffe873', '#fff3b0'));
 write('assets/mc/sun-sunset.svg', celestial(1420, 600, 86, '#ffc24d', '#ff9d5c'));
 write('assets/mc/moon-night.svg', celestial(1500, 230, 74, '#f2f5fb', '#c9d8f2', 90));
 write('assets/mc/sun-dawn.svg', celestial(430, 640, 80, '#ffd98a', '#ffb878'));
 write('assets/mc/stars-void.svg', starsVoid());
+write('assets/mc/stars-embers.svg', starsEmbers());
 
 console.log('Дальний план:');
 write('assets/mc/far-hills.svg', farHills());
@@ -3283,6 +3479,7 @@ write('assets/mc/far-stronghold.svg', farStronghold());
 write('assets/mc/far-end-island.svg', farEndIsland());
 write('assets/mc/far-smoke.svg', farSmoke());
 write('assets/mc/far-pines-fog.svg', farPinesFog());
+write('assets/mc/far-fire.svg', farFire());
 
 console.log('Ближний план:');
 write('assets/mc/near-forest.svg', nearForest());
@@ -3314,6 +3511,7 @@ write('assets/mc/near-wall.svg', nearWall());
 write('assets/mc/near-bell.svg', nearBell());
 write('assets/mc/near-traps.svg', nearTraps());
 write('assets/mc/near-outpost.svg', nearOutpost());
+write('assets/mc/near-breach.svg', nearBreach());
 
 console.log('Персонажи:');
 write('assets/mc/steve.svg', steve());

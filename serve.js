@@ -15,6 +15,9 @@ const TYPES = {
   '.css': 'text/css; charset=utf-8', '.json': 'application/json; charset=utf-8',
   '.webmanifest': 'application/manifest+json; charset=utf-8',
   '.svg': 'image/svg+xml', '.webp': 'image/webp', '.png': 'image/png', '.jpg': 'image/jpeg',
+  // Звук — по той же причине, что .mjs выше: у <audio> проверка типа тоже
+  // бывает строгой, и отданное как application/octet-stream просто не играет.
+  '.mp3': 'audio/mpeg', '.wav': 'audio/wav',
 };
 
 // Приёмник файлов из браузера. Нужен потому, что на машине нет растеризатора

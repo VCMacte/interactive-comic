@@ -1,5 +1,12 @@
 [
   {
+    "id": "night-raid",
+    "title": "Ночь рейда",
+    "subtitle": "Двенадцатый день Стива · пять игр",
+    "cover": "assets/covers/night-raid.webp",
+    "story": "stories/night-raid.json"
+  },
+  {
     "id": "outpost",
     "title": "Аванпост в лесу",
     "subtitle": "Одиннадцатый день Стива · пять игр",

@@ -287,8 +287,6 @@ export const voiceSupported = Boolean(SR);
 // получается плотный цикл: микрофон мигает, а ребёнка не слышно.
 const RELAUNCH_MIN = 250;
 const RELAUNCH_MAX = 2000;
-// Сеанс короче этого и без единого звука считается провалившимся.
-const EMPTY_MS = 400;
 // Столько провалов подряд — и мы перестаём драться за микрофон.
 const FLAP_LIMIT = 8;
 // Как часто переспрашивать, не замолчал ли рассказчик.
@@ -299,6 +297,47 @@ const QUIET_POLL_MS = 200;
  * рассказчик: звук идёт на телевизор и возвращается в телефон. Записи
  * и браузерный синтез спрашиваются оба — путей озвучки два.
  */
+/**
+ * Замер, а не работа: что умеет распознавание на этом устройстве.
+ *
+ * Повод — системный писк. Распознаватель на Android подаёт сигнал в начале
+ * и в конце прослушивания, микрофон слышит его и считает речью; выключить
+ * этот звук из страницы нельзя — в Web Speech API нет ничего, кроме
+ * `continuous`, `interimResults`, `lang`, `maxAlternatives`, `grammars`,
+ * `phrases`, `processLocally`, `quality` и `unspokenPunctuation`.
+ *
+ * Но `processLocally` переводит распознавание НА УСТРОЙСТВО, минуя облачную
+ * службу Google, — а сигналы играет именно её обёртка. Выигрыш, если это
+ * подтвердится, двойной: пропадает писк и голос начинает работать офлайн,
+ * чего сейчас нет (приложение офлайновое, а распознавание молча требует
+ * сети). Проверить это можно только на телефоне, поэтому ответ пишется
+ * в журнал и приезжает со следующей выгрузкой.
+ *
+ * Ничего не включает и поведения не меняет: только спрашивает и записывает.
+ */
+export async function probeRecognition() {
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) { log.event('mic.probe', { supported: false }); return; }
+  const ask = async (processLocally) => {
+    if (typeof SR.available !== 'function') return 'нет метода';
+    try { return await SR.available({ langs: [LANG], processLocally }); }
+    catch (err) { return 'ошибка: ' + String(err?.name || err); }
+  };
+  try {
+    log.event('mic.probe', {
+      supported: true,
+      // есть ли вообще новые поля в этой сборке браузера
+      hasProcessLocally: 'processLocally' in SR.prototype,
+      hasInstall: typeof SR.install === 'function',
+      onDevice: await ask(true),
+      cloud: await ask(false),
+      online: navigator.onLine,
+    });
+  } catch (err) {
+    log.event('mic.probe', { error: String(err?.name || err) });
+  }
+}
+
 const isSpeaking = () => isPlaying()
   || Boolean(window.speechSynthesis && (speechSynthesis.speaking || speechSynthesis.pending));
 
@@ -363,7 +402,7 @@ export function createListener({ onInterim, onResult, onEnd, windowMs = 30000 })
   let windowTimer = null;
   let relaunchTimer = null;
   let backoff = RELAUNCH_MIN;
-  let emptyRuns = 0;       // сколько сеансов подряд кончились впустую
+  let muteRuns = 0;        // сколько сеансов подряд не вернули результата
   let sessionStart = 0;
   let sessionHeard = false;
 
@@ -415,7 +454,7 @@ export function createListener({ onInterim, onResult, onEnd, windowMs = 30000 })
     // и звук возвращается в микрофон с задержкой. Если перезапуски окажутся
     // привязаны к моментам, когда рассказчик ещё слышен, лечить надо паузу
     // после озвучки, а не отступ. По нынешней выгрузке это не проверяется.
-    log.event('mic.relaunch', { delay, empty: emptyRuns, speaking: isSpeaking() });
+    log.event('mic.relaunch', { delay, mute: muteRuns, speaking: isSpeaking() });
     relaunchTimer = setTimeout(function tick() {
       if (stopped) return;
       if (Date.now() >= deadline) { finish('window'); return; }
@@ -425,28 +464,46 @@ export function createListener({ onInterim, onResult, onEnd, windowMs = 30000 })
     }, delay);
   }
 
-  /* Пустой сеанс — тот, что кончился быстрее EMPTY_MS и не дал ни звука.
-     Это и есть признак затыка. Отступ после него удваивается, а любой
-     услышанный звук сбрасывает его обратно: ребёнок, который просто
-     помолчал полминуты, под лечение попасть не должен. */
-  function noteSession(lived) {
-    if (!sessionHeard && lived < EMPTY_MS) {
-      emptyRuns++;
+  /* Провалившийся сеанс — тот, что НЕ ВЕРНУЛ НИ ОДНОГО результата.
+     Отступ после него удваивается, настоящий результат сбрасывает его
+     обратно: ребёнок, который просто помолчал, под лечение не попадает,
+     потому что сеанс с его ответом считается удачным.
+
+     Признаком здоровья был «услышал ли сеанс звук», и это не работало
+     НИКОГДА. Распознаватель на Android пищит в начале и в конце
+     прослушивания, микрофон слышит собственный писк, `onspeechstart`
+     срабатывает всегда — значит «сеанс без звука» недостижим, отступ не
+     рос ни разу, потолок трепыхания не копился, а разбор журнала честно
+     писал «затыков 0» там, где ребёнок видел ровно затык.
+
+     Померено по журналу от 22.10.2026: задержка до «речи» отсчитывается
+     от старта КАЖДОГО сеанса и лежит в слишком ровном кластере —
+     971, 1012, 1044, 1046 мс у первых сеансов окна и 601, 635, 637, 683
+     у вторых. Человек так не умеет, а системный сигнал умеет. Прежний
+     порог в 400 мс был вторым запором на той же двери: короче 1225 мс
+     сеансов на Android не бывает вовсе.
+
+     Выключить писк из страницы нельзя: в Web Speech API нет ничего, кроме
+     `continuous`, `interimResults`, `lang`, `maxAlternatives`, `grammars`,
+     `phrases`, `processLocally`, `quality` и `unspokenPunctuation`. */
+  function noteSession() {
+    if (sessionFinals === 0) {
+      muteRuns++;
       const delay = backoff;
       backoff = Math.min(backoff * 2, RELAUNCH_MAX);
       return delay;
     }
-    emptyRuns = 0;
+    muteRuns = 0;
     backoff = RELAUNCH_MIN;
     return RELAUNCH_MIN;
   }
 
   // Общий хвост сеанса: решить, когда перезапускать, и не драться вечно.
-  function afterSession(lived) {
-    const delay = noteSession(lived);
+  function afterSession() {
+    const delay = noteSession();
     // Драться за микрофон бесконечно нельзя: ребёнку это видно как мигание
     // и слышно как тишина. Честнее предложить кнопки.
-    if (emptyRuns >= FLAP_LIMIT) { finish('flapping', { empty: emptyRuns }); return; }
+    if (muteRuns >= FLAP_LIMIT) { finish('flapping', { mute: muteRuns }); return; }
     scheduleRelaunch(delay);
   }
 
@@ -529,7 +586,7 @@ export function createListener({ onInterim, onResult, onEnd, windowMs = 30000 })
         sinceSpeech: sessionSpeechAt ? Date.now() - sessionSpeechAt : null,
       });
       if (Date.now() >= deadline) { finish('window'); return; }
-      afterSession(lived);
+      afterSession();
     };
 
     try {
@@ -539,7 +596,7 @@ export function createListener({ onInterim, onResult, onEnd, windowMs = 30000 })
       // пустым и перезапускаемся по общему правилу.
       log.event('mic.start.failed', { name: String(err?.name || err) });
       sessionHeard = false;
-      afterSession(0);
+      afterSession();
     }
   }
 
@@ -547,7 +604,7 @@ export function createListener({ onInterim, onResult, onEnd, windowMs = 30000 })
     teardown();
     stopped = false;
     backoff = RELAUNCH_MIN;
-    emptyRuns = 0;
+    muteRuns = 0;
     deadline = Date.now() + windowMs;
     log.event('mic.window.start', { windowMs });
     windowTimer = setTimeout(() => finish('window'), windowMs);

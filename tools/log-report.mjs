@@ -100,11 +100,13 @@ export function windows(log) {
       case 'mic.on': cur.runs += n; break;
       case 'mic.off':
         if (typeof e.lived === 'number' && e.lived < 500) cur.shortRuns += n;
-        // Сеанс, который услышал речь и не вернул ни одного результата, —
-        // и есть настоящий отказ. Прежняя выгрузка про это молчала, и
-        // «затыком» считалось совсем другое: сеанс короче 400 мс без звука,
-        // а таких не бывает вовсе — движок на Android живёт минимум секунду.
-        if (e.heard && e.finals === 0) cur.mute += n;
+        // Сеанс, не вернувший ни одного результата, — и есть настоящий
+        // отказ; ровно так же считает теперь и сам движок (`noteSession`
+        // в js/voice.js). Условие «и при этом слышал звук» здесь стояло
+        // и было лишним: звук есть всегда, его издаёт сам распознаватель.
+        // Прежняя выгрузка про это молчала, а «затыком» считалось совсем
+        // другое — сеанс короче 400 мс без звука, то есть никогда.
+        if (e.finals === 0) cur.mute += n;
         if (typeof e.lived === 'number') cur.lived.push(e.lived);
         break;
       case 'mic.relaunch':
@@ -151,12 +153,18 @@ export function windows(log) {
 }
 
 /* Окно считается затыкавшимся, если распознавание в нём перезапускалось
-   чаще трёх раз и при этом сеансы были короткие. Порог именно такой: при
-   здоровой работе движок Android обрывается раз в несколько секунд, то есть
-   за тридцатисекундное окно три-четыре перезапуска — норма, а десяток
-   коротких сеансов подряд — это уже то самое мигание. */
+   чаще трёх раз и при этом сеансы ничего не возвращали. Порог именно такой:
+   при здоровой работе движок Android обрывается раз в несколько секунд, то
+   есть за тридцатисекундное окно три-четыре перезапуска — норма, а десяток
+   немых сеансов подряд — это уже то самое мигание.
+
+   Считалось это по «коротким» сеансам (меньше 500 мс), и показывало ноль
+   всегда: короче 1225 мс сеансов на Android не бывает вовсе. Настоящий
+   признак — сеанс не вернул результата; поле `mute` появилось в журнале
+   22.10.2026, у выгрузок старше его нет, и там признак остаётся прежним. */
 export const isFlapping = (w) =>
-  w.reason === 'flapping' || (w.relaunches > 3 && w.shortRuns >= w.relaunches);
+  w.reason === 'flapping'
+  || (w.relaunches > 3 && (w.mute || w.shortRuns) >= w.relaunches);
 
 export function report(data) {
   const sessions = (data?.sessions || []).map((s) => {
@@ -169,6 +177,8 @@ export function report(data) {
     return {
       id: s.id,
       startedAt: s.startedAt,
+      // Замер возможностей распознавания: пишется один раз при старте.
+      probe: log.find((e) => e.type === 'mic.probe') || null,
       ua: s.ua,
       events: log.reduce((n, e) => n + occurrences(e), 0),
       records: log.length,
@@ -219,6 +229,12 @@ function print(r) {
   for (const s of r.sessions) {
     console.log(`— сессия ${s.startedAt}`);
     console.log(`  ${s.ua || 'устройство не названо'}`);
+    if (s.probe) {
+      const p = s.probe;
+      console.log(`  распознавание: на устройстве ${p.onDevice ?? "—"}, облачное ${p.cloud ?? "—"}`
+        + (p.online === false ? ", сети не было" : "")
+        + (p.hasProcessLocally === false ? ", processLocally не поддержан" : ""));
+    }
     console.log(`  событий ${s.events} в ${s.records} записях`
       + (s.crashes ? `, исключений ${s.crashes}` : '')
       + (Object.keys(s.errors).length ? `, отказы микрофона: ${pairs(s.errors)}` : ''));

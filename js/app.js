@@ -1,4 +1,4 @@
-import { speak, speakDialogue, cancelSpeech, createListener, voiceSupported, ttsAvailable } from './voice.js';
+import { speak, speakDialogue, cancelSpeech, createListener, voiceSupported, ttsAvailable, probeRecognition } from './voice.js';
 import { matchChoice } from './match.js';
 import { makeTask, usePool } from './tasks.js';
 import { setScene, preloadScene, enter, leave, cheer, wobble, impact } from './stage.js';
@@ -124,6 +124,8 @@ async function loadTaskPool() {
 // после первого обращения пользователя к странице.
 async function checkVoiceSupport() {
   el.noVoiceHint.hidden = await ttsAvailable();
+  // Замер распознавания — только запись в журнал, поведения не меняет.
+  probeRecognition();
 }
 
 async function loadCatalogue() {

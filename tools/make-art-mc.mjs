@@ -3448,6 +3448,267 @@ ${halo}
 ${flame}`, GLOW_DEF);
 }
 
+/* ---------------- тринадцатый день ---------------- */
+
+// Туман тринадцатого дня лиловый, а не зелёный, как у одиннадцатого:
+// в каталоге лилового нет вовсе (`sky-void` — это пустота Края, там неба
+// нет), и история узнаётся цветом с первого взгляда. Несут его небо,
+// дальний план и полоса дымки — но НЕ земля: соседние сцены дня берут
+// готовые near-breach, near-wall и near-bell с обычной травой, и своя
+// палитра грунта здесь означала бы, что земля меняет цвет от сцены
+// к сцене. У одиннадцатого дня было наоборот: там свои были почти все
+// ближние слои, и FOG_GRASS красил весь день целиком.
+
+/** Полоса лиловой дымки над линией земли — как `fogBand`, но холодная. */
+const mistBand = () => {
+  const out = [`<defs><linearGradient id="mistband" x1="0" y1="0" x2="0" y2="1">`
+    + `<stop offset="0" stop-color="#cfc6dc" stop-opacity="0.46"/>`
+    + `<stop offset="1" stop-color="#cfc6dc" stop-opacity="0"/>`
+    + `</linearGradient></defs>`];
+  out.push(`<rect x="0" y="${n(GROUND - B * 2.8)}" width="${W}" height="${n(B * 3.4)}" fill="url(#mistband)"/>`);
+  return out.join('');
+};
+
+/**
+ * Предрассветный лиловый туман. Светила нет — третья такая история после
+ * грозы десятого дня и молока одиннадцатого, и повод снова свой: там тучи,
+ * там молоко, здесь холодная мгла перед рассветом.
+ *
+ * Градиент снизу светлее верха, как у `sky-fog`: у настоящего тумана свет
+ * идёт от земли. Без этого переворота кадр читается обычной ночью, а ночей
+ * в каталоге уже четыре.
+ *
+ * Облака двумя слоями и оба мягкие — это подложка под нейросеть, кромку
+ * тумана вектор не нарисует.
+ */
+function skyMist() {
+  const defs = `<defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#312b40"/><stop offset="0.4" stop-color="#4d4462"/>
+    <stop offset="0.74" stop-color="#8a7c9e" stop-opacity="1"/>
+    <stop offset="1" stop-color="#c6bbd4"/></linearGradient></defs>`;
+  return svg(`<rect width="${W}" height="${H}" fill="url(#g)"/>
+${clouds(131, '#6d6183', 0.42)}
+${clouds(132, '#b4a8c6', 0.3)}`, defs);
+}
+
+/**
+ * Ряды одинаковых ёлок, уходящие в туман. От `far-pines-fog` отличается
+ * не деревьями, а порядком: там ели расставлены случайно, здесь — через
+ * равный шаг, и в каждом ярусе их ровно столько же. Повторение и есть
+ * смысл кадра: мир сам начал двоиться ещё до того, как вышли копии.
+ *
+ * Шаг у ярусов разный (пять, четыре и три блока), поэтому гребёнка
+ * не складывается в одну решётку, а остаётся тремя разными рядами.
+ *
+ * Фона нет нарочно: подложку заливает `rasterInit` цветом `#0a1430`.
+ * Ели здесь заметно светлее этой подложки, поэтому слой собирается
+ * `chromaKey`, а не маской — в отличие от `far-fire`, где холмы были
+ * почти чёрными и хромакей стёр их начисто.
+ */
+function farDoubles(seed = 877) {
+  const rand = rng(seed);
+  const out = [];
+  const BANDS = [
+    { lift: B * 2.6, step: 5, tiers: 2, pal: { base: '#6b6480', dark: '#5d5772', light: '#7a7290' } },
+    { lift: B * 1.3, step: 4, tiers: 3, pal: { base: '#55506b', dark: '#49455d', light: '#625c7a' } },
+    { lift: 0, step: 3, tiers: 4, pal: { base: '#403c54', dark: '#352f45', light: '#4b4663' } },
+  ];
+  for (const band of BANDS) {
+    const baseY = GROUND - B - band.lift;
+    for (let col = 0; col * B < W; col++) out.push(block(col * B, baseY, band.pal, rand));
+    // Через равный шаг, а не случайно: в этом вся разница с сосняком тумана.
+    for (let x = band.step * B; x < W; x += band.step * B) {
+      for (let r = 0; r < band.tiers; r++) {
+        const wide = band.tiers - r;
+        for (let c = -wide + 1; c < wide; c++) {
+          out.push(block(x + c * B, baseY - (r + 1) * B, band.pal, rand));
+        }
+      }
+    }
+  }
+  return svg(out.join('\n'));
+}
+
+/**
+ * Улица деревни в тумане. Домики нарочно одинаковые до последнего блока
+ * и через равный шаг: сцена про копии, и двоиться должно всё, а не только
+ * Стив. Три домика — больше кадр не держит, четвёртый лезет в правую
+ * чистую полосу.
+ *
+ * Крыши подняты до 42% высоты, то есть выше 56% — там, где текста нет
+ * ни при какой длине. Поставь их ниже, и от улицы в кадре остался бы один
+ * конёк: это та же ловушка, на которой уже погорели щиты десятого дня
+ * и ловушки одиннадцатого.
+ *
+ * Горки вещей — предмет задания сцены `count`, и они стоят на 75.6…89%
+ * ширины. Контракт обещает, что текст кончается на 65%, но замер на кадре
+ * 1280×760 даёт 68.5%: размеры в `vmin`, и на низком кадре блок шире.
+ * Поэтому запас, а не впритык. Две горки, а не одна: вопрос звучит как
+ * «сколько всего», то есть слагаемых должно быть видно два.
+ */
+function nearCopies(seed = 881) {
+  const rand = rng(seed);
+  const out = [];
+  const LOG = '#6b4a28', LOG_TOP = '#8a6334', LOG_DARK = '#4e3519';
+  const ROOF = '#6a4a62', ROOF_DARK = '#4f3749';
+  const PANE = '#c9bda8';
+  const SHIELD = '#8a6334', SHIELD_EDGE = '#4e3519', SHIELD_IRON = '#b9bcc6';
+
+  // Домик: четыре блока в высоту, конёк из двух рядов, окно по центру.
+  // Все три собираются одним и тем же кодом с одним и тем же seed-шагом —
+  // иначе «одинаковые» перестанут быть одинаковыми.
+  const house = (x0) => {
+    for (let c = 0; c < 3; c++) {
+      for (let r = 0; r < 4; r++) out.push(block(x0 + c * B, GROUND - B * (r + 1), P.plank, rand));
+    }
+    for (let c = -1; c <= 3; c++) {
+      out.push(`<rect x="${n(x0 + c * B)}" y="${n(GROUND - B * 5)}" width="${B}" height="${B}" fill="${c % 2 ? ROOF : ROOF_DARK}"/>`);
+    }
+    out.push(`<rect x="${n(x0 + B * 1.2)}" y="${n(GROUND - B * 3.3)}" width="${n(B * 0.6)}" height="${n(B * 0.6)}" fill="${PANE}"/>`);
+    out.push(`<rect x="${n(x0 + B * 1.1)}" y="${n(GROUND - B * 1.9)}" width="${n(B * 0.8)}" height="${n(B * 1.9)}" fill="${LOG}"/>`);
+    out.push(`<rect x="${n(x0 + B * 1.1)}" y="${n(GROUND - B * 1.9)}" width="${n(B * 0.8)}" height="10" fill="${LOG_TOP}"/>`);
+  };
+  for (const col of [1, 8, 15]) house(col * B);
+
+  // Фонарный столб между домиками: единственный тёплый огонёк в кадре,
+  // и по нему видно, насколько густ туман.
+  const lx = B * 4.6;
+  out.push(`<rect x="${n(lx)}" y="${n(GROUND - B * 3.4)}" width="${n(B * 0.3)}" height="${n(B * 3.4)}" fill="${LOG_DARK}"/>`);
+
+  // Две горки в правой чистой полосе — предмет задания сцены `count`.
+  // Нарисованы ЩИТАМИ, а не блоками: вопрос там из области `raid`, то есть
+  // про щиты, арбалеты, шлемы и плащи, а серый куб читается ровно «блоком»
+  // и уводит ребёнка не туда. Проверено в прогоне: при блоках выпало
+  // «сколько будет шесть плащей», и на экране лежали кубы.
+  //
+  // Щит тот же, что на гребне стены двенадцатого дня, только мельче:
+  // силуэт у него свой, и в тумане он не спутается с постройкой.
+  const shield = (x, y, sz) => {
+    const h = sz * 1.3;
+    out.push(`<path d="M ${n(x)} ${n(y)} h ${n(sz)} v ${n(h * 0.6)} l ${n(-sz / 2)} ${n(h * 0.4)} l ${n(-sz / 2)} ${n(-h * 0.4)} Z" fill="${SHIELD}" stroke="${SHIELD_EDGE}" stroke-width="6"/>`);
+    out.push(`<rect x="${n(x + sz * 0.14)}" y="${n(y + h * 0.26)}" width="${n(sz * 0.72)}" height="${n(h * 0.16)}" fill="${SHIELD_IRON}"/>`);
+    out.push(`<rect x="${n(x + sz * 0.4)}" y="${n(y + h * 0.1)}" width="${n(sz * 0.2)}" height="${n(h * 0.52)}" fill="${SHIELD_IRON}"/>`);
+  };
+  const pile = (x0, k) => {
+    for (let i = 0; i < k; i++) {
+      shield(x0 + i * B * 0.74, GROUND - B * 1.05 - (i % 2 ? B * 0.3 : 0), B * 0.66);
+    }
+  };
+  pile(W * 0.73, 3);
+  pile(W * 0.855, 3);
+
+  return svg(`${groundRows(rand)}
+${out.join('\n')}
+${glow(lx + B * 0.15, GROUND - B * 3.5, B * 1.8)}
+${torch(lx - B * 0.35, GROUND - B * 4)}
+${mistBand()}`, GLOW_DEF);
+}
+
+/**
+ * Иллюзионер. Роль `villain` освободилась вместе с драконом, и злодей
+ * сезона — он. Сделан по тем же правилам, что разбойник: не страшный.
+ * Лицо открыто, капюшон мягкий, руки подняты не для удара, а показывают
+ * фокус — он скорее хвастается, чем угрожает.
+ *
+ * Узнают его по лиловому плащу: цвет дня и цвет тумана, из которого
+ * выходят копии. У разбойников плащ серо-синий, у Алекс тёплый —
+ * спутать не с кем.
+ *
+ * Пропорции взяты у Стива (16×32 «пикселей»), и это не лень, а замер:
+ * первая версия была шире, с руками отдельными столбиками по краям,
+ * и в прогоне читалась не человеком, а лиловым ящиком с двумя серыми
+ * квадратами наверху. Руки теперь ПРИМЫКАЮТ к плащу — заходят на него
+ * по высоте плеча, — а искры сидят ниже верха капюшона, чтобы самой
+ * высокой точкой силуэта осталась голова.
+ */
+function illusioner() {
+  const U = 20;
+  const cloak = '#6b5a86', cloakDark = '#4a3d63', cloakLight = '#8273a0';
+  const skin = '#9aa2a8', skinDark = '#7d858b';
+  const eye = '#e4d8f2', brow = '#3a4048', spark = '#d9c9f2';
+
+  const body = `
+<!-- капюшон: самая высокая точка силуэта -->
+${px(3.5 * U, 0, 9 * U, 3 * U, cloakDark)}
+${px(3.5 * U, 3 * U, 1.2 * U, 5.4 * U, cloakDark)}
+${px(11.3 * U, 3 * U, 1.2 * U, 5.4 * U, cloakDark)}
+
+<!-- лицо открыто, как у разбойника -->
+${px(4.7 * U, 2.6 * U, 6.6 * U, 5.8 * U, skin)}
+${px(5.6 * U, 4.4 * U, 1.5 * U, U, eye)}
+${px(8.9 * U, 4.4 * U, 1.5 * U, U, eye)}
+${px(5.4 * U, 3.8 * U, 1.9 * U, 0.5 * U, brow)}
+${px(8.7 * U, 3.8 * U, 1.9 * U, 0.5 * U, brow)}
+${px(7.3 * U, 5.2 * U, 1.4 * U, 2.4 * U, skinDark)}
+
+<!-- плащ -->
+${px(3.5 * U, 8.4 * U, 9 * U, 12.8 * U, cloak)}
+${px(3.5 * U, 8.4 * U, 9 * U, 0.9 * U, cloakLight)}
+${px(7.6 * U, 9.3 * U, 0.8 * U, 11.9 * U, cloakDark)}
+
+<!-- руки: подняты, но примыкают к плащу на высоте плеча -->
+${px(0.9 * U, 4.6 * U, 2.6 * U, 5 * U, cloak)}
+${px(12.5 * U, 4.6 * U, 2.6 * U, 5 * U, cloak)}
+${px(0.9 * U, 3 * U, 2.6 * U, 1.6 * U, skin)}
+${px(12.5 * U, 3 * U, 2.6 * U, 1.6 * U, skin)}
+${px(1.3 * U, 1.3 * U, 1.8 * U, 1.5 * U, spark, ' opacity="0.85"')}
+${px(12.9 * U, 1.3 * U, 1.8 * U, 1.5 * U, spark, ' opacity="0.85"')}
+
+<!-- ноги -->
+${px(4.2 * U, 21.2 * U, 3.6 * U, 8.8 * U, cloakDark)}
+${px(8.2 * U, 21.2 * U, 3.6 * U, 8.8 * U, cloakDark)}
+${px(4.2 * U, 30 * U, 3.6 * U, 2 * U, '#352c44')}
+${px(8.2 * U, 30 * U, 3.6 * U, 2 * U, '#352c44')}`;
+
+  return charSvg(body, 16 * U, 32 * U);
+}
+
+/**
+ * Двойник Стива. Тот же силуэт блок в блок — иначе ребёнок отличал бы
+ * копию по рисунку, а не по тому, что говорит история, и задание сцены
+ * `street` пропало бы зря. Разница ровно одна и видна только вместе
+ * с настоящим рядом: копия вымыта в лиловое и прозрачна.
+ *
+ * Прозрачность задана группе целиком, а не каждому блоку: иначе края
+ * соседних прямоугольников просвечивают друг через друга и копия
+ * выходит в полоску. Покачивания `idle` у неё нет — она не дышит,
+ * и в сцене `nose` про это сказано вслух.
+ */
+function steveGhost() {
+  const U = 20;
+  const skin = '#9b93b0', hair = '#53496b', shirt = '#7f9fb8';
+  const legs = '#6a6a9c', shoe = '#5e5a74', eye = '#e8e4f2', iris = '#53496b';
+
+  const body = `
+<!-- голова -->
+${px(4 * U, 0, 8 * U, 8 * U, skin)}
+${px(4 * U, 0, 8 * U, 2 * U, hair)}
+${px(4 * U, 2 * U, U, U, hair)}
+${px(11 * U, 2 * U, U, U, hair)}
+${px(5.5 * U, 3 * U, 1.5 * U, U, eye)}
+${px(8.5 * U, 3 * U, 1.5 * U, U, eye)}
+${px(6 * U, 3 * U, U, U, iris)}
+${px(9 * U, 3 * U, U, U, iris)}
+${px(6.5 * U, 5.5 * U, 3 * U, 0.8 * U, '#7d7593')}
+
+<!-- туловище и руки -->
+${px(4 * U, 8 * U, 8 * U, 12 * U, shirt)}
+${px(0, 8 * U, 4 * U, 9 * U, shirt)}
+${px(12 * U, 8 * U, 4 * U, 9 * U, shirt)}
+${px(0, 17 * U, 4 * U, 3 * U, skin)}
+${px(12 * U, 17 * U, 4 * U, 3 * U, skin)}
+
+<!-- ноги -->
+${px(4 * U, 20 * U, 4 * U, 10 * U, legs)}
+${px(8 * U, 20 * U, 4 * U, 10 * U, legs)}
+${px(4 * U, 30 * U, 4 * U, 2 * U, shoe)}
+${px(8 * U, 30 * U, 4 * U, 2 * U, shoe)}`;
+
+  // Копия не дышит: `idle` ей не нужен, нужна прозрачность группы.
+  return charSvg(body, 16 * U, 32 * U,
+    '.idle { animation: none; opacity: 0.62 }');
+}
+
 /* ---------------- сборка ---------------- */
 
 console.log('Небо:');
@@ -3459,6 +3720,7 @@ write('assets/mc/sky-void.svg', skyVoid());
 write('assets/mc/sky-storm.svg', skyStorm());
 write('assets/mc/sky-fog.svg', skyFog());
 write('assets/mc/sky-fire.svg', skyFire());
+write('assets/mc/sky-mist.svg', skyMist());
 write('assets/mc/sun-day.svg', celestial(1500, 220, 88, '#ffe873', '#fff3b0'));
 write('assets/mc/sun-sunset.svg', celestial(1420, 600, 86, '#ffc24d', '#ff9d5c'));
 write('assets/mc/moon-night.svg', celestial(1500, 230, 74, '#f2f5fb', '#c9d8f2', 90));
@@ -3480,6 +3742,7 @@ write('assets/mc/far-end-island.svg', farEndIsland());
 write('assets/mc/far-smoke.svg', farSmoke());
 write('assets/mc/far-pines-fog.svg', farPinesFog());
 write('assets/mc/far-fire.svg', farFire());
+write('assets/mc/far-doubles.svg', farDoubles());
 
 console.log('Ближний план:');
 write('assets/mc/near-forest.svg', nearForest());
@@ -3512,6 +3775,7 @@ write('assets/mc/near-bell.svg', nearBell());
 write('assets/mc/near-traps.svg', nearTraps());
 write('assets/mc/near-outpost.svg', nearOutpost());
 write('assets/mc/near-breach.svg', nearBreach());
+write('assets/mc/near-copies.svg', nearCopies());
 
 console.log('Персонажи:');
 write('assets/mc/steve.svg', steve());
@@ -3532,5 +3796,7 @@ write('assets/mc/pillager-mace.svg', pillager('mace'));
 write('assets/mc/pillager-bow.svg', pillager('bow'));
 write('assets/mc/pillager-sword.svg', pillager('sword'));
 write('assets/mc/cage.svg', cage());
+write('assets/mc/illusioner.svg', illusioner());
+write('assets/mc/steve-ghost.svg', steveGhost());
 
 console.log('\nГотово.');

@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 640" width="320" height="640">
+<style>
+  .idle { animation: idle 3.2s ease-in-out infinite; transform-origin: 50% 100%; }
+  @keyframes idle { 0%,100% { transform: translateY(0) } 50% { transform: translateY(-6px) } }
+  @media (prefers-reduced-motion: reduce) { .idle { animation: none } }
+  
+</style>
+<g class="idle">
+
+<!-- капюшон: самая высокая точка силуэта -->
+<rect x="70" y="0" width="180" height="60" fill="#4a3d63"/>
+<rect x="70" y="60" width="24" height="108" fill="#4a3d63"/>
+<rect x="226" y="60" width="24" height="108" fill="#4a3d63"/>
+
+<!-- лицо открыто, как у разбойника -->
+<rect x="94" y="52" width="132" height="116" fill="#9aa2a8"/>
+<rect x="112" y="88" width="30" height="20" fill="#e4d8f2"/>
+<rect x="178" y="88" width="30" height="20" fill="#e4d8f2"/>
+<rect x="108" y="76" width="38" height="10" fill="#3a4048"/>
+<rect x="174" y="76" width="38" height="10" fill="#3a4048"/>
+<rect x="146" y="104" width="28" height="48" fill="#7d858b"/>
+
+<!-- плащ -->
+<rect x="70" y="168" width="180" height="256" fill="#6b5a86"/>
+<rect x="70" y="168" width="180" height="18" fill="#8273a0"/>
+<rect x="152" y="186" width="16" height="238" fill="#4a3d63"/>
+
+<!-- руки: подняты, но примыкают к плащу на высоте плеча -->
+<rect x="18" y="92" width="52" height="100" fill="#6b5a86"/>
+<rect x="250" y="92" width="52" height="100" fill="#6b5a86"/>
+<rect x="18" y="60" width="52" height="32" fill="#9aa2a8"/>
+<rect x="250" y="60" width="52" height="32" fill="#9aa2a8"/>
+<rect x="26" y="26" width="36" height="30" fill="#d9c9f2" opacity="0.85"/>
+<rect x="258" y="26" width="36" height="30" fill="#d9c9f2" opacity="0.85"/>
+
+<!-- ноги -->
+<rect x="84" y="424" width="72" height="176" fill="#4a3d63"/>
+<rect x="164" y="424" width="72" height="176" fill="#4a3d63"/>
+<rect x="84" y="600" width="72" height="40" fill="#352c44"/>
+<rect x="164" y="600" width="72" height="40" fill="#352c44"/>
+</g>
+</svg>

@@ -1,5 +1,12 @@
 [
   {
+    "id": "doubles",
+    "title": "Тот, кто делает двойников",
+    "subtitle": "Тринадцатый день Стива · пять игр",
+    "cover": "assets/covers/doubles.webp",
+    "story": "stories/doubles.json"
+  },
+  {
     "id": "night-raid",
     "title": "Ночь рейда",
     "subtitle": "Двенадцатый день Стива · пять игр",

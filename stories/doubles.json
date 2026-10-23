@@ -1,0 +1,158 @@
+{
+  "title": "Тот, кто делает двойников",
+  "theme": "minecraft",
+  "voice": "hero",
+  "start": "fog",
+  "scenes": {
+
+    "fog": {
+      "bg": { "sky": "assets/mc/sky-mist.webp",
+              "far": "assets/mc/far-doubles.webp", "near": "assets/mc/near-breach.svg" },
+      "cast": [ { "src": "assets/mc/wolf.svg", "x": 17, "y": 28, "w": 7 },
+                { "src": "assets/mc/steve.svg", "x": 27, "y": 28, "w": 8 },
+                { "src": "assets/mc/alex.svg", "x": 38, "y": 28, "w": 8 },
+                { "src": "assets/mc/golem.svg", "x": 66, "y": 28, "w": 13 } ],
+      "voice": "ally",
+      "text": "Третий отряд так и не вышел. Вместо него из ёлок пополз туман — густой, лиловый, по пояс. Алекс сказала глухо. «Это не погода».",
+      "prompt": "Что сделаем сначала: разбудим деревню или выйдем к ёлкам?",
+      "choices": [
+        { "label": "Разбудить деревню", "keywords": ["деревню", "разбудить", "деревня", "людей", "жителей", "разбудим"],
+          "voice": "hero",
+          "say": "Стив прошёл по улице и стукнул в каждое окошко. «Вставайте! Туман пришёл не сам!»",
+          "dir": "left", "next": "street" },
+        { "label": "Выйти к ёлкам", "keywords": ["ёлкам", "елкам", "ёлки", "елки", "к ёлкам", "туман", "вперёд", "вперед"],
+          "voice": "hero",
+          "say": "Стив шагнул в туман первым и сразу перестал видеть собственные ботинки. «Ну и молоко».",
+          "dir": "right", "next": "street" }
+      ]
+    },
+
+    "street": {
+      "bg": { "sky": "assets/mc/sky-mist.webp",
+              "far": "assets/mc/far-doubles.webp", "near": "assets/mc/near-copies.svg" },
+      "cast": [ { "src": "assets/mc/steve.svg", "x": 24, "y": 28, "w": 8 },
+                { "src": "assets/mc/alex.svg", "x": 35, "y": 28, "w": 8 },
+                { "src": "assets/mc/steve-ghost.svg", "x": 58, "y": 28, "w": 8 },
+                { "src": "assets/mc/steve-ghost.svg", "x": 68, "y": 28, "w": 8 },
+                { "src": "assets/mc/wolf.svg", "x": 79, "y": 28, "w": 7 } ],
+      "text": "Из тумана вышли три Стива. Все в одной рубахе, все с одной киркой. Волк зарычал и прижал уши — двое не оставляли ни тени, ни шороха.",
+      "task": { "kind": "logic", "max": 10, "types": ["oddOneOut"], "topic": "doubles" },
+      "next": "nose"
+    },
+
+    "nose": {
+      "bg": { "sky": "assets/mc/sky-mist.webp",
+              "far": "assets/mc/far-doubles.webp", "near": "assets/mc/near-copies.svg" },
+      "cast": [ { "src": "assets/mc/steve.svg", "x": 24, "y": 28, "w": 8 },
+                { "src": "assets/mc/wolf.svg", "x": 34, "y": 28, "w": 7 },
+                { "src": "assets/mc/steve-ghost.svg", "x": 58, "y": 28, "w": 8 },
+                { "src": "assets/mc/steve-ghost.svg", "x": 68, "y": 28, "w": 8 } ],
+      "text": "Волк прошёл между копиями, обнюхал каждую и сел у одного Стива. Нос не обманешь туманом — он больше не двинулся.",
+      "prompt": "Пока тихо — пойдём дальше или поглядим на двойника?",
+      "choices": [
+        { "label": "Идём дальше", "keywords": ["дальше", "идём", "идем", "пошли", "вперёд", "вперед"],
+          "dir": "forward", "next": "count" },
+        { "label": "Поглядеть вблизи", "keywords": ["вблизи", "двойника", "поглядеть", "копию", "посмотреть", "глядеть"],
+          "voice": "trickster",
+          "say": "Стив подошёл к копии почти вплотную. Та не дышала и не мигала, а из тумана кто-то засмеялся! «Нравится? Я умею и лучше!»",
+          "dir": "forward", "next": "count" }
+      ]
+    },
+
+    "count": {
+      "bg": { "sky": "assets/mc/sky-mist.webp",
+              "far": "assets/mc/far-doubles.webp", "near": "assets/mc/near-copies.svg" },
+      "cast": [ { "src": "assets/mc/steve.svg", "x": 22, "y": 28, "w": 8 },
+                { "src": "assets/mc/alex.svg", "x": 33, "y": 28, "w": 8 },
+                { "src": "assets/mc/steve-ghost.svg", "x": 46, "y": 28, "w": 8 },
+                { "src": "assets/mc/steve-ghost.svg", "x": 57, "y": 28, "w": 8 },
+                { "src": "assets/mc/steve-ghost.svg", "x": 68, "y": 28, "w": 8 } ],
+      "voice": "ally",
+      "text": "Копий стало больше. Они встали двумя рядами, и каждая положила справа одинаковую вещь. Алекс крикнула сверху! «Считай обе горки!»",
+      "task": { "kind": "math", "max": 16, "types": ["addition"], "topic": "raid", "spread": "wide" },
+      "next": "fork"
+    },
+
+    "fork": {
+      "bg": { "sky": "assets/mc/sky-mist.webp",
+              "far": "assets/mc/far-doubles.webp", "near": "assets/mc/near-bell.svg" },
+      "cast": [ { "src": "assets/mc/steve.svg", "x": 27, "y": 28, "w": 8 },
+                { "src": "assets/mc/alex.svg", "x": 38, "y": 28, "w": 8 },
+                { "src": "assets/mc/villager.svg", "x": 49, "y": 28, "w": 7 } ],
+      "voice": "friend",
+      "text": "Вся деревня сошлась у колокольни, и каждый косился на соседа. Житель держался за верёвку и спросил шёпотом. «Хм-хм… А ты точно ты?»",
+      "prompt": "Куда пойдём: наверх на колокольню или к стене?",
+      "choices": [
+        { "label": "На колокольню", "keywords": ["колокольню", "наверх", "на колокольню", "башню", "выше"],
+          "dir": "left", "next": "tower" },
+        { "label": "К стене", "keywords": ["стене", "к стене", "стена", "вниз", "к стенке"],
+          "dir": "right", "next": "wall" }
+      ]
+    },
+
+    "tower": {
+      "bg": { "sky": "assets/mc/sky-mist.webp",
+              "far": "assets/mc/far-doubles.webp", "near": "assets/mc/near-bell.svg" },
+      "cast": [ { "src": "assets/mc/steve.svg", "x": 30, "y": 28, "w": 8 },
+                { "src": "assets/mc/villager.svg", "x": 41, "y": 28, "w": 7 } ],
+      "text": "С колокольни туман был как молоко, и в нём двигались фигуры. Стив считал их дважды и дважды сбивался — людей в деревне столько не наберётся.",
+      "prompt": "Спускаемся к стене?",
+      "choices": [
+        { "label": "Спускаемся", "keywords": ["да", "спускаемся", "вниз", "идём", "идем", "пошли"],
+          "dir": "right", "next": "wall" }
+      ]
+    },
+
+    "wall": {
+      "bg": { "sky": "assets/mc/sky-mist.webp",
+              "far": "assets/mc/far-doubles.webp", "near": "assets/mc/near-wall.svg" },
+      "cast": [ { "src": "assets/mc/steve.svg", "x": 26, "y": 28, "w": 8 },
+                { "src": "assets/mc/alex.svg", "x": 37, "y": 28, "w": 8 },
+                { "src": "assets/mc/villager.svg", "x": 48, "y": 28, "w": 7 },
+                { "src": "assets/mc/golem.svg", "x": 62, "y": 28, "w": 13 } ],
+      "text": "Пролом чинили всей деревней. Блоки ложились рядами, и житель считал вслух, чтобы не сбиться. А кто-то в тумане подсказывал неверно!",
+      "task": { "kind": "math", "max": 14, "types": ["next"], "topic": "blocks", "spread": "wide" },
+      "next": "him"
+    },
+
+    "him": {
+      "bg": { "sky": "assets/mc/sky-mist.webp",
+              "far": "assets/mc/far-doubles.webp", "near": "assets/mc/near-wall.svg" },
+      "cast": [ { "src": "assets/mc/steve.svg", "x": 22, "y": 28, "w": 8 },
+                { "src": "assets/mc/alex.svg", "x": 33, "y": 28, "w": 8 },
+                { "src": "assets/mc/steve-ghost.svg", "x": 70, "y": 28, "w": 8 },
+                { "src": "assets/mc/steve-ghost.svg", "x": 79, "y": 28, "w": 8 },
+                { "src": "assets/mc/illusioner.svg", "x": 61, "y": 28, "w": 10 } ],
+      "voice": "trickster",
+      "fx": "impact",
+      "text": "Он вышел из тумана сам — в лиловом плаще! Щиты трещали. Он крикнул поверх тумана! «Ломайте!»",
+      "task": { "kind": "math", "max": 8, "types": ["subtraction"], "topic": "raid", "spread": "wide" },
+      "next": "melt"
+    },
+
+    "melt": {
+      "bg": { "sky": "assets/mc/sky-mist.webp",
+              "far": "assets/mc/far-doubles.webp", "near": "assets/mc/near-copies.svg" },
+      "cast": [ { "src": "assets/mc/steve.svg", "x": 25, "y": 28, "w": 8 },
+                { "src": "assets/mc/alex.svg", "x": 36, "y": 28, "w": 8 },
+                { "src": "assets/mc/wolf.svg", "x": 46, "y": 28, "w": 7 },
+                { "src": "assets/mc/steve-ghost.svg", "x": 70, "y": 28, "w": 8 } ],
+      "text": "Копии исчезали одна за другой. В тумане по очереди мелькало то одно, то другое, и порядок не менялся ни разу.",
+      "task": { "kind": "logic", "max": 10, "types": ["pattern"], "topic": "doubles" },
+      "next": "bell"
+    },
+
+    "bell": {
+      "bg": { "sky": "assets/mc/sky-mist.webp",
+              "far": "assets/mc/far-doubles.webp", "near": "assets/mc/near-bell.svg" },
+      "cast": [ { "src": "assets/mc/wolf.svg", "x": 18, "y": 28, "w": 7 },
+                { "src": "assets/mc/steve.svg", "x": 25, "y": 28, "w": 8 },
+                { "src": "assets/mc/alex.svg", "x": 36, "y": 28, "w": 8 },
+                { "src": "assets/mc/villager.svg", "x": 47, "y": 28, "w": 7 },
+                { "src": "assets/mc/golem.svg", "x": 58, "y": 28, "w": 13 } ],
+      "voice": "ally",
+      "text": "Последняя копия растаяла, и туман лёг на землю. И тут колокол ударил сам — без верёвки, без человека. Алекс сказала тихо. «А мы его не трогали»."
+    }
+
+  }
+}

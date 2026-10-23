@@ -194,6 +194,32 @@ const LAYERS = {
       + `cold damp grey-green haze between the trunks, ${STYLE}`,
     negative: NEG + ', round treetops, sun, moon, clear air, blue sky, warm light, sunset colours',
   },
+  // ---- тринадцатый день ----
+  // Лиловый туман перед рассветом. Светила снова нет, и беда та же, что
+  // у молока одиннадцатого дня: генератор норовит разогнать туман и
+  // вернуть ясное утро. Отличать этот день от того должен ЦВЕТ, поэтому
+  // лиловое названо трижды, а серо-зелёное стоит в negative наравне
+  // с рассветом. Свет идёт снизу — у тумана он от земли.
+  'mc/sky-mist': {
+    strength: 0.42,
+    prompt: `cold lilac fog sky before dawn, deep violet-grey at the top, pale lilac mist filling the lower half, `
+      + `soft layered haze, cold violet light coming from below near the horizon, `
+      + `no sun, no moon, no stars, ${STYLE}, no ground, no trees`,
+    negative: NEG + ', clear sky, sunrise, sun, moon, stars, blue sky, grey-green fog, orange, pink, warm light, dark storm clouds, rain streaks, lightning bolt',
+  },
+  // Ряды одинаковых ёлок. От far-pines-fog отличается не деревьями, а
+  // ПОРЯДКОМ: ели стоят через равный шаг, и повторение здесь — смысл
+  // кадра, а не огрех. Поэтому identical и evenly spaced сказаны дважды,
+  // а random и varied стоят в negative: генератор охотно ломает ряд,
+  // стоит дать ему волю.
+  'mc/far-doubles': {
+    strength: 0.24,
+    prompt: `rows of identical blocky spruce trees receding into cold lilac fog, `
+      + `evenly spaced identical cubic conifers repeating in three tiers, `
+      + `the farthest rows dissolved in pale violet mist, the nearest row still sharp, `
+      + `cold lilac haze between the trunks, ${STYLE}`,
+    negative: NEG + ', round treetops, random spacing, varied tree shapes, sun, moon, clear air, blue sky, warm light, sunset colours, green grass',
+  },
 };
 
 

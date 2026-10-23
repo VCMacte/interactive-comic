@@ -122,7 +122,8 @@ const mw = mis.sessions[0].windows[0];
 // Сцена и задание приходят ДО окна: вопрос сначала читается вслух.
 check('окно знает свою сцену', mw.scene, 'anvil');
 check('окно знает задание', [mw.task.question, mw.task.answer], ['Сколько будет пять и семь?', 'Двенадцать']);
-check('услышанное и вердикт', mw.heard, [{ text: '12', label: 'Два', score: 0, miss: true, times: 1 }]);
+check('услышанное и вердикт', mw.heard,
+  [{ text: '12', label: 'Два', score: 0, miss: true, repeat: false, times: 1 }]);
 
 // Четыре промаха подряд, потом кнопка — ровно то, что было на телефоне.
 const mishear4 = [...mishear.slice(0, 4)];
@@ -174,6 +175,21 @@ const collapsedMatch = windows([
   { t: 1000, type: 'mic.window.end', reason: 'stop' },
 ]);
 check('склеенные промахи считаются разами', collapsedMatch[0].heard[0].times, 7);
+
+// Нарастающие куски одной фразы помечены в журнале `repeat`: промахом
+// считается только первый. Без этого разбор показывал четыре попытки там,
+// где постороннее «Мам я уже…» прозвучало один раз.
+const growing = windows([
+  { t: 0, type: 'mic.window.start' },
+  { t: 10, type: 'mic.match', heard: 'Мам', label: null, miss: true },
+  { t: 20, type: 'mic.match', heard: 'Мам я', label: null, miss: true, repeat: true },
+  { t: 30, type: 'mic.match', heard: 'Мам я уже', label: null, miss: true, repeat: true },
+  { t: 1000, type: 'mic.window.end', reason: 'stop' },
+]);
+check('повтор фразы не считается попыткой',
+  growing[0].heard.map((h) => !!h.repeat), [false, true, true]);
+check('попыток в счёт — одна',
+  growing[0].heard.filter((h) => h.miss && !h.repeat).length, 1);
 
 // Длинное молчаливое окно затыком не является: ребёнок просто думал.
 check('молчание — не затык', isFlapping({

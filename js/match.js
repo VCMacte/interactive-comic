@@ -42,6 +42,19 @@ function expand(word) {
   return out;
 }
 
+// Служебные слова сами по себе ответом не бывают. Союз «и» лежит внутри
+// ключей «шерсть и вода», «палки и уголёк» — и сравнение по словам давало ему
+// точное совпадение: услышанное «железо и» уезжало в «Шерсть и вода». Тем же
+// путём одинокое «по» выбирало между «По мосту над лавой» и «По песку»
+// порядком перебора, а не смыслом. Внутри целой фразы они по-прежнему
+// считаются — запрет только на одиночное слово.
+const STOPWORDS = new Set([
+  'и', 'а', 'но', 'да', 'или', 'либо',
+  'в', 'во', 'на', 'по', 'с', 'со', 'к', 'ко', 'у', 'за', 'из', 'от', 'до',
+  'о', 'об', 'при', 'про', 'под', 'над', 'для', 'без', 'через',
+  'не', 'ни', 'же', 'бы', 'ли', 'вот', 'уже',
+]);
+
 /** Идут ли слова ключа подряд среди услышанных слов. */
 function hasWords(said, keys) {
   if (!keys.length || keys.length > said.length) return false;
@@ -52,6 +65,10 @@ function hasWords(said, keys) {
   }
   return false;
 }
+
+// Надбавка за попадание одним словом вместо целой фразы: дробная, чтобы
+// точное слово (0.5) всё равно шло впереди фразы, расслышанной с ошибкой.
+const PART_PENALTY = 0.5;
 
 /**
  * @returns {{choice:object, score:number}|null} — score 0 это точное попадание
@@ -78,14 +95,37 @@ export function matchChoice(transcript, choices) {
       if (hasWords(said, key.split(' ')) && 0 < bestScore) { best = choice; bestScore = 0; continue; }
 
       for (const kw of key.split(' ').flatMap(expand)) {
+        if (STOPWORDS.has(kw)) continue;
         // короткие слова ошибок почти не прощают, длинные — до двух
         const tolerance = kw.length <= 3 ? 0 : kw.length <= 5 ? 1 : 2;
         for (const w of words) {
           const d = levenshtein(w, kw);
-          if (d <= tolerance && d < bestScore) { best = choice; bestScore = d; }
+          // Одно слово ключа — слабее целой фразы, поэтому PART_PENALTY:
+          // услышанное «по песку» обязано уехать в «По песку», а не в «По
+          // мосту над лавой», где тоже нашлось слово «по». Без надбавки
+          // побеждал тот вариант, что стоял в списке раньше.
+          const s = d + PART_PENALTY;
+          if (d <= tolerance && s < bestScore) { best = choice; bestScore = s; }
         }
       }
     }
   }
   return best ? { choice: best, score: bestScore } : null;
+}
+
+/**
+ * Одна и та же фраза или её продолжение? Распознавание Android отдаёт долгую
+ * фразу нарастающими кусками, и каждый кусок приходит отдельным готовым
+ * результатом: «Мам», «Мам я», «Мам я уже». Промах считался за каждый, и одно
+ * постороннее предложение выжигало все четыре попытки сразу — сцена уходила
+ * на кнопки, хотя ребёнок ещё и не отвечал.
+ *
+ * Продолжение считается словами, а не буквами: «тридцать» после «три» — это
+ * новая попытка, а не то же слово.
+ */
+export function isSameUtterance(prev, next) {
+  const a = normalize(prev).split(' ').filter(Boolean);
+  const b = normalize(next).split(' ').filter(Boolean);
+  if (!a.length || !b.length || b.length < a.length) return false;
+  return a.every((w, i) => w === b[i]);
 }

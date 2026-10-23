@@ -129,8 +129,12 @@ export function windows(log) {
         break;
       case 'mic.match':
         // Повторы склеены, поэтому одна запись бывает и сотней разов.
+        // `repeat` — тот же растущий кусок фразы, что и предыдущий промах.
+        // Движок его в попытки не считает, и разбор не должен считать тоже:
+        // иначе одно постороннее предложение выглядит четырьмя попытками.
         cur.heard.push({ text: e.heard ?? '', label: e.label ?? null,
-                         score: e.score ?? null, miss: !!e.miss, times: n });
+                         score: e.score ?? null, miss: !!e.miss,
+                         repeat: !!e.repeat, times: n });
         break;
       case 'mic.giveup': cur.giveup = e.reason ?? null; break;
       case 'answer.pick':
@@ -269,9 +273,14 @@ function print(r) {
       // из строки выше — это и есть дефект сопоставления.
       for (const h of w.heard) {
         const to = h.label == null ? 'не подошло ничему'
-          : `«${h.label}»` + (h.score ? ` (с ошибкой на ${h.score})` : '');
+          // Дробная половина у счёта значит «попало одним словом ключа,
+          // а не целой фразой» (PART_PENALTY в js/match.js) — такое попадание
+          // слабее, и в разборе это надо видеть.
+          : `«${h.label}»`
+            + (Math.floor(h.score) ? ` (с ошибкой на ${Math.floor(h.score)})` : '')
+            + (h.score % 1 ? ' (одним словом)' : '');
         console.log(`      услышано «${h.text}» -> ${to}`
-          + (h.miss ? '   ПРОМАХ' : '')
+          + (h.miss ? (h.repeat ? '   то же, не в счёт' : '   ПРОМАХ') : '')
           + (h.times > 1 ? `   ×${h.times}` : ''));
       }
       if (w.giveup) console.log(`      ушло на кнопки: ${w.giveup}`);

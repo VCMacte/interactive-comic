@@ -1,5 +1,5 @@
 import { speak, speakDialogue, cancelSpeech, createListener, voiceSupported, ttsAvailable, probeRecognition } from './voice.js';
-import { matchChoice } from './match.js';
+import { matchChoice, isSameUtterance } from './match.js';
 import { makeTask, usePool } from './tasks.js';
 import { setScene, preloadScene, enter, leave, cheer, wobble, impact } from './stage.js';
 import * as log from './log.js';
@@ -32,6 +32,7 @@ const state = {
   started: false,   // первую сцену не из чего «выводить»
   narrating: false, // пока рассказчик говорит, отвечать рано
   misses: 0,        // подряд не распознанных ответов
+  lastMiss: '',     // фраза последнего промаха: её продолжения — та же попытка
   heard: false,     // донёсся ли хоть какой-то звук в текущем окне
   lastHeardAt: 0,   // когда в последний раз что-то слышали — чтобы не перебивать
   deafWindows: 0,   // окон подряд, в которые микрофон не услышал вообще ничего
@@ -363,6 +364,7 @@ async function show(id, dir = 'forward') {
   state.sceneId = id;
   state.scene = scene;
   state.misses = 0;
+  state.lastMiss = '';
   state.focus = 0;
 
   // Картинки грузим до анимации, иначе вход в локацию «моргает».
@@ -561,13 +563,20 @@ function listen(my) {
       // Что услышали и куда это уехало. `miss` здесь — «попытка засчитана
       // ребёнку в минус»: либо не подошло ничего, либо подошёл вариант
       // с подсказкой, то есть неверный ответ.
+      // Распознавание Android отдаёт долгую фразу нарастающими кусками, каждый —
+      // отдельным готовым результатом: «Мам», «Мам я», «Мам я уже». Считать их
+      // за отдельные попытки нельзя: одно постороннее предложение из комнаты
+      // выжигало все четыре попытки сразу, и сцена уходила на кнопки, хотя
+      // ребёнок ещё и не отвечал. В журнале такой кусок помечен `repeat`.
+      const repeat = !hit && isSameUtterance(state.lastMiss, alternatives[0]);
       log.event('mic.match', {
         heard: alternatives[0], alts: alternatives.slice(1, 6),
         label: hit?.choice.label ?? null, score: hit?.score ?? null,
         miss: !hit || !!hit.choice.hint,
+        ...(repeat ? { repeat: true } : {}),
       });
       if (hit) pick(hit.choice);
-      else miss(my);
+      else miss(my, alternatives[0], repeat);
     },
     onEnd: (reason) => {
       if (my !== token) return;
@@ -607,8 +616,13 @@ function stopListening() {
 // Ребёнок сказал что-то осмысленное, но не то. Прослушивание при этом живёт
 // дальше само — обрывать его на каждом промахе было ошибкой: ответ с третьей
 // попытки для семилетнего совершенно нормален.
-async function miss(my) {
+async function miss(my, heard, repeat) {
   if (my !== token) return;
+  state.lastMiss = heard || state.lastMiss;
+  // Тот же кусок растущей фразы — не новая попытка. Решение принято в onResult,
+  // чтобы в журнал ушла та же оценка, по которой считаются промахи.
+  if (repeat) return;
+
   state.misses++;
 
   if (state.misses >= MAX_MISSES) { giveUpToButtons('misses'); return; }
@@ -665,6 +679,7 @@ async function pick(choice, btn) {
     if (my !== token) return;
     setChoicesEnabled(true);
     state.misses = 0;
+    state.lastMiss = '';
     listen(my);
     return;
   }

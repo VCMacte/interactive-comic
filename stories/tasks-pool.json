@@ -1,4 +1,1482 @@
 {
+ "minecraft|math|17|raid|wide": [
+  {
+   "type": "missing",
+   "question": "Было два шлема, стало шесть шлемов. Сколько прибавилось?",
+   "hint": "Досчитай от двух до шести и запомни, сколько вышло шагов.",
+   "choices": [
+    {
+     "label": "Шесть",
+     "keywords": [
+      "шесть",
+      "6"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Четыре",
+     "keywords": [
+      "четыре",
+      "4"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Два",
+     "keywords": [
+      "два",
+      "2"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "c08a3c3a",
+   "hintAudio": "5eb482a3"
+  },
+  {
+   "type": "missing",
+   "question": "Было два щита, стало семь щитов. Сколько прибавилось?",
+   "hint": "Досчитай от двух до семи и запомни, сколько вышло шагов.",
+   "choices": [
+    {
+     "label": "Семь",
+     "keywords": [
+      "семь",
+      "7"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Пять",
+     "keywords": [
+      "пять",
+      "5"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Три",
+     "keywords": [
+      "три",
+      "3"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "edec4cb0",
+   "hintAudio": "678c4b23"
+  },
+  {
+   "type": "missing",
+   "question": "Было два плаща, стало двенадцать плащей. Сколько прибавилось?",
+   "hint": "Досчитай от двух до двенадцати и запомни, сколько вышло шагов.",
+   "choices": [
+    {
+     "label": "Двенадцать",
+     "keywords": [
+      "двенадцать",
+      "12"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Шесть",
+     "keywords": [
+      "шесть",
+      "6"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Десять",
+     "keywords": [
+      "десять",
+      "10"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "f290e6a6",
+   "hintAudio": "aa5162f5"
+  },
+  {
+   "type": "missing",
+   "question": "Было три шлема, стало восемь шлемов. Сколько прибавилось?",
+   "hint": "Досчитай от трёх до восьми и запомни, сколько вышло шагов.",
+   "choices": [
+    {
+     "label": "Пять",
+     "keywords": [
+      "пять",
+      "5"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Ноль",
+     "keywords": [
+      "ноль",
+      "0"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Восемь",
+     "keywords": [
+      "восемь",
+      "8"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "785d64aa",
+   "hintAudio": "3d5bbe8a"
+  },
+  {
+   "type": "missing",
+   "question": "Было четыре шлема, стало девять шлемов. Сколько прибавилось?",
+   "hint": "Досчитай от четырёх до девяти и запомни, сколько вышло шагов.",
+   "choices": [
+    {
+     "label": "Два",
+     "keywords": [
+      "два",
+      "2"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Пять",
+     "keywords": [
+      "пять",
+      "5"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Девять",
+     "keywords": [
+      "девять",
+      "9"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "8bd06546",
+   "hintAudio": "e0a6aa78"
+  },
+  {
+   "type": "missing",
+   "question": "Было десять щитов, стало пятнадцать щитов. Сколько прибавилось?",
+   "hint": "Досчитай от десяти до пятнадцати и запомни, сколько вышло шагов.",
+   "choices": [
+    {
+     "label": "Пятнадцать",
+     "keywords": [
+      "пятнадцать",
+      "15"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Пять",
+     "keywords": [
+      "пять",
+      "5"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Ноль",
+     "keywords": [
+      "ноль",
+      "0"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "7c34a474",
+   "hintAudio": "3e1af4f1"
+  },
+  {
+   "type": "missing",
+   "question": "Было восемь плащей, стало десять плащей. Сколько прибавилось?",
+   "hint": "Досчитай от восьми до десяти и запомни, сколько вышло шагов.",
+   "choices": [
+    {
+     "label": "Десять",
+     "keywords": [
+      "десять",
+      "10"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Два",
+     "keywords": [
+      "два",
+      "2"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Ноль",
+     "keywords": [
+      "ноль",
+      "0"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "31733ad5",
+   "hintAudio": "e98894b7"
+  },
+  {
+   "type": "missing",
+   "question": "Было четыре арбалета, стало шесть арбалетов. Сколько прибавилось?",
+   "hint": "Досчитай от четырёх до шести и запомни, сколько вышло шагов.",
+   "choices": [
+    {
+     "label": "Два",
+     "keywords": [
+      "два",
+      "2"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Ноль",
+     "keywords": [
+      "ноль",
+      "0"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Шесть",
+     "keywords": [
+      "шесть",
+      "6"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "1e62d03a",
+   "hintAudio": "0afcb69a"
+  },
+  {
+   "type": "missing",
+   "question": "Было четыре арбалета, стало десять арбалетов. Сколько прибавилось?",
+   "hint": "Досчитай от четырёх до десяти и запомни, сколько вышло шагов.",
+   "choices": [
+    {
+     "label": "Шесть",
+     "keywords": [
+      "шесть",
+      "6"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Два",
+     "keywords": [
+      "два",
+      "2"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Десять",
+     "keywords": [
+      "десять",
+      "10"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "8969c10b",
+   "hintAudio": "3020b753"
+  },
+  {
+   "type": "missing",
+   "question": "Было шесть арбалетов, стало восемь арбалетов. Сколько прибавилось?",
+   "hint": "Досчитай от шести до восьми и запомни, сколько вышло шагов.",
+   "choices": [
+    {
+     "label": "Два",
+     "keywords": [
+      "два",
+      "2"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Восемь",
+     "keywords": [
+      "восемь",
+      "8"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Ноль",
+     "keywords": [
+      "ноль",
+      "0"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "12b475f2",
+   "hintAudio": "a5e81864"
+  }
+ ],
+ "minecraft|math|13|blocks|wide": [
+  {
+   "type": "addition",
+   "question": "Сколько будет три блока и ещё два блока?",
+   "hint": "Посчитаем вместе: три блока, и прибавим ещё два.",
+   "choices": [
+    {
+     "label": "Девять",
+     "keywords": [
+      "девять",
+      "9"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Пять",
+     "keywords": [
+      "пять",
+      "5"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Один",
+     "keywords": [
+      "один",
+      "1"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "ea5e5023",
+   "hintAudio": "edb2cbd0"
+  },
+  {
+   "type": "addition",
+   "question": "Сколько будет три камня и ещё два камня?",
+   "hint": "Посчитаем вместе: три камня, и прибавим ещё два.",
+   "choices": [
+    {
+     "label": "Один",
+     "keywords": [
+      "один",
+      "1"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Восемь",
+     "keywords": [
+      "восемь",
+      "8"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Пять",
+     "keywords": [
+      "пять",
+      "5"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "232bafe3",
+   "hintAudio": "e9f71efa"
+  },
+  {
+   "type": "addition",
+   "question": "Сколько будет один блок и ещё пять блоков?",
+   "hint": "Посчитаем вместе: один блок, и прибавим ещё пять.",
+   "choices": [
+    {
+     "label": "Один",
+     "keywords": [
+      "один",
+      "1"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Шесть",
+     "keywords": [
+      "шесть",
+      "6"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Одиннадцать",
+     "keywords": [
+      "одиннадцать",
+      "11"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "a46ac086",
+   "hintAudio": "f2afe17f"
+  },
+  {
+   "type": "addition",
+   "question": "Сколько будет пять камней и ещё четыре камня?",
+   "hint": "Посчитаем вместе: пять камней, и прибавим ещё четыре.",
+   "choices": [
+    {
+     "label": "Один",
+     "keywords": [
+      "один",
+      "1"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Двенадцать",
+     "keywords": [
+      "двенадцать",
+      "12"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Девять",
+     "keywords": [
+      "девять",
+      "9"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "1dc038ce",
+   "hintAudio": "e6eb1afb"
+  },
+  {
+   "type": "addition",
+   "question": "Сколько будет шесть камней и ещё пять камней?",
+   "hint": "Посчитаем вместе: шесть камней, и прибавим ещё пять.",
+   "choices": [
+    {
+     "label": "Тринадцать",
+     "keywords": [
+      "тринадцать",
+      "13"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Один",
+     "keywords": [
+      "один",
+      "1"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Одиннадцать",
+     "keywords": [
+      "одиннадцать",
+      "11"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "c2e2dcad",
+   "hintAudio": "55329485"
+  },
+  {
+   "type": "addition",
+   "question": "Сколько будет четыре камня и ещё один камень?",
+   "hint": "Посчитаем вместе: четыре камня, и прибавим ещё один.",
+   "choices": [
+    {
+     "label": "Десять",
+     "keywords": [
+      "десять",
+      "10"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Пять",
+     "keywords": [
+      "пять",
+      "5"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Три",
+     "keywords": [
+      "три",
+      "3"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "ab583f9e",
+   "hintAudio": "cdfeba87"
+  },
+  {
+   "type": "addition",
+   "question": "Сколько будет шесть блоков и ещё пять блоков?",
+   "hint": "Посчитаем вместе: шесть блоков, и прибавим ещё пять.",
+   "choices": [
+    {
+     "label": "Один",
+     "keywords": [
+      "один",
+      "1"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Тринадцать",
+     "keywords": [
+      "тринадцать",
+      "13"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Одиннадцать",
+     "keywords": [
+      "одиннадцать",
+      "11"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "7678688d",
+   "hintAudio": "2953bd1a"
+  },
+  {
+   "type": "addition",
+   "question": "Сколько будет четыре камня и ещё шесть камней?",
+   "hint": "Посчитаем вместе: четыре камня, и прибавим ещё шесть.",
+   "choices": [
+    {
+     "label": "Четыре",
+     "keywords": [
+      "четыре",
+      "4"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Тринадцать",
+     "keywords": [
+      "тринадцать",
+      "13"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Десять",
+     "keywords": [
+      "десять",
+      "10"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "4219fb22",
+   "hintAudio": "4f513594"
+  },
+  {
+   "type": "addition",
+   "question": "Сколько будет пять камней и ещё один камень?",
+   "hint": "Посчитаем вместе: пять камней, и прибавим ещё один.",
+   "choices": [
+    {
+     "label": "Шесть",
+     "keywords": [
+      "шесть",
+      "6"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Девять",
+     "keywords": [
+      "девять",
+      "9"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Четыре",
+     "keywords": [
+      "четыре",
+      "4"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "27ab1bf7",
+   "hintAudio": "49cd6dd4"
+  },
+  {
+   "type": "addition",
+   "question": "Сколько будет два блока и ещё шесть блоков?",
+   "hint": "Посчитаем вместе: два блока, и прибавим ещё шесть.",
+   "choices": [
+    {
+     "label": "Два",
+     "keywords": [
+      "два",
+      "2"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Двенадцать",
+     "keywords": [
+      "двенадцать",
+      "12"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Восемь",
+     "keywords": [
+      "восемь",
+      "8"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "e61c4601",
+   "hintAudio": "8564fd52"
+  }
+ ],
+ "minecraft|logic|10|after": [
+  {
+   "type": "oddOneOut",
+   "question": "Что здесь лишнее: шлем, плащ или ложка?",
+   "hint": "Подумай: два из них — это вещи для боя. А третий?",
+   "choices": [
+    {
+     "label": "Плащ",
+     "keywords": [
+      "плащ"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Ложка",
+     "keywords": [
+      "ложка"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Шлем",
+     "keywords": [
+      "шлем"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "f874fba8",
+   "hintAudio": "81e03086"
+  },
+  {
+   "type": "oddOneOut",
+   "question": "Что здесь лишнее: молоток, лопата или пирог?",
+   "hint": "Подумай: два из них — это то, чем работают. А третий?",
+   "choices": [
+    {
+     "label": "Лопата",
+     "keywords": [
+      "лопата"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Пирог",
+     "keywords": [
+      "пирог"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Молоток",
+     "keywords": [
+      "молоток"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "0d895815",
+   "hintAudio": "db2cfa57"
+  },
+  {
+   "type": "oddOneOut",
+   "question": "Что здесь лишнее: блок, тыква или лужа?",
+   "hint": "Подумай: два из них — это то, что можно взять в руки. А третий?",
+   "choices": [
+    {
+     "label": "Тыква",
+     "keywords": [
+      "тыква"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Лужа",
+     "keywords": [
+      "лужа"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Блок",
+     "keywords": [
+      "блок"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "f15ffc1d",
+   "hintAudio": "8191628f"
+  },
+  {
+   "type": "oddOneOut",
+   "question": "Что здесь лишнее: молоток, топор или пирог?",
+   "hint": "Подумай: два из них — это то, чем работают. А третий?",
+   "choices": [
+    {
+     "label": "Топор",
+     "keywords": [
+      "топор"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Пирог",
+     "keywords": [
+      "пирог"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Молоток",
+     "keywords": [
+      "молоток"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "dc7df55e",
+   "hintAudio": "db2cfa57"
+  },
+  {
+   "type": "oddOneOut",
+   "question": "Что здесь лишнее: топор, лопата или пирог?",
+   "hint": "Подумай: два из них — это то, чем работают. А третий?",
+   "choices": [
+    {
+     "label": "Пирог",
+     "keywords": [
+      "пирог"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Топор",
+     "keywords": [
+      "топор"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Лопата",
+     "keywords": [
+      "лопата"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "2d8b38d9",
+   "hintAudio": "db2cfa57"
+  },
+  {
+   "type": "oddOneOut",
+   "question": "Что здесь лишнее: мешок, сундук или ручей?",
+   "hint": "Подумай: два из них — это то, во что складывают вещи. А третий?",
+   "choices": [
+    {
+     "label": "Сундук",
+     "keywords": [
+      "сундук"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Мешок",
+     "keywords": [
+      "мешок"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Ручей",
+     "keywords": [
+      "ручей"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "cae40e51",
+   "hintAudio": "3a51ab9c"
+  },
+  {
+   "type": "oddOneOut",
+   "question": "Что здесь лишнее: ящик, сундук или ручей?",
+   "hint": "Подумай: два из них — это то, во что складывают вещи. А третий?",
+   "choices": [
+    {
+     "label": "Ящик",
+     "keywords": [
+      "ящик"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Сундук",
+     "keywords": [
+      "сундук"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Ручей",
+     "keywords": [
+      "ручей"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "d39ed568",
+   "hintAudio": "3a51ab9c"
+  },
+  {
+   "type": "oddOneOut",
+   "question": "Что здесь лишнее: плащ, шлем или ложка?",
+   "hint": "Подумай: два из них — это вещи для боя. А третий?",
+   "choices": [
+    {
+     "label": "Шлем",
+     "keywords": [
+      "шлем"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Плащ",
+     "keywords": [
+      "плащ"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Ложка",
+     "keywords": [
+      "ложка"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "542e8b10",
+   "hintAudio": "81e03086"
+  },
+  {
+   "type": "oddOneOut",
+   "question": "Что здесь лишнее: лопата, топор или пирог?",
+   "hint": "Подумай: два из них — это то, чем работают. А третий?",
+   "choices": [
+    {
+     "label": "Лопата",
+     "keywords": [
+      "лопата"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Топор",
+     "keywords": [
+      "топор"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Пирог",
+     "keywords": [
+      "пирог"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "43104045",
+   "hintAudio": "db2cfa57"
+  },
+  {
+   "type": "oddOneOut",
+   "question": "Что здесь лишнее: железо, блок или лужа?",
+   "hint": "Подумай: два из них — это то, что можно взять в руки. А третий?",
+   "choices": [
+    {
+     "label": "Лужа",
+     "keywords": [
+      "лужа"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Железо",
+     "keywords": [
+      "железо"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Блок",
+     "keywords": [
+      "блок"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "61e5b5c8",
+   "hintAudio": "8191628f"
+  },
+  {
+   "type": "pattern",
+   "question": "Что дальше: тыква, камень, тыква, камень, а потом?",
+   "hint": "Они идут по очереди. После «камень» снова начинается тот же порядок.",
+   "choices": [
+    {
+     "label": "Тыква",
+     "keywords": [
+      "тыква"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Камень",
+     "keywords": [
+      "камень"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Факел",
+     "keywords": [
+      "факел"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "6895870b",
+   "hintAudio": "5de94b29"
+  },
+  {
+   "type": "pattern",
+   "question": "Что дальше: камень, блок, камень, блок, а потом?",
+   "hint": "Они идут по очереди. После «блок» снова начинается тот же порядок.",
+   "choices": [
+    {
+     "label": "Кирпич",
+     "keywords": [
+      "кирпич"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Блок",
+     "keywords": [
+      "блок"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Камень",
+     "keywords": [
+      "камень"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "03ff5965",
+   "hintAudio": "56229885"
+  },
+  {
+   "type": "pattern",
+   "question": "Что дальше: кирпич, тыква, кирпич, тыква, а потом?",
+   "hint": "Они идут по очереди. После «тыква» снова начинается тот же порядок.",
+   "choices": [
+    {
+     "label": "Кирпич",
+     "keywords": [
+      "кирпич"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Тыква",
+     "keywords": [
+      "тыква"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Щит",
+     "keywords": [
+      "щит"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "2503268f",
+   "hintAudio": "058acd52"
+  },
+  {
+   "type": "pattern",
+   "question": "Что дальше: блок, тыква, блок, тыква, а потом?",
+   "hint": "Они идут по очереди. После «тыква» снова начинается тот же порядок.",
+   "choices": [
+    {
+     "label": "Блок",
+     "keywords": [
+      "блок"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Факел",
+     "keywords": [
+      "факел"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Тыква",
+     "keywords": [
+      "тыква"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "46a33007",
+   "hintAudio": "058acd52"
+  },
+  {
+   "type": "pattern",
+   "question": "Что дальше: щит, кирпич, щит, кирпич, а потом?",
+   "hint": "Они идут по очереди. После «кирпич» снова начинается тот же порядок.",
+   "choices": [
+    {
+     "label": "Щит",
+     "keywords": [
+      "щит"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Кирпич",
+     "keywords": [
+      "кирпич"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Камень",
+     "keywords": [
+      "камень"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "f0a6d56f",
+   "hintAudio": "66be692b"
+  },
+  {
+   "type": "pattern",
+   "question": "Что дальше: факел, щит, факел, щит, а потом?",
+   "hint": "Они идут по очереди. После «щит» снова начинается тот же порядок.",
+   "choices": [
+    {
+     "label": "Блок",
+     "keywords": [
+      "блок"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Щит",
+     "keywords": [
+      "щит"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Факел",
+     "keywords": [
+      "факел"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "d029d481",
+   "hintAudio": "ae4137ae"
+  }
+ ],
+ "minecraft|math|16|iron|wide": [
+  {
+   "type": "addition",
+   "question": "Сколько будет семь блоков и ещё шесть блоков?",
+   "hint": "Посчитаем вместе: семь блоков, и прибавим ещё шесть.",
+   "choices": [
+    {
+     "label": "Тринадцать",
+     "keywords": [
+      "тринадцать",
+      "13"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Один",
+     "keywords": [
+      "один",
+      "1"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Пятнадцать",
+     "keywords": [
+      "пятнадцать",
+      "15"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "734d6e49",
+   "hintAudio": "ddef0b2e"
+  },
+  {
+   "type": "addition",
+   "question": "Сколько будет семь блоков и ещё четыре блока?",
+   "hint": "Посчитаем вместе: семь блоков, и прибавим ещё четыре.",
+   "choices": [
+    {
+     "label": "Тринадцать",
+     "keywords": [
+      "тринадцать",
+      "13"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Одиннадцать",
+     "keywords": [
+      "одиннадцать",
+      "11"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Три",
+     "keywords": [
+      "три",
+      "3"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "ec8421a5",
+   "hintAudio": "2d29280a"
+  },
+  {
+   "type": "addition",
+   "question": "Сколько будет четыре слитка и ещё три слитка?",
+   "hint": "Посчитаем вместе: четыре слитка, и прибавим ещё три.",
+   "choices": [
+    {
+     "label": "Десять",
+     "keywords": [
+      "десять",
+      "10"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Семь",
+     "keywords": [
+      "семь",
+      "7"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Один",
+     "keywords": [
+      "один",
+      "1"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "a0207b1d",
+   "hintAudio": "b2665df2"
+  },
+  {
+   "type": "addition",
+   "question": "Сколько будет один слиток и ещё два слитка?",
+   "hint": "Посчитаем вместе: один слиток, и прибавим ещё два.",
+   "choices": [
+    {
+     "label": "Три",
+     "keywords": [
+      "три",
+      "3"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Один",
+     "keywords": [
+      "один",
+      "1"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Шесть",
+     "keywords": [
+      "шесть",
+      "6"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "c034f448",
+   "hintAudio": "fba89bed"
+  },
+  {
+   "type": "addition",
+   "question": "Сколько будет один блок и ещё три блока?",
+   "hint": "Посчитаем вместе: один блок, и прибавим ещё три.",
+   "choices": [
+    {
+     "label": "Один",
+     "keywords": [
+      "один",
+      "1"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Семь",
+     "keywords": [
+      "семь",
+      "7"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Четыре",
+     "keywords": [
+      "четыре",
+      "4"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "14865150",
+   "hintAudio": "5fa5bcd3"
+  },
+  {
+   "type": "addition",
+   "question": "Сколько будет два блока и ещё восемь блоков?",
+   "hint": "Посчитаем вместе: два блока, и прибавим ещё восемь.",
+   "choices": [
+    {
+     "label": "Десять",
+     "keywords": [
+      "десять",
+      "10"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Два",
+     "keywords": [
+      "два",
+      "2"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Пятнадцать",
+     "keywords": [
+      "пятнадцать",
+      "15"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "4b3797f7",
+   "hintAudio": "c4495048"
+  },
+  {
+   "type": "addition",
+   "question": "Сколько будет один слиток и ещё семь слитков?",
+   "hint": "Посчитаем вместе: один слиток, и прибавим ещё семь.",
+   "choices": [
+    {
+     "label": "Одиннадцать",
+     "keywords": [
+      "одиннадцать",
+      "11"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Восемь",
+     "keywords": [
+      "восемь",
+      "8"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Один",
+     "keywords": [
+      "один",
+      "1"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "6bb14710",
+   "hintAudio": "cc0284d7"
+  },
+  {
+   "type": "addition",
+   "question": "Сколько будет шесть слитков и ещё восемь слитков?",
+   "hint": "Посчитаем вместе: шесть слитков, и прибавим ещё восемь.",
+   "choices": [
+    {
+     "label": "Четырнадцать",
+     "keywords": [
+      "четырнадцать",
+      "14"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Шестнадцать",
+     "keywords": [
+      "шестнадцать",
+      "16"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Шесть",
+     "keywords": [
+      "шесть",
+      "6"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "a8bb34c5",
+   "hintAudio": "9581bec2"
+  },
+  {
+   "type": "addition",
+   "question": "Сколько будет один слиток и ещё шесть слитков?",
+   "hint": "Посчитаем вместе: один слиток, и прибавим ещё шесть.",
+   "choices": [
+    {
+     "label": "Семь",
+     "keywords": [
+      "семь",
+      "7"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Одиннадцать",
+     "keywords": [
+      "одиннадцать",
+      "11"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Один",
+     "keywords": [
+      "один",
+      "1"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "235b7df0",
+   "hintAudio": "d570b387"
+  },
+  {
+   "type": "addition",
+   "question": "Сколько будет четыре блока и ещё два блока?",
+   "hint": "Посчитаем вместе: четыре блока, и прибавим ещё два.",
+   "choices": [
+    {
+     "label": "Два",
+     "keywords": [
+      "два",
+      "2"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Восемь",
+     "keywords": [
+      "восемь",
+      "8"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Шесть",
+     "keywords": [
+      "шесть",
+      "6"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "a239a99b",
+   "hintAudio": "b0a5871c"
+  }
+ ],
  "minecraft|logic|10|craft": [
   {
    "type": "recipe",

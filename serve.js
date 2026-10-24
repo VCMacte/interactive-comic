@@ -48,7 +48,11 @@ http.createServer((req, res) => {
   if (req.method === 'POST' && req.url.startsWith('/save')) return saveFromBrowser(req, res);
 
   const url = decodeURIComponent(req.url.split('?')[0]);
-  const file = path.join(ROOT, url === '/' ? 'index.html' : url);
+  // index.html подставляется не только корню, но и любой папке: иначе
+  // /tools/voice-try/ отдаёт 404, хотя страница там лежит.
+  const asked = path.join(ROOT, url);
+  const isDir = url.endsWith('/') || (fs.existsSync(asked) && fs.statSync(asked).isDirectory());
+  const file = isDir ? path.join(asked, 'index.html') : asked;
   if (!file.startsWith(ROOT)) { res.writeHead(403).end(); return; }
 
   fs.readFile(file, (err, data) => {

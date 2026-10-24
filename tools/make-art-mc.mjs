@@ -2710,6 +2710,52 @@ ${px(6.4 * U, 6.4 * U, 1.1 * U, 0.9 * U, hole)}`;
 
   return charSvg(body, 12 * U, 11 * U);
 }
+/* ---- пасхалка: свинолюд ---- */
+
+/**
+ * След свинолюда: горстка золота и пара отпечатков копытец.
+ *
+ * Это деталь-намёк пасхалки, и она сделана ОТДЕЛЬНЫМ предметом для `cast`,
+ * а не нарисована в ближнем слое. Причина простая: слои `near-village`,
+ * `near-wall`, `near-bell` и `near-house` делятся между сериями, и золото
+ * в них вылезло бы в каждой — а пасхалка выходит раз в две серии. `cast`
+ * же задаётся сценой, то есть ровно там, где нужно.
+ *
+ * Правило «деталь прячется в векторе» при этом соблюдено и по букве,
+ * и по смыслу: предметы `cast` в покраску не идут вовсе, а нейросеть
+ * мелкую крапину раздувает или вымывает.
+ *
+ * Размер считан с четырнадцатого дня: там самородок пришлось увеличить
+ * с 22 до 34 пикселей, потому что после сжатия при зеркалировании
+ * на телевизор он превращался в точку.
+ */
+function goldGlint() {
+  const U = 20;
+  const gold = '#e8c04a', goldHi = '#fff0b0', goldDark = '#b8912c';
+  const hoof = '#5e4a35';
+
+  const body = `
+<!-- самородок покрупнее и блик на нём -->
+${px(2.2 * U, 2.4 * U, 3.4 * U, 2.6 * U, gold)}
+${px(2.2 * U, 4.4 * U, 3.4 * U, 0.6 * U, goldDark)}
+${px(2.8 * U, 2.8 * U, 1.4 * U, 1 * U, goldHi)}
+
+<!-- вторая крупинка рядом: одна читается случайной, две — следом -->
+${px(6.2 * U, 3.6 * U, 1.8 * U, 1.4 * U, gold)}
+${px(6.2 * U, 4.6 * U, 1.8 * U, 0.4 * U, goldDark)}
+
+<!-- копытца: по две половинки, как у настоящего следа -->
+${px(0.2 * U, 0.6 * U, 1.1 * U, 1.4 * U, hoof)}
+${px(1.5 * U, 0.9 * U, 1.1 * U, 1.4 * U, hoof)}
+${px(4.2 * U, 0.2 * U, 1.1 * U, 1.4 * U, hoof)}
+${px(5.5 * U, 0.5 * U, 1.1 * U, 1.4 * U, hoof)}
+${px(8.0 * U, 0.8 * U, 1.1 * U, 1.4 * U, hoof)}
+${px(9.3 * U, 1.1 * U, 1.1 * U, 1.4 * U, hoof)}`;
+
+  // Не дышит: это не персонаж, а след на земле.
+  return charSvg(body, 11 * U, 5.2 * U, '.idle { animation: none }');
+}
+
 /* ---- десятый день ---- */
 
 /**
@@ -3744,6 +3790,205 @@ write('assets/mc/far-pines-fog.svg', farPinesFog());
 write('assets/mc/far-fire.svg', farFire());
 write('assets/mc/far-doubles.svg', farDoubles());
 
+/* ---------------- четырнадцатый день ---------------- */
+
+/**
+ * Ворота деревни утром после рейда: стена починена, над проёмом висит
+ * оберег, по гребню стоят щиты.
+ *
+ * Проём стоит СПРАВА, на 69…78% ширины, а не в середине, как у прежних
+ * стен. Причина не в композиции, а в замере чистой зоны: текст занимает
+ * 3…65% ширины и всё ниже 56% высоты, поэтому середина у земли — это
+ * «под панелью». А у этой сцены у самых ворот лежит деталь-намёк
+ * пасхалки, и её надо видеть.
+ *
+ * Щиты — предмет задания сцены `gate`, и считают их по этому кадру.
+ * Поэтому они на ГРЕБНЕ (выше 56% высоты), как в десятом дне, а не
+ * у подножия. И именно щиты, а не кубы: вопрос идёт из области `raid`,
+ * где слова — щит, арбалет, шлем и плащ, и в тринадцатом дне горка
+ * железных блоков под такой вопрос уже оказалась не тем предметом.
+ *
+ * Ряд вдоль правого участка гребня — предмет задания сцены `charm`:
+ * чередование из блока, тыквы, факела, щита, кирпича и камня лежит
+ * по порядку, и это то, про что спрашивает вопрос.
+ *
+ * Земля обычная, `P.grass`/`P.dirt`: свою палитру заводить нельзя —
+ * день берёт готовые near-breach, near-bell, near-village и near-house,
+ * и земля запрыгала бы от сцены к сцене (грабля тринадцатого дня).
+ */
+function nearGate(seed = 914) {
+  const rand = rng(seed);
+  const out = [];
+  const EDGE = '#3f3c35';
+  const SHIELD = '#8a6334', SHIELD_EDGE = '#45301a', SHIELD_IRON = '#d2d2d8';
+  const LOG = '#7a5630', LOG_TOP = '#8f6a40', LOG_DARK = '#5a3f22';
+  const ROOF = '#9c4b3c', ROOF_DARK = '#7a392c';
+  const GOLD = '#e8c04a', GOLD_HI = '#fff0b0';
+  const PUMPKIN = '#d98022', PUMPKIN_DARK = '#a85c14', STEM = '#4e7c3a';
+  const IRON = '#d2d2d8', IRON_DARK = '#9a9aa2';
+
+  const cols = Math.ceil(W / B) + 1;
+  const gate = [22, 23, 24];
+
+  // Крыши деревни за стеной: она жилая, и это должно читаться без
+  // подписи. Выше стены, иначе их не видно вовсе.
+  const roof = (hx, hw) => {
+    const base = GROUND - B * 5.6;
+    for (let c = 0; c < hw; c++) {
+      for (let r = 0; r < 2; r++) out.push(block(hx + c * B, base - r * B, P.plank, rand));
+    }
+    for (let step = 0; step < 3; step++) {
+      const y = base - B * (2 + step);
+      for (let c = step; c < hw - step; c++) {
+        out.push(`<rect x="${n(hx + c * B)}" y="${n(y)}" width="${B}" height="${B}" fill="${step % 2 ? ROOF_DARK : ROOF}"/>`);
+      }
+    }
+  };
+  roof(B * 2, 5);
+  roof(B * 12.5, 5);
+
+  // Стена целая на всю длину: пролом как раз и заделали. Тёмная кромка
+  // по верхнему ряду — без неё светлый камень сливается с холмами.
+  for (let c = 0; c < cols; c++) {
+    if (gate.includes(c)) continue;
+    for (let r = 0; r < 5; r++) out.push(block(c * B, GROUND - B * (r + 1), P.sbrick, rand));
+    out.push(`<rect x="${n(c * B)}" y="${n(GROUND - B * 5)}" width="${B}" height="10" fill="${EDGE}"/>`);
+  }
+
+  // Свежая заплата на месте пролома двенадцатого дня: тот же камень,
+  // но светлее. Из кадра видно, что стену именно починили.
+  for (let c = 17; c < 21; c++) {
+    for (let r = 0; r < 5; r++) out.push(block(c * B, GROUND - B * (r + 1), P.stone, rand));
+  }
+
+  // Щиты на гребне — две стопки по краям от середины, их считают.
+  const stacks = [{ col: 3.6, k: 3 }, { col: 13.6, k: 4 }];
+  const busy = new Set(stacks.flatMap(st => [0, 1, 2].map(d => Math.floor(st.col) + d)));
+
+  // Зубцы через один по левой части: по ним и видно, что это стена.
+  for (let c = 0; c < 17; c += 2) {
+    if (busy.has(c)) continue;
+    out.push(block(c * B, GROUND - B * 6, P.sbrick, rand));
+    out.push(`<rect x="${n(c * B)}" y="${n(GROUND - B * 6)}" width="${B}" height="10" fill="${EDGE}"/>`);
+  }
+
+  const shield = (x, y, s) => {
+    const h = s * 1.3;
+    out.push(`<path d="M ${n(x)} ${n(y)} h ${n(s)} v ${n(h * 0.6)} l ${n(-s / 2)} ${n(h * 0.4)} l ${n(-s / 2)} ${n(-h * 0.4)} Z" fill="${SHIELD}" stroke="${SHIELD_EDGE}" stroke-width="6"/>`);
+    out.push(`<rect x="${n(x + s * 0.14)}" y="${n(y + h * 0.26)}" width="${n(s * 0.72)}" height="${n(h * 0.16)}" fill="${SHIELD_IRON}"/>`);
+    out.push(`<rect x="${n(x + s * 0.4)}" y="${n(y + h * 0.1)}" width="${n(s * 0.2)}" height="${n(h * 0.52)}" fill="${SHIELD_IRON}"/>`);
+  };
+  for (const st of stacks) {
+    for (let i = 0; i < st.k; i++) {
+      shield(st.col * B + i * B * 0.62, GROUND - B * 5 - B * 0.86 + i * 6, B * 0.78);
+    }
+  }
+
+  // Ворота: створки по краям проёма и перекладина над ним. Проём пустой —
+  // в него уходят персонажи, и туда же смотрит ребёнок.
+  const gx = gate[0] * B;
+  for (const x of [gx, gx + B * 2]) {
+    out.push(`<rect x="${n(x + 4)}" y="${n(GROUND - B * 4.4)}" width="${n(B - 8)}" height="${n(B * 4.4)}" fill="${LOG}"/>`);
+    out.push(`<rect x="${n(x + 4)}" y="${n(GROUND - B * 4.4)}" width="${n(B - 8)}" height="14" fill="${LOG_TOP}"/>`);
+    out.push(`<rect x="${n(x + B - 11)}" y="${n(GROUND - B * 4.4)}" width="7" height="${n(B * 4.4)}" fill="${LOG_DARK}"/>`);
+  }
+  const beamY = GROUND - B * 4.7;
+  out.push(`<rect x="${n(gx - 10)}" y="${n(beamY)}" width="${n(B * 3 + 20)}" height="22" fill="${LOG_DARK}"/>`);
+
+  // Оберег над проёмом: тыква в железном ободке на двух верёвках.
+  // Висит на 41% высоты — выше панели с текстом, и он же даёт обложке
+  // цветное пятно, какого нет ни у одной прежней.
+  const cx = gx + B * 1.5, cy = beamY + B * 1.5;
+  for (const dx of [-B * 0.42, B * 0.42]) {
+    out.push(`<rect x="${n(cx + dx - 4)}" y="${n(beamY + 20)}" width="8" height="${n(B * 0.62)}" fill="${LOG_DARK}"/>`);
+  }
+  out.push(`<rect x="${n(cx - B * 0.66)}" y="${n(cy - B * 0.66)}" width="${n(B * 1.32)}" height="${n(B * 1.32)}" fill="${PUMPKIN}"/>`);
+  out.push(`<rect x="${n(cx - B * 0.66)}" y="${n(cy + B * 0.32)}" width="${n(B * 1.32)}" height="${n(B * 0.34)}" fill="${PUMPKIN_DARK}"/>`);
+  out.push(`<rect x="${n(cx - B * 0.12)}" y="${n(cy - B * 0.9)}" width="${n(B * 0.24)}" height="${n(B * 0.26)}" fill="${STEM}"/>`);
+  // Глаза и рот кубиками: без них тыква читается оранжевым кубом.
+  out.push(`<rect x="${n(cx - B * 0.44)}" y="${n(cy - B * 0.3)}" width="${n(B * 0.2)}" height="${n(B * 0.2)}" fill="${PUMPKIN_DARK}"/>`);
+  out.push(`<rect x="${n(cx + B * 0.24)}" y="${n(cy - B * 0.3)}" width="${n(B * 0.2)}" height="${n(B * 0.2)}" fill="${PUMPKIN_DARK}"/>`);
+  out.push(`<rect x="${n(cx - B * 0.3)}" y="${n(cy + B * 0.04)}" width="${n(B * 0.6)}" height="${n(B * 0.16)}" fill="${PUMPKIN_DARK}"/>`);
+  // Железный ободок — уголками, а не рамкой: рамка закрыла бы лицо.
+  for (const [ox, oy] of [[-0.72, -0.72], [0.52, -0.72], [-0.72, 0.52], [0.52, 0.52]]) {
+    out.push(`<rect x="${n(cx + B * ox)}" y="${n(cy + B * oy)}" width="${n(B * 0.2)}" height="${n(B * 0.2)}" fill="${IRON}"/>`);
+    out.push(`<rect x="${n(cx + B * ox)}" y="${n(cy + B * oy + B * 0.14)}" width="${n(B * 0.2)}" height="${n(B * 0.06)}" fill="${IRON_DARK}"/>`);
+  }
+
+  // Чередование вдоль правого участка гребня — предмет задания сцены
+  // `charm`. Шесть вещей по порядку: блок, тыква, факел, щит, кирпич,
+  // камень. Стоят выше 56% высоты и правее 65% ширины, то есть в чистой
+  // зоне дважды.
+  //
+  // Под рядом — деревянная полка с тёмной кромкой. Без неё в предпросмотре
+  // серый блок и серый камень сливались с гребнем, и из шести вещей
+  // читались четыре: ряд, который надо продолжить, был неполон.
+  const rowY = GROUND - B * 5 - B * 0.92;
+  const rowX = 24.9 * B, rowW = B * 6.5;
+  out.push(`<rect x="${n(rowX - 10)}" y="${n(rowY + B * 0.82)}" width="${n(rowW)}" height="18" fill="${LOG}"/>`);
+  out.push(`<rect x="${n(rowX - 10)}" y="${n(rowY + B * 0.82 + 18)}" width="${n(rowW)}" height="8" fill="${LOG_DARK}"/>`);
+  //
+  // Ряд — именно ЧЕРЕДОВАНИЕ щита и кирпича, а не шесть разных вещей.
+  // Сперва было шесть: блок, тыква, факел, щит, кирпич, камень — по одной
+  // на каждое слово троек. Но вопрос у `pattern` всегда про пару
+  // («щит, кирпич, щит, кирпич, а потом?»), и шесть разных предметов
+  // показывали ребёнку не то, о чём спрашивают. Остальные слова троек
+  // в кадре и так есть: тыква — это оберег над проёмом, факел — на гребне,
+  // блок и камень — сама стена.
+  const row = [
+    ['shield'], ['brick', P.plank], ['shield'],
+    ['brick', P.plank], ['shield'], ['brick', P.plank],
+  ];
+  row.forEach(([kind, pal], i) => {
+    const x = rowX + i * B * 1.06;
+    if (kind === 'pumpkin') {
+      out.push(`<rect x="${n(x)}" y="${n(rowY + B * 0.1)}" width="${n(B * 0.7)}" height="${n(B * 0.7)}" fill="${PUMPKIN}"/>`);
+      out.push(`<rect x="${n(x + B * 0.26)}" y="${n(rowY - B * 0.08)}" width="${n(B * 0.18)}" height="${n(B * 0.18)}" fill="${STEM}"/>`);
+    } else if (kind === 'torch') {
+      out.push(torch(x - B * 0.15, rowY - B * 0.1));
+    } else if (kind === 'shield') {
+      shield(x, rowY + B * 0.04, B * 0.64);
+    } else {
+      out.push(block(x, rowY + B * 0.1, pal, rand, B * 0.7));
+      out.push(`<rect x="${n(x)}" y="${n(rowY + B * 0.1)}" width="${n(B * 0.7)}" height="${n(B * 0.7)}" fill="none" stroke="${EDGE}" stroke-width="5"/>`);
+    }
+  });
+
+  // ПАСХАЛКА. Деталь-намёк: следы копытец из проёма и золотой самородок
+  // рядом. Мелкая нарочно — намёк, а не эпизод; поэтому и слой в покраску
+  // не идёт, нейросеть такую крапину раздувает или вымывает.
+  // Место — 69…79% ширины у самой земли: правее 65% текста, то есть
+  // видно; и ровно «у самых ворот», как сказано в тексте сцены.
+  const HOOF = '#5e4a35';
+  for (const [hx, hy, s] of [
+    [22.4, 0.22, 1], [22.9, 0.44, 0.92], [23.5, 0.3, 1], [24.1, 0.56, 0.88],
+    [24.7, 0.4, 0.95], [25.3, 0.66, 0.84],
+  ]) {
+    const x = hx * B, y = GROUND + hy * B, w = 15 * s;
+    out.push(`<rect x="${n(x)}" y="${n(y)}" width="${n(w)}" height="${n(w * 1.2)}" fill="${HOOF}" opacity="0.72"/>`);
+    out.push(`<rect x="${n(x + w * 1.25)}" y="${n(y + w * 0.3)}" width="${n(w)}" height="${n(w * 1.2)}" fill="${HOOF}" opacity="0.72"/>`);
+  }
+  const nx = 25.9 * B, ny = GROUND + B * 0.5;
+  // Самородок крупнее первого замера: на 22 пикселя ширины он после
+  // сжатия при зеркалировании на телевизор превращался в точку, а намёк,
+  // который не разглядеть, — это отсутствующий намёк.
+  out.push(`<rect x="${n(nx)}" y="${n(ny)}" width="34" height="26" fill="${GOLD}"/>`);
+  out.push(`<rect x="${n(nx + 6)}" y="${n(ny + 4)}" width="14" height="10" fill="${GOLD_HI}"/>`);
+  out.push(`<rect x="${n(nx - 20)}" y="${n(ny + 12)}" width="18" height="14" fill="${GOLD}"/>`);
+  out.push(`<rect x="${n(nx + 44)}" y="${n(ny - 6)}" width="13" height="11" fill="${GOLD}"/>`);
+
+  // Факелы по гребню с ореолом: на рассвете они ещё горят, и это
+  // единственное тёплое пятно на левой половине кадра.
+  const fires = [[B * 7, 6], [B * 11, 6], [B * 19, 5]];
+  const halo = fires.map(([x, h]) => glow(x + B * 0.5, GROUND - B * h - B * 0.2, B * 2.2)).join('\n');
+  const flame = fires.map(([x, h]) => torch(x, GROUND - B * (h + 1))).join('\n');
+
+  return svg(`${groundRows(rand)}
+${out.join('\n')}
+${halo}
+${flame}`, GLOW_DEF);
+}
+
 console.log('Ближний план:');
 write('assets/mc/near-forest.svg', nearForest());
 write('assets/mc/near-craft.svg', nearCraft());
@@ -3776,6 +4021,7 @@ write('assets/mc/near-traps.svg', nearTraps());
 write('assets/mc/near-outpost.svg', nearOutpost());
 write('assets/mc/near-breach.svg', nearBreach());
 write('assets/mc/near-copies.svg', nearCopies());
+write('assets/mc/near-gate.svg', nearGate());
 
 console.log('Персонажи:');
 write('assets/mc/steve.svg', steve());
@@ -3791,6 +4037,7 @@ write('assets/mc/alex.svg', alex());
 write('assets/mc/golem.svg', golem());
 write('assets/mc/cart.svg', cart());
 write('assets/mc/pumpkin.svg', pumpkin());
+write('assets/mc/gold-glint.svg', goldGlint());
 write('assets/mc/pillager-axe.svg', pillager('axe'));
 write('assets/mc/pillager-mace.svg', pillager('mace'));
 write('assets/mc/pillager-bow.svg', pillager('bow'));

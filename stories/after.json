@@ -1,0 +1,246 @@
+{
+  "title": "Утро после рейда",
+  "theme": "minecraft",
+  "voice": "hero",
+  "start": "dawn",
+  "closes": ["doubles"],
+  "scenes": {
+    "dawn": {
+      "bg": { "sky": "assets/mc/sky-dawn.webp",
+              "far": "assets/mc/far-hills.webp", "near": "assets/mc/near-village.svg" },
+      "cast": [ { "src": "assets/mc/wolf.svg", "x": 17, "y": 28, "w": 7 },
+                { "src": "assets/mc/steve.svg", "x": 26, "y": 28, "w": 8 },
+                { "src": "assets/mc/alex.svg", "x": 37, "y": 28, "w": 8 },
+                { "src": "assets/mc/villager.svg", "x": 48, "y": 28, "w": 7 } ],
+      "text": "Утро пришло тихое. Туман ушёл, и тот, в лиловом плаще, тоже исчез. Стив глянул на колокольню. «Кто же вчера звонил?»",
+      "prompt": "Куда пойдём сначала: к воротам или к колокольне?",
+      "choices": [
+        {
+          "label": "К воротам",
+          "keywords": [
+            "воротам",
+            "ворота",
+            "к воротам",
+            "ворот"
+          ],
+          "say": "Стив толкнул половину ворот, и она заскрипела на весь двор. «Держится!»",
+          "dir": "left",
+          "next": "gate"
+        },
+        {
+          "label": "К колокольне",
+          "keywords": [
+            "колокольне",
+            "колокольня",
+            "к колокольне",
+            "наверх",
+            "башне"
+          ],
+          "say": "Стив задрал голову и прищурился на солнце. «Высоко уже!»",
+          "dir": "right",
+          "next": "gate"
+        }
+      ]
+    },
+    "gate": {
+      "bg": { "sky": "assets/mc/sky-dawn.webp",
+              "far": "assets/mc/far-hills.webp", "near": "assets/mc/near-gate.svg" },
+      "cast": [ { "src": "assets/mc/steve.svg", "x": 24, "y": 28, "w": 8 },
+                { "src": "assets/mc/alex.svg", "x": 35, "y": 28, "w": 8 },
+                { "src": "assets/mc/villager.svg", "x": 46, "y": 28, "w": 7 } ],
+      "voice": "ally",
+      "text": "К воротам несли щиты, шлемы и арбалеты. Алекс крикнула сверху! «Считай, сколько прибавилось!»",
+      "task": {
+        "kind": "math",
+        "max": 17,
+        "types": [
+          "missing"
+        ],
+        "topic": "raid",
+        "spread": "wide"
+      },
+      "next": "tracks"
+    },
+    "tracks": {
+      "bg": { "sky": "assets/mc/sky-dawn.webp",
+              "far": "assets/mc/far-hills.webp", "near": "assets/mc/near-gate.svg" },
+      "cast": [ { "src": "assets/mc/steve.svg", "x": 26, "y": 28, "w": 8 },
+                { "src": "assets/mc/wolf.svg", "x": 36, "y": 28, "w": 7 },
+                { "src": "assets/mc/alex.svg", "x": 45, "y": 28, "w": 8 } ],
+      "text": "У самых ворот земля истоптана мелкими следами, и рядом что-то блестело. Волк понюхал их и фыркнул. Стив присел. «Это чьи?»",
+      "prompt": "Пойдём по следам или возьмёмся за пролом?",
+      "choices": [
+        {
+          "label": "Пойти по следам",
+          "keywords": [
+            "следам",
+            "следы",
+            "по следам",
+            "пойти",
+            "следу"
+          ],
+          "voice": "kid",
+          "say": "За воротами кто-то шарахнулся в кусты и буркнул оттуда! «Хрю! Опять ты! Ладно, сиди. Только не трогай». Стив пожал плечами и пошёл обратно.",
+          "dir": "forward",
+          "next": "breach"
+        },
+        {
+          "label": "Взяться за пролом",
+          "keywords": [
+            "пролом",
+            "чинить",
+            "работать",
+            "за пролом",
+            "стену"
+          ],
+          "say": "Стив подобрал золотую крупинку и сунул в карман. «Потом разберёмся, чьё»",
+          "dir": "forward",
+          "next": "breach"
+        }
+      ]
+    },
+    "breach": {
+      "bg": { "sky": "assets/mc/sky-dawn.webp",
+              "far": "assets/mc/far-hills.webp", "near": "assets/mc/near-breach.svg" },
+      "cast": [ { "src": "assets/mc/steve.svg", "x": 22, "y": 28, "w": 8 },
+                { "src": "assets/mc/villager.svg", "x": 33, "y": 28, "w": 7 },
+                { "src": "assets/mc/wolf.svg", "x": 42, "y": 28, "w": 7 },
+                { "src": "assets/mc/golem.svg", "x": 55, "y": 28, "w": 13 } ],
+      "voice": "friend",
+      "text": "Стену складывали заново. Житель кивнул на колокольню. «Хм-хм! Верёвка лопнула ещё вчера. Значит, качнуло ветром». И стал класть ряды.",
+      "task": {
+        "kind": "math",
+        "max": 13,
+        "types": [
+          "addition"
+        ],
+        "topic": "blocks",
+        "spread": "wide"
+      },
+      "next": "fork"
+    },
+    "fork": {
+      "bg": { "sky": "assets/mc/sky-dawn.webp",
+              "far": "assets/mc/far-hills.webp", "near": "assets/mc/near-bell.svg" },
+      "cast": [ { "src": "assets/mc/steve.svg", "x": 27, "y": 28, "w": 8 },
+                { "src": "assets/mc/alex.svg", "x": 38, "y": 28, "w": 8 },
+                { "src": "assets/mc/villager.svg", "x": 49, "y": 28, "w": 7 } ],
+      "voice": "friend",
+      "text": "Житель приставил к тыкве железо — вышла голова, как у Железного. Тот поглядел и загудел. «Это не я. Это тыква. Пусть пугает».",
+      "prompt": "Куда пойдём: к колоколу или на улицу?",
+      "choices": [
+        {
+          "label": "К колоколу",
+          "keywords": [
+            "колоколу",
+            "колокол",
+            "к колоколу",
+            "наверх",
+            "звонить"
+          ],
+          "dir": "left",
+          "next": "bell"
+        },
+        {
+          "label": "На улицу",
+          "keywords": [
+            "улицу",
+            "улица",
+            "на улицу",
+            "вниз",
+            "деревню"
+          ],
+          "dir": "right",
+          "next": "street"
+        }
+      ]
+    },
+    "bell": {
+      "bg": { "sky": "assets/mc/sky-dawn.webp",
+              "far": "assets/mc/far-hills.webp", "near": "assets/mc/near-bell.svg" },
+      "cast": [ { "src": "assets/mc/steve.svg", "x": 30, "y": 28, "w": 8 },
+                { "src": "assets/mc/villager.svg", "x": 41, "y": 28, "w": 7 } ],
+      "text": "Житель привязал новую верёвку и дёрнул. Над крышами пошёл чистый звон. «Хм-хм! Вот теперь по-настоящему».",
+      "prompt": "Пойдём на улицу?",
+      "choices": [
+        {
+          "label": "Пойдём",
+          "keywords": [
+            "да",
+            "пойдём",
+            "пойдем",
+            "идём",
+            "идем",
+            "вниз"
+          ],
+          "dir": "right",
+          "next": "street"
+        }
+      ]
+    },
+    "street": {
+      "bg": { "sky": "assets/mc/sky-dawn.webp",
+              "far": "assets/mc/far-hills.webp", "near": "assets/mc/near-village.svg" },
+      "cast": [ { "src": "assets/mc/steve.svg", "x": 24, "y": 28, "w": 8 },
+                { "src": "assets/mc/alex.svg", "x": 35, "y": 28, "w": 8 },
+                { "src": "assets/mc/villager.svg", "x": 46, "y": 28, "w": 7 } ],
+      "voice": "ally",
+      "text": "На улице разложили всё, что нашли, и каждый брал своё. Алекс подняла одну вещь и хмыкнула. «А это тут откуда?»",
+      "task": {
+        "kind": "logic",
+        "max": 10,
+        "types": [
+          "oddOneOut"
+        ],
+        "topic": "after"
+      },
+      "next": "forge"
+    },
+    "forge": {
+      "bg": { "sky": "assets/mc/sky-dawn.webp",
+              "far": "assets/mc/far-hills.webp", "near": "assets/mc/near-anvil.svg" },
+      "cast": [ { "src": "assets/mc/steve.svg", "x": 25, "y": 28, "w": 8 },
+                { "src": "assets/mc/villager.svg", "x": 36, "y": 28, "w": 7 },
+                { "src": "assets/mc/golem.svg", "x": 50, "y": 28, "w": 13 } ],
+      "text": "Стив раздувал горн, а готовые слитки складывал на наковальню и считал вслух. «Железа на такую тыкву нужно много!»",
+      "task": {
+        "kind": "math",
+        "max": 16,
+        "types": [
+          "addition"
+        ],
+        "topic": "iron",
+        "spread": "wide"
+      },
+      "next": "charm"
+    },
+    "charm": {
+      "bg": { "sky": "assets/mc/sky-dawn.webp",
+              "far": "assets/mc/far-hills.webp", "near": "assets/mc/near-gate.svg" },
+      "cast": [ { "src": "assets/mc/steve.svg", "x": 22, "y": 28, "w": 8 },
+                { "src": "assets/mc/alex.svg", "x": 33, "y": 28, "w": 8 },
+                { "src": "assets/mc/villager.svg", "x": 44, "y": 28, "w": 7 },
+                { "src": "assets/mc/golem.svg", "x": 50, "y": 28, "w": 13 } ],
+      "voice": "golem",
+      "text": "Тыква уже смотрела с ворот. Житель раскладывал щиты и шлемы по очереди, чтобы не сбиться. Железный загудел. «Теперь тут тихо».",
+      "task": {
+        "kind": "logic",
+        "max": 10,
+        "types": [
+          "pattern"
+        ],
+        "topic": "after"
+      },
+      "next": "home"
+    },
+    "home": {
+      "bg": { "sky": "assets/mc/sky-dawn.webp",
+              "far": "assets/mc/far-hills.webp", "near": "assets/mc/near-house.svg" },
+      "cast": [ { "src": "assets/mc/wolf.svg", "x": 20, "y": 28, "w": 7 },
+                { "src": "assets/mc/steve.svg", "x": 29, "y": 28, "w": 8 },
+                { "src": "assets/mc/alex.svg", "x": 40, "y": 28, "w": 8 } ],
+      "voice": "ally",
+      "text": "Стив вернулся на свой луг. Дом был на месте, а волк уже спал на крыльце — так же, как ждал его всю ту ночь. Алекс сказала тихо. «Хорошее место»"
+    }
+  }
+}

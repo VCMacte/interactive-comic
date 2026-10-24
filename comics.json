@@ -1,5 +1,12 @@
 [
   {
+    "id": "after",
+    "title": "Утро после рейда",
+    "subtitle": "Четырнадцатый день Стива · пять игр",
+    "cover": "assets/covers/after.webp",
+    "story": "stories/after.json"
+  },
+  {
     "id": "doubles",
     "title": "Тот, кто делает двойников",
     "subtitle": "Тринадцатый день Стива · пять игр",

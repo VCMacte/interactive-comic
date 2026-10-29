@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 252 92" width="252" height="92">
+<style>
+  .idle { animation: idle 3.2s ease-in-out infinite; transform-origin: 50% 100%; }
+  @keyframes idle { 0%,100% { transform: translateY(0) } 50% { transform: translateY(-6px) } }
+  @media (prefers-reduced-motion: reduce) { .idle { animation: none } }
+  .idle { animation: none }
+</style>
+<g class="idle">
+
+<rect x="8" y="68" width="22" height="22" fill="#b58be8"/>
+<rect x="14.6" y="54.8" width="8.8" height="8.8" fill="#f0e2ff"/>
+<rect x="8" y="90" width="22" height="5" fill="#7a52b5"/>
+<rect x="48" y="52" width="18" height="18" fill="#b58be8"/>
+<rect x="53.4" y="41.2" width="7.200000000000001" height="7.200000000000001" fill="#f0e2ff"/>
+<rect x="48" y="70" width="18" height="5" fill="#7a52b5"/>
+<rect x="84" y="64" width="24" height="24" fill="#b58be8"/>
+<rect x="91.20000000000002" y="49.60000000000001" width="9.6" height="9.6" fill="#f0e2ff"/>
+<rect x="84" y="88" width="24" height="5" fill="#7a52b5"/>
+<rect x="124" y="44" width="16" height="16" fill="#b58be8"/>
+<rect x="128.8" y="34.400000000000006" width="6.400000000000001" height="6.400000000000001" fill="#f0e2ff"/>
+<rect x="124" y="60" width="16" height="5" fill="#7a52b5"/>
+<rect x="160" y="58" width="22" height="22" fill="#b58be8"/>
+<rect x="166.6" y="44.8" width="8.8" height="8.8" fill="#f0e2ff"/>
+<rect x="160" y="80" width="22" height="5" fill="#7a52b5"/>
+<rect x="196" y="36" width="18" height="18" fill="#b58be8"/>
+<rect x="201.4" y="25.2" width="7.200000000000001" height="7.200000000000001" fill="#f0e2ff"/>
+<rect x="196" y="54" width="18" height="5" fill="#7a52b5"/>
+<rect x="228" y="50" width="20" height="20" fill="#b58be8"/>
+<rect x="234.00000000000003" y="38" width="8" height="8" fill="#f0e2ff"/>
+<rect x="228" y="70" width="20" height="5" fill="#7a52b5"/>
+</g>
+</svg>

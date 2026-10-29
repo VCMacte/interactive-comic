@@ -220,6 +220,23 @@ const LAYERS = {
       + `cold lilac haze between the trunks, ${STYLE}`,
     negative: NEG + ', round treetops, random spacing, varied tree shapes, sun, moon, clear air, blue sky, warm light, sunset colours, green grass',
   },
+  // Тёмный лес пятнадцатого дня. Отличать его от прежних должен ЦВЕТ:
+  // зелёный сумрак днём, какого в каталоге нет. Лиловое и ночь — в negative:
+  // лиловым занят туман тринадцатого дня, а ночью «страшного не бывает».
+  'mc/sky-woods': {
+    strength: 0.42,
+    prompt: `dim green daylight under a dense forest canopy, deep dark green at the top, `
+      + `soft pale green haze near the horizon, calm and quiet, `
+      + `no sun, no moon, no stars, ${STYLE}, no ground, no trees`,
+    negative: NEG + ', night, black sky, stars, moon, lilac, violet, purple, orange, sunset, blue sky, rain, lightning',
+  },
+  'mc/far-dark-woods': {
+    strength: 0.24,
+    prompt: `dense dark green forest of blocky spruce trees in three rows, `
+      + `cubic conifers packed tightly together, the farthest row lighter in soft green haze, `
+      + `the nearest row dark and sharp, ${STYLE}`,
+    negative: NEG + ', round treetops, sparse trees, sun, moon, night, lilac, purple fog, blue sky, warm light, sunset colours',
+  },
 };
 
 

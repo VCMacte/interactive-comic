@@ -3757,6 +3757,238 @@ ${px(8 * U, 30 * U, 4 * U, 2 * U, shoe)}`;
 
 /* ---------------- сборка ---------------- */
 
+/* ---- пятнадцатый день: тёмный лес ---- */
+
+// Палитры тёмного леса. Трава и земля здесь свои, и это можно: все четыре
+// ближних слоя опушки и чащи — свои же, а `near-gate`, `near-river`
+// и `near-library` — другие места, где земля и должна быть другой.
+// Тон зелёный, а не чёрный: лес сумрачный, но не страшный.
+const WOODS = {
+  grass: { base: '#3f6b3a', dark: '#2f5230', light: '#4f7f45' },
+  dirt:  { base: '#5e4a33', dark: '#46372a', light: '#715a3e' },
+  // Ближние ели темнее дальних: на первом предпросмотре они были одного
+  // цвета с нижним рядом `far-dark-woods` и пропадали в нём.
+  pine:  { base: '#143520', dark: '#0d2716', light: '#1d452a' },
+  oak:   { base: '#4a3420', dark: '#36261a', light: '#5c4229' },
+};
+
+/**
+ * Сумрак под кронами днём. Такого цвета в каталоге не было: зелёный сверху
+ * и светлая дымка у горизонта. Светила нет — его закрывают кроны.
+ */
+function skyWoods() {
+  const defs = `<defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#1d3527"/><stop offset="0.45" stop-color="#365c42"/>
+    <stop offset="0.78" stop-color="#7f9f7a"/>
+    <stop offset="1" stop-color="#b9cfa8"/></linearGradient></defs>`;
+  return svg(`<rect width="${W}" height="${H}" fill="url(#g)"/>
+${clouds(151, '#2b4a35', 0.45)}
+${clouds(152, '#9fbb92', 0.22)}`, defs);
+}
+
+/**
+ * Стена ёлок в три ряда, густо и вплотную: чаща, а не роща. Ели темнее
+ * подложки `rasterInit` только в нижнем ряду, поэтому слой собирается
+ * маской-силуэтом (`keepAlpha`), как `far-doubles`, — хромакей стёр бы его.
+ */
+function farDarkWoods(seed = 941) {
+  const rand = rng(seed);
+  const out = [];
+  const BANDS = [
+    { lift: B * 2.8, step: 2, tiers: 3, pal: { base: '#4d6e55', dark: '#43614a', light: '#58795f' } },
+    { lift: B * 1.4, step: 2, tiers: 4, pal: { base: '#33573d', dark: '#2a4a33', light: '#3d6447' } },
+    { lift: 0, step: 3, tiers: 5, pal: { base: '#28503a', dark: '#204430', light: '#315c43' } },
+  ];
+  for (const band of BANDS) {
+    const baseY = GROUND - B - band.lift;
+    for (let col = 0; col * B < W; col++) out.push(block(col * B, baseY, band.pal, rand));
+    for (let x = Math.floor(rand() * band.step) * B; x < W + B; x += band.step * B) {
+      const tiers = band.tiers + Math.floor(rand() * 2);
+      for (let r = 0; r < tiers; r++) {
+        const wide = Math.ceil((tiers - r) / 2);
+        for (let c = -wide + 1; c < wide; c++) {
+          out.push(block(x + c * B, baseY - (r + 1) * B, band.pal, rand));
+        }
+      }
+    }
+  }
+  return svg(out.join('\n'));
+}
+
+/** Тёмная ель из кубов: ствол и ярусы хвои, нижний ярус шире. */
+function darkPine(x, tiers, rand) {
+  const out = [block(x, GROUND - B, WOODS.oak, rand)];
+  for (let r = 0; r < tiers; r++) {
+    const wide = Math.ceil((tiers - r) / 2) + 1;
+    for (let c = -wide + 1; c < wide; c++) {
+      out.push(block(x + c * B, GROUND - B * 2 - r * B, WOODS.pine, rand));
+    }
+  }
+  return out.join('\n');
+}
+
+/**
+ * Опушка: слева ели кулисой, справа ещё светлый край луга. Ели только
+ * у левого края и одна справа — середина под героев, правая полоса
+ * под предмет задания (искры, факелы).
+ */
+function nearWoodsEdge(seed = 947) {
+  const rand = rng(seed);
+  return svg(`${groundRows(rand, WOODS.grass, WOODS.dirt)}
+${darkPine(B, 7, rand)}
+${darkPine(B * 5, 6, rand)}
+${darkPine(W - B, 7, rand)}`);
+}
+
+/**
+ * Чаща. Ели по обоим краям, слева поперёк лежит упавший ствол — о нём
+ * говорит развилка `fork`. Ручья здесь нет: правая полоса у земли занята
+ * предметом задания сцены `circle`, и ряд шишек лёг бы прямо в воду.
+ * Ручей показан в своей сцене `brook`.
+ */
+function nearThicket(seed = 953) {
+  const rand = rng(seed);
+  const out = [];
+  // Упавшее дерево: ствол лежит на земле, у комля торчат корни.
+  for (let c = 0; c < 5; c++) out.push(block(B * (3 + c), GROUND - B, WOODS.oak, rand));
+  out.push(`<rect x="${n(B * 3 - 18)}" y="${n(GROUND - B * 0.9)}" width="18" height="${n(B * 0.5)}" fill="${WOODS.oak.dark}"/>`);
+  return svg(`${groundRows(rand, WOODS.grass, WOODS.dirt)}
+${out.join('\n')}
+${darkPine(B, 8, rand)}
+${darkPine(B * 4, 6, rand)}
+${darkPine(W - B * 2, 8, rand)}
+${darkPine(W - B * 5, 6, rand)}`);
+}
+
+/**
+ * Стена поперёк тропы — предмет задания сцены `wall`: из неё «сняли»
+ * столько-то блоков и камней. Стоит на 60…90% ширины и поднимается
+ * до 42% высоты, то есть видна над текстом и правее его. Кладка
+ * вперемешку из блока (дерево) и камня — оба слова области `blocks`.
+ */
+function nearBlockWall(seed = 959) {
+  const rand = rng(seed);
+  const out = [];
+  const EDGE = '#2e2a24';
+  for (let c = 19; c < 29; c++) {
+    const h = 5 - (c % 3 === 0 ? 1 : 0);
+    for (let r = 0; r < h; r++) {
+      const pal = (c + r) % 2 ? P.stone : P.plank;
+      out.push(block(c * B, GROUND - B * (r + 1), pal, rand));
+      out.push(`<rect x="${n(c * B)}" y="${n(GROUND - B * (r + 1))}" width="${B}" height="${B}" fill="none" stroke="${EDGE}" stroke-width="3"/>`);
+    }
+  }
+  return svg(`${groundRows(rand, WOODS.grass, WOODS.dirt)}
+${darkPine(B, 8, rand)}
+${darkPine(B * 4, 6, rand)}
+${out.join('\n')}
+${darkPine(W - B, 8, rand)}`);
+}
+
+/**
+ * Огромный тёмный дом на поляне — крючок на шестнадцатый день. Стоит
+ * в правой половине и поднимается до 15% высоты: и над текстом, и правее
+ * его. В верхнем окне светится тыква с ворот — её увели в первой сцене,
+ * и тут её надо узнать с первого взгляда, поэтому она крупная.
+ * Дверь внизу справа: у неё стоят копии из `cast`.
+ */
+function nearDarkHouse(seed = 967) {
+  const rand = rng(seed);
+  const out = [];
+  const HX = 17, HW = 13, FLOORS = 7;
+  const PUMPKIN = '#d98022', PUMPKIN_DARK = '#7a3f0c', LILAC = '#b58be8';
+  for (let c = 0; c < HW; c++) {
+    for (let r = 0; r < FLOORS; r++) {
+      // Тёмный дуб с колоннами из брёвен через каждые четыре блока.
+      const pal = c % 4 === 0 ? WOODS.oak : P.deep;
+      out.push(block((HX + c) * B, GROUND - B * (r + 1), pal, rand));
+    }
+  }
+  // Крыша ступенями.
+  for (let step = 0; step < 3; step++) {
+    const y = GROUND - B * (FLOORS + 1 + step);
+    for (let c = step - 1; c < HW - step + 1; c++) {
+      out.push(`<rect x="${n((HX + c) * B)}" y="${n(y)}" width="${B}" height="${B}" fill="${step % 2 ? '#2a1f2e' : '#3a2b3f'}"/>`);
+    }
+  }
+  // Окна: тёмные, кроме одного — лиловый свет и тыква.
+  for (const [c, r] of [[2, 5], [6, 5], [10, 2], [2, 2], [6, 2]]) {
+    out.push(`<rect x="${n((HX + c) * B)}" y="${n(GROUND - B * (r + 1))}" width="${B}" height="${n(B * 1.3)}" fill="#1a1622"/>`);
+  }
+  const wx = (HX + 9.5) * B, wy = GROUND - B * 6.2;
+  out.push(`<rect x="${n(wx)}" y="${n(wy)}" width="${n(B * 2)}" height="${n(B * 1.8)}" fill="${LILAC}"/>`);
+  const px0 = wx + B * 0.3, py0 = wy + B * 0.3, ps = B * 1.4;
+  out.push(`<rect x="${n(px0)}" y="${n(py0)}" width="${n(ps)}" height="${n(ps)}" fill="${PUMPKIN}"/>`);
+  out.push(`<rect x="${n(px0 + ps * 0.18)}" y="${n(py0 + ps * 0.28)}" width="${n(ps * 0.18)}" height="${n(ps * 0.18)}" fill="${PUMPKIN_DARK}"/>`);
+  out.push(`<rect x="${n(px0 + ps * 0.64)}" y="${n(py0 + ps * 0.28)}" width="${n(ps * 0.18)}" height="${n(ps * 0.18)}" fill="${PUMPKIN_DARK}"/>`);
+  out.push(`<rect x="${n(px0 + ps * 0.28)}" y="${n(py0 + ps * 0.62)}" width="${n(ps * 0.44)}" height="${n(ps * 0.14)}" fill="${PUMPKIN_DARK}"/>`);
+  // Дверь в две створки.
+  const dx = (HX + 5) * B;
+  out.push(`<rect x="${n(dx)}" y="${n(GROUND - B * 2.4)}" width="${n(B * 2)}" height="${n(B * 2.4)}" fill="#24180f"/>`);
+  out.push(`<rect x="${n(dx + B - 3)}" y="${n(GROUND - B * 2.4)}" width="6" height="${n(B * 2.4)}" fill="#3a2a1c"/>`);
+  return svg(`${groundRows(rand, WOODS.grass, WOODS.dirt)}
+${darkPine(B, 8, rand)}
+${darkPine(B * 4, 6, rand)}
+${out.join('\n')}`);
+}
+
+/**
+ * Цепочка лиловых искр — след иллюзиониста. Предмет `cast`, а не часть
+ * слоя: тот же след лежит и у ворот, и на опушке. Цвет его плаща и тумана
+ * тринадцатого дня, чтобы ребёнок узнал хозяина без подсказки.
+ */
+function sparks() {
+  const U = 20;
+  const lilac = '#b58be8', hi = '#f0e2ff', dark = '#7a52b5';
+  const dots = [[0.4, 3.4, 1.1], [2.4, 2.6, 0.9], [4.2, 3.2, 1.2], [6.2, 2.2, 0.8],
+    [8, 2.9, 1.1], [9.8, 1.8, 0.9], [11.4, 2.5, 1]];
+  const body = dots.map(([x, y, s]) => `
+${px(x * U, y * U, s * U, s * U, lilac)}
+${px((x + s * 0.3) * U, (y - s * 0.6) * U, s * 0.4 * U, s * 0.4 * U, hi)}
+${px(x * U, (y + s) * U, s * U, 0.25 * U, dark)}`).join('');
+  return charSvg(body, 12.6 * U, 4.6 * U, '.idle { animation: none }');
+}
+
+/**
+ * Факелы вдоль тропы — предмет задания сцены `torches`. Две кучки, а не
+ * ряд: вопрос звучит «столько и ещё столько», и слагаемых должно быть
+ * видно два.
+ */
+function torchRow() {
+  const U = 20;
+  const stick = '#7a5630', flame = '#ffb13b', core = '#fff0b0';
+  const one = (x) => `
+${px(x * U + 0.7 * U, 1.6 * U, 0.6 * U, 3.4 * U, stick)}
+${px(x * U + 0.4 * U, 0.5 * U, 1.2 * U, 1.2 * U, flame)}
+${px(x * U + 0.7 * U, 0.2 * U, 0.6 * U, 0.6 * U, core)}`;
+  const body = [0, 2, 4, 9, 11, 13, 15].map(one).join('');
+  return charSvg(body, 17 * U, 5 * U, '.idle { animation: none }');
+}
+
+/**
+ * Ряд лесных вещей по очереди — предмет задания сцены `circle`. Именно
+ * чередование ПАРЫ, шишка-ягода, а не шесть разных вещей: вопрос
+ * у `pattern` всегда про пару (урок четырнадцатого дня).
+ */
+function coneRow() {
+  const U = 20;
+  const cone = '#7a5230', coneDark = '#553619', berry = '#c0392b', berryHi = '#f19a8e', leaf = '#3d8148';
+  const shishka = (x) => `
+${px(x * U + 0.3 * U, 0.8 * U, 1.4 * U, 2.6 * U, cone)}
+${px(x * U + 0.3 * U, 1.6 * U, 1.4 * U, 0.3 * U, coneDark)}
+${px(x * U + 0.3 * U, 2.5 * U, 1.4 * U, 0.3 * U, coneDark)}
+${px(x * U + 0.7 * U, 0.3 * U, 0.6 * U, 0.6 * U, coneDark)}`;
+  // Ягода, а не гриб: «гриб» — слово Нижнего мира, и в тройки леса
+  // он не попал. Ряд показывает ту же пару, о которой спрашивают.
+  const yagoda = (x) => `
+${px(x * U + 0.7 * U, 0.4 * U, 0.8 * U, 0.6 * U, leaf)}
+${px(x * U + 0.2 * U, 1.0 * U, 1.8 * U, 1.8 * U, berry)}
+${px(x * U + 0.5 * U, 1.3 * U, 0.5 * U, 0.5 * U, berryHi)}
+${px(x * U + 0.2 * U, 2.6 * U, 1.8 * U, 0.3 * U, '#8e2a20')}`;
+  const body = [0, 3, 6, 9, 12, 15].map((x, i) => (i % 2 ? yagoda(x) : shishka(x))).join('');
+  return charSvg(body, 17.4 * U, 3.6 * U, '.idle { animation: none }');
+}
+
 console.log('Небо:');
 write('assets/mc/sky-day.svg', skyDay());
 write('assets/mc/sky-sunset.svg', skySunset());
@@ -3767,6 +3999,7 @@ write('assets/mc/sky-storm.svg', skyStorm());
 write('assets/mc/sky-fog.svg', skyFog());
 write('assets/mc/sky-fire.svg', skyFire());
 write('assets/mc/sky-mist.svg', skyMist());
+write('assets/mc/sky-woods.svg', skyWoods());
 write('assets/mc/sun-day.svg', celestial(1500, 220, 88, '#ffe873', '#fff3b0'));
 write('assets/mc/sun-sunset.svg', celestial(1420, 600, 86, '#ffc24d', '#ff9d5c'));
 write('assets/mc/moon-night.svg', celestial(1500, 230, 74, '#f2f5fb', '#c9d8f2', 90));
@@ -3789,6 +4022,7 @@ write('assets/mc/far-smoke.svg', farSmoke());
 write('assets/mc/far-pines-fog.svg', farPinesFog());
 write('assets/mc/far-fire.svg', farFire());
 write('assets/mc/far-doubles.svg', farDoubles());
+write('assets/mc/far-dark-woods.svg', farDarkWoods());
 
 /* ---------------- четырнадцатый день ---------------- */
 
@@ -3816,7 +4050,7 @@ write('assets/mc/far-doubles.svg', farDoubles());
  * день берёт готовые near-breach, near-bell, near-village и near-house,
  * и земля запрыгала бы от сцены к сцене (грабля тринадцатого дня).
  */
-function nearGate(seed = 914) {
+function nearGate(seed = 914, { bare = false } = {}) {
   const rand = rng(seed);
   const out = [];
   const EDGE = '#3f3c35';
@@ -3900,8 +4134,12 @@ function nearGate(seed = 914) {
   // цветное пятно, какого нет ни у одной прежней.
   const cx = gx + B * 1.5, cy = beamY + B * 1.5;
   for (const dx of [-B * 0.42, B * 0.42]) {
-    out.push(`<rect x="${n(cx + dx - 4)}" y="${n(beamY + 20)}" width="8" height="${n(B * 0.62)}" fill="${LOG_DARK}"/>`);
+    // У пустых ворот пятнадцатого дня тыкву унесли: верёвки обрываются
+    // короче, и пустота под перекладиной видна сразу.
+    const rope = bare ? B * 0.3 : B * 0.62;
+    out.push(`<rect x="${n(cx + dx - 4)}" y="${n(beamY + 20)}" width="8" height="${n(rope)}" fill="${LOG_DARK}"/>`);
   }
+  if (!bare) {
   out.push(`<rect x="${n(cx - B * 0.66)}" y="${n(cy - B * 0.66)}" width="${n(B * 1.32)}" height="${n(B * 1.32)}" fill="${PUMPKIN}"/>`);
   out.push(`<rect x="${n(cx - B * 0.66)}" y="${n(cy + B * 0.32)}" width="${n(B * 1.32)}" height="${n(B * 0.34)}" fill="${PUMPKIN_DARK}"/>`);
   out.push(`<rect x="${n(cx - B * 0.12)}" y="${n(cy - B * 0.9)}" width="${n(B * 0.24)}" height="${n(B * 0.26)}" fill="${STEM}"/>`);
@@ -3914,6 +4152,7 @@ function nearGate(seed = 914) {
     out.push(`<rect x="${n(cx + B * ox)}" y="${n(cy + B * oy)}" width="${n(B * 0.2)}" height="${n(B * 0.2)}" fill="${IRON}"/>`);
     out.push(`<rect x="${n(cx + B * ox)}" y="${n(cy + B * oy + B * 0.14)}" width="${n(B * 0.2)}" height="${n(B * 0.06)}" fill="${IRON_DARK}"/>`);
   }
+  }
 
   // Чередование вдоль правого участка гребня — предмет задания сцены
   // `charm`. Шесть вещей по порядку: блок, тыква, факел, щит, кирпич,
@@ -3923,6 +4162,7 @@ function nearGate(seed = 914) {
   // Под рядом — деревянная полка с тёмной кромкой. Без неё в предпросмотре
   // серый блок и серый камень сливались с гребнем, и из шести вещей
   // читались четыре: ряд, который надо продолжить, был неполон.
+  if (!bare) {
   const rowY = GROUND - B * 5 - B * 0.92;
   const rowX = 24.9 * B, rowW = B * 6.5;
   out.push(`<rect x="${n(rowX - 10)}" y="${n(rowY + B * 0.82)}" width="${n(rowW)}" height="18" fill="${LOG}"/>`);
@@ -3953,12 +4193,15 @@ function nearGate(seed = 914) {
       out.push(`<rect x="${n(x)}" y="${n(rowY + B * 0.1)}" width="${n(B * 0.7)}" height="${n(B * 0.7)}" fill="none" stroke="${EDGE}" stroke-width="5"/>`);
     }
   });
+  }
 
   // ПАСХАЛКА. Деталь-намёк: следы копытец из проёма и золотой самородок
   // рядом. Мелкая нарочно — намёк, а не эпизод; поэтому и слой в покраску
   // не идёт, нейросеть такую крапину раздувает или вымывает.
   // Место — 69…79% ширины у самой земли: правее 65% текста, то есть
   // видно; и ровно «у самых ворот», как сказано в тексте сцены.
+  // Пасхалка выходит только по чётным дням: у пустых ворот её нет.
+  if (!bare) {
   const HOOF = '#5e4a35';
   for (const [hx, hy, s] of [
     [22.4, 0.22, 1], [22.9, 0.44, 0.92], [23.5, 0.3, 1], [24.1, 0.56, 0.88],
@@ -3976,6 +4219,7 @@ function nearGate(seed = 914) {
   out.push(`<rect x="${n(nx + 6)}" y="${n(ny + 4)}" width="14" height="10" fill="${GOLD_HI}"/>`);
   out.push(`<rect x="${n(nx - 20)}" y="${n(ny + 12)}" width="18" height="14" fill="${GOLD}"/>`);
   out.push(`<rect x="${n(nx + 44)}" y="${n(ny - 6)}" width="13" height="11" fill="${GOLD}"/>`);
+  }
 
   // Факелы по гребню с ореолом: на рассвете они ещё горят, и это
   // единственное тёплое пятно на левой половине кадра.
@@ -4022,6 +4266,11 @@ write('assets/mc/near-outpost.svg', nearOutpost());
 write('assets/mc/near-breach.svg', nearBreach());
 write('assets/mc/near-copies.svg', nearCopies());
 write('assets/mc/near-gate.svg', nearGate());
+write('assets/mc/near-gate-bare.svg', nearGate(914, { bare: true }));
+write('assets/mc/near-woods-edge.svg', nearWoodsEdge());
+write('assets/mc/near-thicket.svg', nearThicket());
+write('assets/mc/near-block-wall.svg', nearBlockWall());
+write('assets/mc/near-dark-house.svg', nearDarkHouse());
 
 console.log('Персонажи:');
 write('assets/mc/steve.svg', steve());
@@ -4045,5 +4294,8 @@ write('assets/mc/pillager-sword.svg', pillager('sword'));
 write('assets/mc/cage.svg', cage());
 write('assets/mc/illusioner.svg', illusioner());
 write('assets/mc/steve-ghost.svg', steveGhost());
+write('assets/mc/sparks.svg', sparks());
+write('assets/mc/torch-row.svg', torchRow());
+write('assets/mc/cone-row.svg', coneRow());
 
 console.log('\nГотово.');

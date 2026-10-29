@@ -231,6 +231,48 @@ console.log('длина: выше 184 — дефект, 179…184 — совет
   ok(!has(run(story(170)).advice, 'long'), '170 знаков — в запасе, молчим');
 }
 
+/* ---------------- чей голос у реплики ---------------- */
+
+console.log('«Хм-хм» голосом Стива — дефект; своим голосом — нет');
+{
+  const story = (voice) => ({
+    theme: 'minecraft', start: 'a', voice: 'hero',
+    scenes: { a: scene('Житель дёрнул верёвку. «Хм-хм! Вот теперь по-настоящему»', voice ? { voice } : {}) },
+  });
+  ok(has(run(story()).defects, 'speaker-voice'), 'реплика жителя голосом сцены hero — дефект');
+  ok(!has(run(story('friend')).defects, 'speaker-voice'), 'у сцены голос friend — находки быть не должно');
+}
+
+console.log('перед репликой назван другой персонаж — совет; волк не считается');
+{
+  const story = (text) => ({ theme: 'minecraft', start: 'a', voice: 'hero', scenes: { a: scene(text) } });
+  ok(has(run(story('Библиотекарь махнул в темноту. «Лестница вниз»')).advice, 'speaker-named'),
+    'назван библиотекарь, читает Стив — совет');
+  ok(!has(run(story('Библиотекарь махнул в темноту. Стив кивнул. «Лестница вниз»')).advice, 'speaker-named'),
+    'говорящий назван прямо перед кавычками — молчим');
+  ok(!has(run(story('Волк зарычал. «Тише, пёс»')).advice, 'speaker-named'),
+    'у волка голоса нет, к нему обращаются — молчим');
+}
+
+console.log('реплика варианта считается голосом варианта');
+{
+  const story = {
+    theme: 'minecraft', start: 'a', voice: 'hero',
+    scenes: {
+      a: scene('Начало.', {
+        prompt: 'Куда?',
+        choices: [
+          { label: 'Туда', say: 'За полками буркнули. «Хрю! Не трогай!»', voice: 'kid', next: 'b' },
+          { label: 'Сюда', say: 'За полками буркнули. «Хрю! Не трогай!»', next: 'b' },
+        ],
+      }),
+      b: scene('Финал.'),
+    },
+  };
+  const found = run(story).defects.filter((f) => f.code === 'speaker-voice');
+  ok(found.length === 1 && found[0].where.includes('Сюда'), 'дефект только у варианта без voice kid: ' + found.map((f) => f.where));
+}
+
 /* ---------------- итог ---------------- */
 
 console.log();

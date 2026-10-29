@@ -1,0 +1,282 @@
+{
+  "title": "След в тёмном лесу",
+  "theme": "minecraft",
+  "voice": "hero",
+  "start": "gate",
+  "hook": "библиотекарь подсказал спросить дракона",
+  "scenes": {
+    "gate": {
+      "bg": { "sky": "assets/mc/sky-dawn.webp",
+              "far": "assets/mc/far-hills.webp", "near": "assets/mc/near-gate-bare.svg" },
+      "cast": [ { "src": "assets/mc/wolf.svg", "x": 16, "y": 28, "w": 7 },
+                { "src": "assets/mc/steve.svg", "x": 25, "y": 28, "w": 8 },
+                { "src": "assets/mc/alex.svg", "x": 36, "y": 28, "w": 8 },
+                { "src": "assets/mc/golem.svg", "x": 50, "y": 28, "w": 13 },
+                { "src": "assets/mc/sparks.svg", "x": 78, "y": 26, "w": 15 } ],
+      "text": "Утром Стив пришёл в деревню — а тыквы над воротами не было! Под воротами лежали лиловые искры, и цепочка их уходила в ёлки. Стив сжал кирку. «Это он. Тот, в лиловом плаще!»",
+      "prompt": "Пойдём по следу сразу или сперва зайдём к жителю?",
+      "choices": [
+        {
+          "label": "По следу",
+          "keywords": [
+            "следу",
+            "след",
+            "по следу",
+            "сразу",
+            "в лес"
+          ],
+          "say": "Стив свистнул волку, и тот прибежал. А Железному Стив сказал. «Ты за старшего! Сторожи деревню»",
+          "dir": "right",
+          "next": "edge"
+        },
+        {
+          "label": "К жителю",
+          "keywords": [
+            "жителю",
+            "житель",
+            "к жителю",
+            "сперва",
+            "зайти"
+          ],
+          "voice": "friend",
+          "say": "Житель всплеснул руками. «Хм-хм! Возьмите факелы, в ёлках темно!» А Железный остался сторожить ворота.",
+          "dir": "left",
+          "next": "edge"
+        }
+      ]
+    },
+    "edge": {
+      "bg": { "sky": "assets/mc/sky-woods.webp",
+              "far": "assets/mc/far-dark-woods.webp", "near": "assets/mc/near-woods-edge.svg" },
+      "cast": [ { "src": "assets/mc/steve.svg", "x": 22, "y": 28, "w": 8 },
+                { "src": "assets/mc/alex.svg", "x": 33, "y": 28, "w": 8 },
+                { "src": "assets/mc/wolf.svg", "x": 44, "y": 28, "w": 7 },
+                { "src": "assets/mc/sparks.svg", "x": 78, "y": 26, "w": 15 } ],
+      "voice": "ally",
+      "text": "Начался тёмный лес. Искры вели вдоль ёлок, а под ногами валялось всякое. Алекс прищурилась. «Он и тут подкинул чужое!»",
+      "task": {
+        "kind": "logic",
+        "max": 10,
+        "types": [
+          "oddOneOut"
+        ],
+        "topic": "woods"
+      },
+      "next": "torches"
+    },
+    "torches": {
+      "bg": { "sky": "assets/mc/sky-woods.webp",
+              "far": "assets/mc/far-dark-woods.webp", "near": "assets/mc/near-woods-edge.svg" },
+      "cast": [ { "src": "assets/mc/alex.svg", "x": 24, "y": 28, "w": 8 },
+                { "src": "assets/mc/steve.svg", "x": 35, "y": 28, "w": 8 },
+                { "src": "assets/mc/torch-row.svg", "x": 72, "y": 28, "w": 25 } ],
+      "text": "В ёлках стало темно. Алекс ставила факелы вдоль тропы и подсыпала угольки. Стив понял. «Это чтобы найти дорогу назад! Считай!»",
+      "task": {
+        "kind": "math",
+        "max": 14,
+        "types": [
+          "addition"
+        ],
+        "topic": "fuel",
+        "spread": "wide"
+      },
+      "next": "nose"
+    },
+    "nose": {
+      "bg": { "sky": "assets/mc/sky-woods.webp",
+              "far": "assets/mc/far-dark-woods.webp", "near": "assets/mc/near-thicket.svg" },
+      "cast": [ { "src": "assets/mc/steve.svg", "x": 22, "y": 28, "w": 8 },
+                { "src": "assets/mc/alex.svg", "x": 33, "y": 28, "w": 8 },
+                { "src": "assets/mc/wolf.svg", "x": 46, "y": 28, "w": 7 } ],
+      "voice": "ally",
+      "text": "Тут след разошёлся надвое: искры влево и искры вправо. Волк обнюхал оба и сел у правого. Алекс хмыкнула. «Вот хитрый! Один след ненастоящий»",
+      "prompt": "Пойдём за волком или налево?",
+      "choices": [
+        {
+          "label": "За волком",
+          "keywords": [
+            "волком",
+            "волк",
+            "за волком",
+            "направо",
+            "вправо"
+          ],
+          "voice": "hero",
+          "say": "Стив потрепал волка по голове. «Нос у тебя лучше любых глаз»",
+          "dir": "right",
+          "next": "fork"
+        },
+        {
+          "label": "Налево",
+          "keywords": [
+            "налево",
+            "влево",
+            "левый",
+            "по левому"
+          ],
+          "voice": "trickster",
+          "say": "Левые искры погасли разом, и из ёлок кто-то засмеялся! «Ха! Попались!» Стив вернулся к волку.",
+          "dir": "left",
+          "next": "fork"
+        }
+      ]
+    },
+    "fork": {
+      "bg": { "sky": "assets/mc/sky-woods.webp",
+              "far": "assets/mc/far-dark-woods.webp", "near": "assets/mc/near-thicket.svg" },
+      "cast": [ { "src": "assets/mc/wolf.svg", "x": 18, "y": 28, "w": 7 },
+                { "src": "assets/mc/steve.svg", "x": 27, "y": 28, "w": 8 },
+                { "src": "assets/mc/alex.svg", "x": 38, "y": 28, "w": 8 } ],
+      "text": "Лес стал гуще. Справа журчал ручей, а слева лежали упавшие деревья. Стив почесал затылок. «Искры видно и там, и там»",
+      "prompt": "Пойдём по ручью или через упавшие деревья?",
+      "choices": [
+        {
+          "label": "По ручью",
+          "keywords": [
+            "ручью",
+            "ручей",
+            "по ручью",
+            "вода"
+          ],
+          "dir": "right",
+          "next": "brook"
+        },
+        {
+          "label": "Через деревья",
+          "keywords": [
+            "деревья",
+            "через деревья",
+            "дерево",
+            "налево"
+          ],
+          "dir": "left",
+          "next": "mist"
+        }
+      ]
+    },
+    "brook": {
+      "bg": { "sky": "assets/mc/sky-woods.webp",
+              "far": "assets/mc/far-dark-woods.webp", "near": "assets/mc/near-river.svg" },
+      "cast": [ { "src": "assets/mc/steve.svg", "x": 26, "y": 28, "w": 8 },
+                { "src": "assets/mc/wolf.svg", "x": 37, "y": 28, "w": 7 } ],
+      "text": "Искры шли вдоль ручья и вдруг пропали прямо на камне. Волк понюхал камень и фыркнул. Стив кивнул. «Этот след ненастоящий. Вернёмся к деревьям»",
+      "prompt": "Идём обратно?",
+      "choices": [
+        {
+          "label": "Обратно",
+          "keywords": [
+            "обратно",
+            "идём",
+            "назад",
+            "да"
+          ],
+          "dir": "left",
+          "next": "mist"
+        }
+      ]
+    },
+    "mist": {
+      "bg": { "sky": "assets/mc/sky-woods.webp",
+              "far": "assets/mc/far-doubles.webp", "near": "assets/mc/near-thicket.svg" },
+      "cast": [ { "src": "assets/mc/steve.svg", "x": 24, "y": 28, "w": 8 },
+                { "src": "assets/mc/alex.svg", "x": 35, "y": 28, "w": 8 } ],
+      "voice": "trickster",
+      "text": "Между ёлок пополз лиловый туман, и кто-то в нём стал считать шаги вслух. «Семь, девять, четыре! Сбились? Ха!»",
+      "task": {
+        "kind": "math",
+        "max": 11,
+        "types": [
+          "next"
+        ],
+        "topic": "blocks",
+        "spread": "wide"
+      },
+      "next": "wall"
+    },
+    "wall": {
+      "bg": { "sky": "assets/mc/sky-woods.webp",
+              "far": "assets/mc/far-dark-woods.webp", "near": "assets/mc/near-block-wall.svg" },
+      "cast": [ { "src": "assets/mc/steve.svg", "x": 22, "y": 28, "w": 8 },
+                { "src": "assets/mc/alex.svg", "x": 33, "y": 28, "w": 8 },
+                { "src": "assets/mc/wolf.svg", "x": 44, "y": 28, "w": 7 } ],
+      "text": "Тропу загородила стена из блоков и камней. Её сложили только что, нарочно! Стив взялся за кирку. «Разберём. Считай, сколько сняли!»",
+      "task": {
+        "kind": "math",
+        "max": 15,
+        "types": [
+          "addition"
+        ],
+        "topic": "blocks",
+        "spread": "wide"
+      },
+      "next": "circle"
+    },
+    "circle": {
+      "bg": { "sky": "assets/mc/sky-woods.webp",
+              "far": "assets/mc/far-dark-woods.webp", "near": "assets/mc/near-thicket.svg" },
+      "cast": [ { "src": "assets/mc/alex.svg", "x": 24, "y": 28, "w": 8 },
+                { "src": "assets/mc/steve.svg", "x": 35, "y": 28, "w": 8 },
+                { "src": "assets/mc/cone-row.svg", "x": 72, "y": 28, "w": 25 } ],
+      "voice": "ally",
+      "text": "Тропа пошла кругом, а вдоль неё лесные вещи лежали по очереди. Алекс хмыкнула. «Он водит нас по кругу! Где тут порядок?»",
+      "task": {
+        "kind": "logic",
+        "max": 10,
+        "types": [
+          "pattern"
+        ],
+        "topic": "woods"
+      },
+      "next": "house"
+    },
+    "house": {
+      "bg": { "sky": "assets/mc/sky-woods.webp",
+              "far": "assets/mc/far-dark-woods.webp", "near": "assets/mc/near-dark-house.svg" },
+      "cast": [ { "src": "assets/mc/steve.svg", "x": 18, "y": 28, "w": 8 },
+                { "src": "assets/mc/alex.svg", "x": 29, "y": 28, "w": 8 },
+                { "src": "assets/mc/wolf.svg", "x": 40, "y": 28, "w": 7 },
+                { "src": "assets/mc/steve-ghost.svg", "x": 70, "y": 28, "w": 8 },
+                { "src": "assets/mc/steve-ghost.svg", "x": 90, "y": 28, "w": 8 } ],
+      "voice": "ally",
+      "text": "Порядок сошёлся, и круг кончился. На поляне чернел дом, в окне светилась наша тыква, у входа стояли копии Стива. Алекс нахмурилась. «Ломать бесполезно, он наделает новых»",
+      "prompt": "Пойдём за советом к библиотекарю или постучим в дверь?",
+      "choices": [
+        {
+          "label": "За советом",
+          "keywords": [
+            "советом",
+            "совет",
+            "за советом",
+            "библиотекарь",
+            "к библиотекарю"
+          ],
+          "voice": "hero",
+          "say": "Стив хлопнул себя по лбу. «Библиотекарь! Он прочитал целую гору книг!»",
+          "dir": "left",
+          "next": "library"
+        },
+        {
+          "label": "Постучать",
+          "keywords": [
+            "постучать",
+            "постучим",
+            "дверь",
+            "в дверь"
+          ],
+          "voice": "trickster",
+          "say": "Копии шагнули навстречу, а из окошка засмеялись! «Тыкву хотите? Сперва перехитрите!» Стив попятился. Нет, сперва к библиотекарю.",
+          "dir": "left",
+          "next": "library"
+        }
+      ]
+    },
+    "library": {
+      "bg": { "near": "assets/mc/near-library.svg" },
+      "cast": [ { "src": "assets/mc/steve.svg", "x": 30, "y": 28, "w": 8 },
+                { "src": "assets/mc/alex.svg", "x": 41, "y": 28, "w": 8 },
+                { "src": "assets/mc/villager.svg", "x": 58, "y": 28, "w": 7.6 } ],
+      "voice": "friend",
+      "text": "По факелам выбрались из ёлок — и под дуб, к библиотекарю. «Хм-хм! Дракон живёт дольше всех и видел каждого, кто колдует. Спросите его!» И Стив вспомнил остров в пустоте."
+    }
+  }
+}

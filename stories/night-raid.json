@@ -100,6 +100,7 @@
               "far": "assets/mc/far-fire.webp", "near": "assets/mc/near-bell.svg" },
       "cast": [ { "src": "assets/mc/steve.svg", "x": 30, "y": 28, "w": 8 },
                 { "src": "assets/mc/villager.svg", "x": 41, "y": 28, "w": 7 } ],
+      "voice": "friend",
       "text": "С колокольни было видно дальше всех, и часть огней шла прямо сюда. Житель вцепился в верёвку. «Хм-хм! За ним и пришли. Не отдам!»",
       "prompt": "Спускаемся на стену?",
       "choices": [

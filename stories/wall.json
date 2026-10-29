@@ -54,6 +54,7 @@
       "cast": [ { "src": "assets/mc/villager.svg", "x": 26, "y": 28, "w": 8 },
                 { "src": "assets/mc/steve.svg", "x": 38, "y": 28, "w": 8 },
                 { "src": "assets/mc/alex.svg", "x": 49, "y": 28, "w": 8 } ],
+      "voice": "friend",
       "text": "Наверх втащили колокол, а верёвку спустили вниз. Житель пробовал звон. «Хм-хм! Три похожих, одно чужое. Какое?»",
       "task": { "kind": "logic", "max": 15, "types": ["oddOneOut"], "topic": "raid" },
       "next": "fork"
@@ -138,7 +139,7 @@
                 { "src": "assets/mc/pillager-bow.svg", "x": 89, "y": 28, "w": 8 } ],
       "voice": "ally",
       "fx": "impact",
-      "text": "Шли прямо на пролом. «Ты в дом, пёс». Железный закрыл его собой! «Считай, сколько щитов ещё целых!»",
+      "text": "Шли прямо на пролом. «Ты в дом, пёс». Железный закрыл его собой! Алекс подняла меч. «Считай целые щиты!»",
       "task": { "kind": "math", "max": 9, "types": ["subtraction"], "topic": "raid", "spread": "wide" },
       "next": "after"
     },

@@ -278,11 +278,71 @@ function checkStory(target, pool, die, tip) {
     //    раскладываются по сценам заранее — дописать потом нельзя.
     if (allSpeech(scene).some((s) => s.includes('«'))) withSpeech++;
     else tip('silent-scene', where, 'в сцене не говорит никто', 'прямая речь ожидается не реже чем в половине сцен', name);
+
+    // 10. Чей голос у реплики. Порядок тот же, что в js/app.js: голос
+    //     варианта, иначе сцены, иначе истории, иначе hero. См. speakerCheck.
+    const sceneRole = scene.voice ?? story.voice ?? 'hero';
+    speakerCheck(where, scene.text, sceneRole, die, tip, name);
+    for (const c of ch) if (c.say) speakerCheck(`${where} [${c.label}]`, c.say, c.voice ?? sceneRole, die, tip, name);
   }
 
   if (withSpeech * 2 < ids.length) {
     tip('narration-heavy', name, `прямая речь только в ${withSpeech} сценах из ${ids.length}`,
       'история звучит пересказом; см. STORYLINE.md, «Герои и тон»');
+  }
+}
+
+// Опознавательный знак роли в начале реплики: «Хм-хм» у жителя
+// и библиотекаря, «Хрю» у свинолюда. По нему говорящий известен наверняка.
+const SIGNATURE = [[/^Хм-хм/, 'friend'], [/^Хрю/, 'kid']];
+
+// Кого проза может назвать перед репликой. Только роли с голосом: волк
+// голоса не имеет, к нему обращаются, и реплика после «Волк зарычал»
+// в половине сериала — слова Стива, а не ошибка.
+const NAMED = [
+  [/Стив/g, 'hero'], [/Алекс/g, 'ally'], [/Железн|[Гг]олем/g, 'golem'],
+  [/[Жж]ител|[Бб]иблиотекар/g, 'friend'], [/[Дд]ракон/g, 'villain'],
+  [/[Сс]винолюд/g, 'kid'], [/в лиловом|[Ии]ллюзион/g, 'trickster'],
+];
+
+/** Последний персонаж, названный в последнем предложении перед репликой. */
+function namedBefore(narration) {
+  // trimEnd обязателен: перед кавычками стоит пробел, и без него последним
+  // «предложением» выходила пустая строка — проверка молчала всегда.
+  const sentence = narration.trimEnd().split(/[.!?…]\s/).pop();
+  let role = null, at = -1;
+  for (const [re, r] of NAMED) {
+    for (const m of sentence.matchAll(re)) if (m.index > at) { at = m.index; role = r; }
+  }
+  return role;
+}
+
+/**
+ * Реплику читает голос сцены (или варианта), а проза перед ней называет
+ * другого. Так было пять раз за сериал: в днях 6, 10, 12 и дважды в 14
+ * житель говорил голосом Стива, потому что у сцены не было своего `voice`.
+ * `check-voices` такого не видит — роль считается верно, неверен говорящий.
+ *
+ * Знак роли в начале реплики — дефект: говорящий известен наверняка.
+ * Названный перед кавычками другой персонаж — совет: бывает, что Стив
+ * отвечает тому, кого только что назвали, и это верно.
+ */
+function speakerCheck(where, text, role, die, tip, name) {
+  if (!text) return;
+  const parts = text.split(/(«[^»]*»)/);
+  for (let i = 1; i < parts.length; i += 2) {
+    const quote = parts[i].slice(1, -1);
+    const sign = SIGNATURE.find(([re]) => re.test(quote));
+    if (sign && sign[1] !== role) {
+      die('speaker-voice', where, `«${quote.slice(0, 40)}» читает голос ${role}`,
+        `знак «${quote.match(sign[0])[0]}» — это роль ${sign[1]}; задать ей voice`);
+      continue;
+    }
+    const named = namedBefore(parts[i - 1]);
+    if (named && named !== role) {
+      tip('speaker-named', where, `перед «${quote.slice(0, 30)}» назван ${named}, а читает ${role}`,
+        'ребёнок решит, что говорит названный; назвать говорящего перед кавычками', name);
+    }
   }
 }
 

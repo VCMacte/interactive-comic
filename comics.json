@@ -1,5 +1,12 @@
 [
   {
+    "id": "dark-woods",
+    "title": "След в тёмном лесу",
+    "subtitle": "Пятнадцатый день Стива · пять игр",
+    "cover": "assets/covers/dark-woods.webp",
+    "story": "stories/dark-woods.json"
+  },
+  {
     "id": "after",
     "title": "Утро после рейда",
     "subtitle": "Четырнадцатый день Стива · пять игр",

@@ -87,6 +87,7 @@ const P = {
   estone: { base: '#ded8a8', dark: '#b8b184', light: '#f0ebc4' },
   edeep:  { base: '#6e6a52', dark: '#53503e', light: '#857f63' },
   ecrystal: { base: '#e06ad0', dark: '#a84a9e', light: '#f7a8ec' },
+  ecrystalOut: { base: '#5d4a6b', dark: '#3d2f48', light: '#7a6689' },
 };
 
 /**
@@ -1565,7 +1566,7 @@ ${warm.join('\n')}
  * площадку как раз достраивают, и ровная лестница противоречила бы
  * тексту.
  */
-function nearFrame(seed = 311) {
+function nearFrame(seed = 311, { lit = false } = {}) {
   const rand = rng(seed);
   const out = [];
 
@@ -1592,8 +1593,13 @@ function nearFrame(seed = 311) {
     for (let r = 0; r < 2; r++) out.push(block(dx + c * B, GROUND - B * (r + 1), P.stone, rand));
   }
   out.push(`<rect x="${n(dx + B * 2)}" y="${n(GROUND - B * 2)}" width="${n(B * 8)}" height="${n(B * 0.16)}" fill="${P.stone.light}"/>`);
-  for (let i = 0; i < 3; i++) {
-    out.push(block(dx - B * 1.6 + i * B * 0.95, GROUND - B * 0.85, P.stone, rand, B * 0.8));
+  if (lit) {
+    // Шестнадцатый день: ступеньку Стив сложил ещё в шестом, и она стоит.
+    out.push(block(dx + B, GROUND - B, P.stone, rand));
+  } else {
+    for (let i = 0; i < 3; i++) {
+      out.push(block(dx - B * 1.6 + i * B * 0.95, GROUND - B * 0.85, P.stone, rand, B * 0.8));
+    }
   }
 
   // Рамка 5×7: кольцо из блоков с пустой темнотой внутри. Чередование
@@ -1605,19 +1611,32 @@ function nearFrame(seed = 311) {
       if (!(c === 0 || c === 4 || r === 0 || r === 6)) continue;
       // Один блок в кладке отсутствует: в сцене `frame` речь ровно о том,
       // какой блок идёт следующим.
-      if (r === 2 && c === 4) continue;
+      if (!lit && r === 2 && c === 4) continue;
       const pal = (r + c) % 2 === 0 ? P.eframe : { base: P.eframe.dark, dark: '#8a8750', light: P.eframe.base };
       ring.push(block(fx + c * B, fy + r * B, pal, rand));
       // Гнездо для глаза: тёмный квадрат сверху блока. Пустое гнездо —
       // и есть тот крючок, на котором висит седьмой день.
       ring.push(`<rect x="${n(fx + c * B + B * 0.28)}" y="${n(fy + r * B + B * 0.2)}" width="${n(B * 0.44)}" height="${n(B * 0.44)}" fill="#2b2a1c"/>`);
       ring.push(`<rect x="${n(fx + c * B + B * 0.28)}" y="${n(fy + r * B + B * 0.2)}" width="${n(B * 0.44)}" height="${n(B * 0.1)}" fill="#1a190f"/>`);
+      // Глаза вставлены: зелёный камешек в каждом гнезде.
+      if (lit) ring.push(`<rect x="${n(fx + c * B + B * 0.34)}" y="${n(fy + r * B + B * 0.26)}" width="${n(B * 0.32)}" height="${n(B * 0.32)}" fill="#3fbf7a"/>`);
     }
   }
-  // Внутри рамки темнота, а не портал: он не работает и работать пока
-  // не может.
-  ring.push(`<rect x="${n(fx + B)}" y="${n(fy + B)}" width="${n(B * 3)}" height="${n(B * 5)}" fill="#0b0d12"/>`);
-  ring.push(`<rect x="${n(fx + B)}" y="${n(fy + B)}" width="${n(B * 3)}" height="${n(B * 0.2)}" fill="#05070a"/>`);
+  if (lit) {
+    // Шестнадцатый день: рамка горит чёрным — ночь с огоньками, как в Краю.
+    // Она обязана отличаться от пустой темноты шестого дня с первого взгляда.
+    ring.push(`<rect x="${n(fx + B)}" y="${n(fy + B)}" width="${n(B * 3)}" height="${n(B * 5)}" fill="#07040e"/>`);
+    ring.push(glowEnd(fx + B * 2.5, fy + B * 3.5, B * 4));
+    for (let i = 0; i < 18; i++) {
+      const s = B * (0.08 + rand() * 0.1);
+      ring.push(`<rect x="${n(fx + B * (1.1 + rand() * 2.7))}" y="${n(fy + B * (1.1 + rand() * 4.7))}" width="${n(s)}" height="${n(s)}" fill="${rand() < 0.5 ? '#e8d9ff' : '#9fe3c4'}"/>`);
+    }
+  } else {
+    // Внутри рамки темнота, а не портал: он не работает и работать пока
+    // не может.
+    ring.push(`<rect x="${n(fx + B)}" y="${n(fy + B)}" width="${n(B * 3)}" height="${n(B * 5)}" fill="#0b0d12"/>`);
+    ring.push(`<rect x="${n(fx + B)}" y="${n(fy + B)}" width="${n(B * 3)}" height="${n(B * 0.2)}" fill="#05070a"/>`);
+  }
 
   // Факелы по стенам зала с ореолами: единственный свет здесь, потому что
   // сама рамка не светит. Ореол обязателен — без него огонь выглядит
@@ -1631,7 +1650,7 @@ ${ring.join('\n')}
 ${lamp(Math.round((W / B) * 0.14) * B)}
 ${lamp(Math.round((W / B) * 0.86) * B)}
 <rect x="0" y="0" width="${B}" height="${H}" fill="#14141a"/>
-<rect x="${W - B}" y="0" width="${B}" height="${H}" fill="#14141a"/>`, GLOW_DEF);
+<rect x="${W - B}" y="0" width="${B}" height="${H}" fill="#14141a"/>`, lit ? GLOW_DEF + GLOW_END_DEF : GLOW_DEF);
 }
 
 /* ---------------- персонажи ---------------- */
@@ -2342,7 +2361,7 @@ function farEndIsland(seed = 321) {
  * высветлена: сплошной обсидиан на лиловом фоне пропадал начисто, столбы
  * читались дырками в картинке.
  */
-function nearEndPillar(seed = 331) {
+function nearEndPillar(seed = 331, { dark = false } = {}) {
   const rand = rng(seed);
   const out = [];
   const brink = Math.round((W / B) * 0.84) * B;
@@ -2379,9 +2398,10 @@ function nearEndPillar(seed = 331) {
     body.push(`<rect x="${n(x)}" y="${n(GROUND - B * h)}" width="${n(B * 0.22)}" height="${n(B * h)}" fill="#6b5a7a"/>`);
     body.push(`<rect x="${n(x + B * 1.78)}" y="${n(GROUND - B * h)}" width="${n(B * 0.22)}" height="${n(B * h)}" fill="#120b1a"/>`);
     const top = GROUND - B * (h + 1.4);
-    body.push(glowEnd(x + B, top + B * 0.7, B * 3.6));
-    body.push(block(x + B * 0.3, top, P.ecrystal, rand, B * 1.4));
-    body.push(`<rect x="${n(x + B * 0.3)}" y="${n(top)}" width="${n(B * 1.4)}" height="${n(B * 1.4)}" fill="none" stroke="#8d7aa3" stroke-width="7"/>`);
+    // Шестнадцатый день: кристаллы потушены ещё в седьмом, клетки сбиты.
+    if (!dark) body.push(glowEnd(x + B, top + B * 0.7, B * 3.6));
+    body.push(block(x + B * 0.3, top, dark ? P.ecrystalOut : P.ecrystal, rand, B * 1.4));
+    if (!dark) body.push(`<rect x="${n(x + B * 0.3)}" y="${n(top)}" width="${n(B * 1.4)}" height="${n(B * 1.4)}" fill="none" stroke="#8d7aa3" stroke-width="7"/>`);
     return body.join('\n');
   };
 
@@ -4256,6 +4276,8 @@ write('assets/mc/near-rails.svg', nearRails());
 write('assets/mc/near-library.svg', nearLibrary());
 write('assets/mc/near-frame.svg', nearFrame());
 write('assets/mc/near-end-pillar.svg', nearEndPillar());
+write('assets/mc/near-end-pillar-dark.svg', nearEndPillar(331, { dark: true }));
+write('assets/mc/near-frame-lit.svg', nearFrame(311, { lit: true }));
 write('assets/mc/near-end-gate.svg', nearEndGate());
 write('assets/mc/near-village.svg', nearVillage());
 write('assets/mc/near-ritual.svg', nearRitual());

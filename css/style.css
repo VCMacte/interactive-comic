@@ -45,6 +45,8 @@ body{
 }
 
 /* ---------- карточки историй ---------- */
+.season-bar{display:flex; flex-direction:column; align-items:center; gap:.6rem}
+.season-bar h2{font-size:clamp(1.15rem,4.5vw,1.8rem); margin:0}
 .comics{
   display:flex; flex-wrap:wrap; justify-content:center; gap:1rem;
   width:100%; max-width:46rem;

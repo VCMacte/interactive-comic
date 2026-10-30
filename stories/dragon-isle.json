@@ -1,0 +1,164 @@
+{
+  "title": "Остров дракона",
+  "theme": "minecraft",
+  "voice": "hero",
+  "start": "morning",
+  "hook": "успеть, пока колдун не собрал своего Железного",
+  "closes": ["dark-woods"],
+  "scenes": {
+    "morning": {
+      "bg": { "near": "assets/mc/near-library.svg" },
+      "cast": [
+        { "src": "assets/mc/wolf.svg", "x": 16, "y": 28, "w": 7 },
+        { "src": "assets/mc/steve.svg", "x": 26, "y": 28, "w": 8 },
+        { "src": "assets/mc/alex.svg", "x": 37, "y": 28, "w": 8 },
+        { "src": "assets/mc/villager.svg", "x": 58, "y": 28, "w": 7.6 }
+      ],
+      "voice": "ally",
+      "text": "Утром Стив и Алекс снова сидели у библиотекаря. Вдруг Алекс хлопнула по столу. «Тыква с железом — как голова Железного! Тот, в лиловом плаще, строит своего Железного!»",
+      "prompt": "Пойдём сразу вниз или сперва спросим библиотекаря про рамку?",
+      "choices": [
+        { "label": "Сразу вниз", "keywords": ["вниз", "сразу", "к рамке", "рамка", "идём"],
+          "voice": "hero",
+          "say": "Стив потрепал волка. «Беги к Железному, пёс. Вдвоём сторожить веселее!»",
+          "dir": "forward", "next": "passage" },
+        { "label": "Спросить", "keywords": ["спросить", "спросим", "библиотекаря", "библиотекарь", "сперва"],
+          "voice": "friend",
+          "say": "«Хм-хм! Рамка внизу так и осталась — чёрная и гладкая. Идите смело!» А волка Стив отправил к Железному — вдвоём сторожить веселее.",
+          "dir": "forward", "next": "passage" }
+      ]
+    },
+    "passage": {
+      "bg": { "far": "assets/mc/far-stronghold.webp", "near": "assets/mc/near-deep.svg" },
+      "cast": [
+        { "src": "assets/mc/steve.svg", "x": 30, "y": 28, "w": 8 },
+        { "src": "assets/mc/alex.svg", "x": 41, "y": 28, "w": 8 },
+        { "src": "assets/mc/torch-row.svg", "x": 72, "y": 28, "w": 25 }
+      ],
+      "text": "От библиотеки вниз уходила тёмная лестница. Алекс зажигала факелы, а Стив подсыпал угольки. «Считай!»",
+      "task": { "kind": "math", "max": 13, "types": ["addition"], "topic": "fuel", "spread": "wide" },
+      "next": "stairs"
+    },
+    "stairs": {
+      "bg": { "far": "assets/mc/far-stronghold.webp", "near": "assets/mc/near-deep.svg" },
+      "cast": [
+        { "src": "assets/mc/steve.svg", "x": 40, "y": 28, "w": 8 },
+        { "src": "assets/mc/alex.svg", "x": 51, "y": 28, "w": 8 },
+        { "src": "assets/mc/gold-glint.svg", "x": 78, "y": 26, "w": 6 }
+      ],
+      "text": "Лестница кончалась у зала. А в углу что-то звякнуло и блеснуло жёлтым.",
+      "prompt": "Пойдём в зал или посмотрим, кто там звякнул?",
+      "choices": [
+        { "label": "Идём вниз", "keywords": ["вниз", "в зал", "зал", "идём", "спустимся"],
+          "dir": "forward", "next": "hall" },
+        { "label": "Кто там?", "keywords": ["звякнул", "кто там", "кто", "угол", "посмотреть", "посмотрим"],
+          "voice": "kid",
+          "say": "Из угла кто-то буркнул! «Хрю! Опять гости! Золото моё, идите куда шли». Стив пожал плечами и пошёл вниз.",
+          "dir": "forward", "next": "hall" }
+      ]
+    },
+    "hall": {
+      "bg": { "near": "assets/mc/near-frame-lit.svg" },
+      "cast": [
+        { "src": "assets/mc/steve.svg", "x": 24, "y": 28, "w": 8 },
+        { "src": "assets/mc/alex.svg", "x": 35, "y": 28, "w": 8 }
+      ],
+      "voice": "ally",
+      "text": "В зале рамка так и стояла — чёрная и гладкая. Алекс заглянула в неё. «Всё ещё открыта!» Стив полез по ступенькам и считал их вслух.",
+      "task": { "kind": "math", "max": 16, "types": ["next"], "topic": "blocks", "spread": "wide" },
+      "next": "island"
+    },
+    "island": {
+      "bg": { "sky": "assets/mc/sky-void.webp", "stars": "assets/mc/stars-void.svg", "near": "assets/mc/near-end-pillar-dark.svg" },
+      "cast": [
+        { "src": "assets/mc/steve.svg", "x": 36, "y": 28, "w": 8 },
+        { "src": "assets/mc/alex.svg", "x": 47, "y": 28, "w": 8 }
+      ],
+      "text": "Шаг — и они на острове в пустоте. Кристаллы на столбах тёмные. «Тут горели огоньки, а я их потушил. Посчитай, сколько их было!»",
+      "task": { "kind": "math", "max": 12, "types": ["addition"], "topic": "end", "spread": "wide" },
+      "next": "edge"
+    },
+    "edge": {
+      "bg": { "sky": "assets/mc/sky-void.webp", "stars": "assets/mc/stars-void.svg", "near": "assets/mc/near-end-pillar-dark.svg" },
+      "cast": [
+        { "src": "assets/mc/steve.svg", "x": 36, "y": 28, "w": 8 },
+        { "src": "assets/mc/alex.svg", "x": 47, "y": 28, "w": 8 }
+      ],
+      "voice": "ally",
+      "text": "Остров был пустой, и дракона нигде не было. Алекс оглянулась. «А он точно тут живёт?»",
+      "prompt": "Позовём дракона сразу или сперва поищем его следы?",
+      "choices": [
+        { "label": "Позвать", "keywords": ["позвать", "позовём", "сразу", "звать", "дракона"],
+          "dir": "forward", "next": "dragon" },
+        { "label": "Искать следы", "keywords": ["следы", "искать", "поищем", "след", "сперва"],
+          "dir": "right", "next": "claws" }
+      ]
+    },
+    "claws": {
+      "bg": { "sky": "assets/mc/sky-void.webp", "stars": "assets/mc/stars-void.svg", "near": "assets/mc/near-end-pillar-dark.svg" },
+      "cast": [
+        { "src": "assets/mc/steve.svg", "x": 46, "y": 28, "w": 8 },
+        { "src": "assets/mc/alex.svg", "x": 57, "y": 28, "w": 8 }
+      ],
+      "text": "На камне нашлись огромные царапины, и вели они к обрыву. Стив присвистнул. «Это когти! Он просто улетел. Позовём!»",
+      "prompt": "Позовём дракона?",
+      "choices": [
+        { "label": "Позвать", "keywords": ["позвать", "позовём", "звать", "дракона"],
+          "dir": "left", "next": "dragon" }
+      ]
+    },
+    "dragon": {
+      "bg": { "sky": "assets/mc/sky-void.webp", "stars": "assets/mc/stars-void.svg", "near": "assets/mc/near-end-pillar-dark.svg" },
+      "cast": [
+        { "src": "assets/mc/steve.svg", "x": 24, "y": 28, "w": 8 },
+        { "src": "assets/mc/alex.svg", "x": 34, "y": 28, "w": 8 },
+        { "src": "assets/mc/dragon.svg", "x": 62, "y": 28, "w": 26 }
+      ],
+      "voice": "villain",
+      "text": "Стив позвал, и из пустоты прилетел дракон! «Мальчик, который потушил огоньки! Ты вернулся! Отгадай-ка загадку!»",
+      "task": { "kind": "logic", "max": 10, "types": ["oddOneOut"], "topic": "isle" },
+      "next": "rule"
+    },
+    "rule": {
+      "bg": { "sky": "assets/mc/sky-void.webp", "stars": "assets/mc/stars-void.svg", "near": "assets/mc/near-end-pillar-dark.svg" },
+      "cast": [
+        { "src": "assets/mc/steve.svg", "x": 24, "y": 28, "w": 8 },
+        { "src": "assets/mc/alex.svg", "x": 34, "y": 28, "w": 8 },
+        { "src": "assets/mc/dragon.svg", "x": 62, "y": 28, "w": 26 }
+      ],
+      "voice": "villain",
+      "text": "Стив всё рассказал. Дракон кивнул. «Видел я того, в лиловом! Его копии умеют и говорить. Но знают только то, что он видел и слышал»",
+      "task": { "kind": "logic", "max": 10, "types": ["pattern"], "topic": "isle" },
+      "next": "example"
+    },
+    "example": {
+      "bg": { "sky": "assets/mc/sky-void.webp", "stars": "assets/mc/stars-void.svg", "near": "assets/mc/near-end-pillar-dark.svg" },
+      "cast": [
+        { "src": "assets/mc/steve.svg", "x": 24, "y": 28, "w": 8 },
+        { "src": "assets/mc/alex.svg", "x": 34, "y": 28, "w": 8 },
+        { "src": "assets/mc/dragon.svg", "x": 62, "y": 28, "w": 26 }
+      ],
+      "voice": "villain",
+      "text": "Дракон хитро прищурился. «Давай играть: я — копия Стива. Спроси меня о чём-нибудь!»",
+      "prompt": "О чём спросим?",
+      "choices": [
+        { "label": "Что я ел утром?", "keywords": ["ел", "утром", "что ел", "еда", "завтрак"],
+          "say": "«Не знаю! Колдуна при этом не было. Вот и копия не знает»",
+          "dir": "forward", "next": "home" },
+        { "label": "Где деревня?", "keywords": ["деревня", "где", "где деревня"],
+          "say": "«За лесом! Это колдун видел сам, и копия знает. А спроси, что ты ел утром, — тут она и попадётся!»",
+          "dir": "forward", "next": "home" }
+      ]
+    },
+    "home": {
+      "bg": { "near": "assets/mc/near-library.svg" },
+      "cast": [
+        { "src": "assets/mc/steve.svg", "x": 30, "y": 28, "w": 8 },
+        { "src": "assets/mc/alex.svg", "x": 41, "y": 28, "w": 8 },
+        { "src": "assets/mc/villager.svg", "x": 58, "y": 28, "w": 7.6 }
+      ],
+      "voice": "friend",
+      "text": "Дракон открыл им выход на горке, и они вышли на луг, а оттуда — к библиотекарю. «Хм-хм! Копию можно поймать вопросом! Только бы успеть, пока колдун не собрал своего Железного!»"
+    }
+  }
+}

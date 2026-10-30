@@ -1,107 +1,138 @@
 [
   {
-    "id": "dark-woods",
-    "title": "След в тёмном лесу",
-    "subtitle": "Пятнадцатый день Стива · пять игр",
+    "id": "s3",
+    "title": "Колдун из тёмного леса",
+    "subtitle": "Третий сезон · тыква пропала, и Стив идёт по следу",
     "cover": "assets/covers/dark-woods.webp",
-    "story": "stories/dark-woods.json"
+    "comics": [
+      {
+        "id": "dragon-isle",
+        "title": "Остров дракона",
+        "subtitle": "Шестнадцатый день Стива · пять игр",
+        "cover": "assets/covers/dragon-isle.webp",
+        "story": "stories/dragon-isle.json"
+      },
+      {
+        "id": "dark-woods",
+        "title": "След в тёмном лесу",
+        "subtitle": "Пятнадцатый день Стива · пять игр",
+        "cover": "assets/covers/dark-woods.webp",
+        "story": "stories/dark-woods.json"
+      }
+    ]
   },
   {
-    "id": "after",
-    "title": "Утро после рейда",
-    "subtitle": "Четырнадцатый день Стива · пять игр",
-    "cover": "assets/covers/after.webp",
-    "story": "stories/after.json"
-  },
-  {
-    "id": "doubles",
-    "title": "Тот, кто делает двойников",
-    "subtitle": "Тринадцатый день Стива · пять игр",
-    "cover": "assets/covers/doubles.webp",
-    "story": "stories/doubles.json"
-  },
-  {
-    "id": "night-raid",
-    "title": "Ночь рейда",
-    "subtitle": "Двенадцатый день Стива · пять игр",
+    "id": "s2",
+    "title": "Деревня против рейда",
+    "subtitle": "Второй сезон · дым над лугом и ночь рейда",
     "cover": "assets/covers/night-raid.webp",
-    "story": "stories/night-raid.json"
+    "comics": [
+      {
+        "id": "after",
+        "title": "Утро после рейда",
+        "subtitle": "Четырнадцатый день Стива · пять игр",
+        "cover": "assets/covers/after.webp",
+        "story": "stories/after.json"
+      },
+      {
+        "id": "doubles",
+        "title": "Тот, кто делает двойников",
+        "subtitle": "Тринадцатый день Стива · пять игр",
+        "cover": "assets/covers/doubles.webp",
+        "story": "stories/doubles.json"
+      },
+      {
+        "id": "night-raid",
+        "title": "Ночь рейда",
+        "subtitle": "Двенадцатый день Стива · пять игр",
+        "cover": "assets/covers/night-raid.webp",
+        "story": "stories/night-raid.json"
+      },
+      {
+        "id": "outpost",
+        "title": "Аванпост в лесу",
+        "subtitle": "Одиннадцатый день Стива · пять игр",
+        "cover": "assets/covers/outpost.webp",
+        "story": "stories/outpost.json"
+      },
+      {
+        "id": "wall",
+        "title": "Стена и колокол",
+        "subtitle": "Десятый день Стива · пять игр",
+        "cover": "assets/covers/wall.webp",
+        "story": "stories/wall.json"
+      },
+      {
+        "id": "golem",
+        "title": "Железный друг",
+        "subtitle": "Девятый день Стива · пять игр",
+        "cover": "assets/covers/golem.webp",
+        "story": "stories/golem.json"
+      },
+      {
+        "id": "smoke",
+        "title": "Дым над лугом",
+        "subtitle": "Восьмой день Стива · пять игр",
+        "cover": "assets/covers/smoke.webp",
+        "story": "stories/smoke.json"
+      }
+    ]
   },
   {
-    "id": "outpost",
-    "title": "Аванпост в лесу",
-    "subtitle": "Одиннадцатый день Стива · пять игр",
-    "cover": "assets/covers/outpost.webp",
-    "story": "stories/outpost.json"
-  },
-  {
-    "id": "wall",
-    "title": "Стена и колокол",
-    "subtitle": "Десятый день Стива · пять игр",
-    "cover": "assets/covers/wall.webp",
-    "story": "stories/wall.json"
-  },
-  {
-    "id": "golem",
-    "title": "Железный друг",
-    "subtitle": "Девятый день Стива · пять игр",
-    "cover": "assets/covers/golem.webp",
-    "story": "stories/golem.json"
-  },
-  {
-    "id": "smoke",
-    "title": "Дым над лугом",
-    "subtitle": "Восьмой день Стива · пять игр",
-    "cover": "assets/covers/smoke.webp",
-    "story": "stories/smoke.json"
-  },
-  {
-    "id": "the-end",
-    "title": "Край",
-    "subtitle": "Седьмой день Стива · пять игр",
+    "id": "s1",
+    "title": "От луга до Края",
+    "subtitle": "Первый сезон · первая ночь, Нижний мир и дракон",
     "cover": "assets/covers/the-end.webp",
-    "story": "stories/the-end.json"
-  },
-  {
-    "id": "stronghold",
-    "title": "Крепость и библиотека",
-    "subtitle": "Шестой день Стива · пять игр",
-    "cover": "assets/covers/stronghold.webp",
-    "story": "stories/stronghold.json"
-  },
-  {
-    "id": "deep-road",
-    "title": "Дорога домой под землёй",
-    "subtitle": "Пятый день Стива · пять игр",
-    "cover": "assets/covers/deep-road.webp",
-    "story": "stories/deep-road.json"
-  },
-  {
-    "id": "fire-sea",
-    "title": "Огненное море",
-    "subtitle": "Четвёртый день Стива · пять игр",
-    "cover": "assets/covers/fire-sea.webp",
-    "story": "stories/fire-sea.json"
-  },
-  {
-    "id": "nether",
-    "title": "Дорога в Нижний мир",
-    "subtitle": "Третий день Стива · пять игр",
-    "cover": "assets/covers/nether.webp",
-    "story": "stories/nether.json"
-  },
-  {
-    "id": "day-two",
-    "title": "Второй день",
-    "subtitle": "Продолжение про Стива · пять игр",
-    "cover": "assets/covers/day-two.webp",
-    "story": "stories/day-two.json"
-  },
-  {
-    "id": "minecraft",
-    "title": "Первая ночь",
-    "subtitle": "По мотивам Minecraft · пять игр",
-    "cover": "assets/covers/minecraft.webp",
-    "story": "stories/minecraft.json"
+    "comics": [
+      {
+        "id": "the-end",
+        "title": "Край",
+        "subtitle": "Седьмой день Стива · пять игр",
+        "cover": "assets/covers/the-end.webp",
+        "story": "stories/the-end.json"
+      },
+      {
+        "id": "stronghold",
+        "title": "Крепость и библиотека",
+        "subtitle": "Шестой день Стива · пять игр",
+        "cover": "assets/covers/stronghold.webp",
+        "story": "stories/stronghold.json"
+      },
+      {
+        "id": "deep-road",
+        "title": "Дорога домой под землёй",
+        "subtitle": "Пятый день Стива · пять игр",
+        "cover": "assets/covers/deep-road.webp",
+        "story": "stories/deep-road.json"
+      },
+      {
+        "id": "fire-sea",
+        "title": "Огненное море",
+        "subtitle": "Четвёртый день Стива · пять игр",
+        "cover": "assets/covers/fire-sea.webp",
+        "story": "stories/fire-sea.json"
+      },
+      {
+        "id": "nether",
+        "title": "Дорога в Нижний мир",
+        "subtitle": "Третий день Стива · пять игр",
+        "cover": "assets/covers/nether.webp",
+        "story": "stories/nether.json"
+      },
+      {
+        "id": "day-two",
+        "title": "Второй день",
+        "subtitle": "Продолжение про Стива · пять игр",
+        "cover": "assets/covers/day-two.webp",
+        "story": "stories/day-two.json"
+      },
+      {
+        "id": "minecraft",
+        "title": "Первая ночь",
+        "subtitle": "По мотивам Minecraft · пять игр",
+        "cover": "assets/covers/minecraft.webp",
+        "story": "stories/minecraft.json"
+      }
+    ]
   }
 ]

@@ -289,7 +289,7 @@ function renderStory(story) {
 
 const pick = $('#pick');
 pick.textContent = '';
-for (const c of comics) {
+for (const c of comics.flatMap((s) => s.comics)) {
   const b = el('button', null, c.title);
   b.title = c.subtitle || '';
   b.onclick = async () => {

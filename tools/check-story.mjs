@@ -567,7 +567,7 @@ if (isMain) {
   const only = process.argv.slice(2).find((a) => !a.startsWith('--'))?.replace(/\.json$/, '');
 
   const pool = read('stories/tasks-pool.json');
-  const catalog = read('comics.json');              // от новой истории к старой
+  const catalog = read('comics.json').flatMap((s) => s.comics);              // от новой истории к старой
   let exemptions = [];
   try { exemptions = read('tools/story-exemptions.json').exemptions || []; } catch { /* файла может не быть */ }
 

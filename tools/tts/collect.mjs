@@ -18,7 +18,12 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..');
 // вчетверо меньше, чем кажется.
 import { clipId, splitDialogue } from './clip.mjs';
 
-const PER_TYPE = 10;
+const PER_TYPE = 5;
+// Генерируется по-прежнему десять на вид, а в пул идут первые пять.
+// Виды одного ключа идут одним потоком чисел: сократи генерацию — и второй
+// вид получил бы другие вопросы вместе с новой озвучкой. А так каждый
+// оставшийся вопрос совпадает с уже озвученным байт в байт.
+const GEN_PER_TYPE = 10;
 
 // Генератор заданий берёт числа из Math.random, поэтому каждый запуск
 // коллектора давал бы новый пул, и вся озвучка устаревала целиком.
@@ -158,7 +163,7 @@ for (const [key, spec] of taskSpecs) {
 
   for (const type of types) {
     let made = 0;
-    for (let i = 0; i < PER_TYPE * 60 && made < PER_TYPE; i++) {
+    for (let i = 0; i < GEN_PER_TYPE * 60 && made < GEN_PER_TYPE; i++) {
       const t = makeTask(spec.kind, {
         theme: spec.theme, max: spec.max, topic: spec.topic, types: [type],
         spread: spec.spread,
@@ -176,7 +181,8 @@ for (const [key, spec] of taskSpecs) {
     }
   }
 
-  pool[key] = [...seen.values()];
+  const kept = {};
+  pool[key] = [...seen.values()].filter(t => (kept[t.type] = (kept[t.type] ?? 0) + 1) <= PER_TYPE);
   for (const t of pool[key]) {
     add(t.question, 'narrator');
     add(t.hint, 'narrator');

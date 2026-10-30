@@ -21,6 +21,12 @@
     <h1>Интерактивный комикс</h1>
     <p id="gateText">Включите трансляцию экрана на телевизор и выберите историю.</p>
     <div id="resumeBox" class="resume" hidden></div>
+    <!-- Сначала на экране сезоны. Внутри сезона над сериями — его название
+         и кнопка обратно к сезонам. -->
+    <div id="seasonBar" class="season-bar" hidden>
+      <button id="seasonBack" class="small-btn" type="button">← Все сезоны</button>
+      <h2 id="seasonTitle"></h2>
+    </div>
     <div id="comicList" class="comics"></div>
     <label class="toggle"><input type="checkbox" id="voiceToggle" checked> отвечать голосом</label>
     <p class="hint" id="noVoiceHint" hidden>

@@ -8,7 +8,8 @@ const $ = (id) => document.getElementById(id);
 const el = {
   gate: $('gate'), gateText: $('gateText'), comicList: $('comicList'),
   voiceToggle: $('voiceToggle'), installHint: $('installHint'), noVoiceHint: $('noVoiceHint'),
-  resumeBox: $('resumeBox'),
+  resumeBox: $('resumeBox'), seasonBar: $('seasonBar'), seasonTitle: $('seasonTitle'),
+  seasonBack: $('seasonBack'),
   stage: $('stage'), text: $('text'), choices: $('choices'),
   update: $('updateBtn'), updateMsg: $('updateMsg'),
   logBtn: $('logBtn'), logMsg: $('logMsg'),
@@ -68,6 +69,7 @@ const DEAF_WINDOWS = 2;           // после скольких немых ок
 const PROGRESS_KEY = 'comic-progress';
 const VOICE_KEY = 'comic-voice';
 let catalogue = [];     // список историй нужен и после возврата на главный экран
+let seasons = [];       // те же истории, сгруппированные по сезонам
 
 function saveProgress(sceneId) {
   if (!state.comicId) return;
@@ -138,11 +140,37 @@ async function loadCatalogue() {
     return;
   }
 
-  catalogue = comics;
-  el.comicList.innerHTML = '';
-  comics.forEach((comic, i) => el.comicList.append(comicCard(comic, i)));
+  seasons = comics;
+  catalogue = seasons.flatMap(s => s.comics);
+  renderSeasons();
   renderResume();
 }
+
+// Сначала видны только сезоны: пятнадцать обложек подряд ребёнку
+// не перелистать. Сезон открывается нажатием, назад — кнопкой над списком.
+function renderSeasons() {
+  el.seasonBar.hidden = true;
+  el.comicList.innerHTML = '';
+  seasons.forEach((season, i) => {
+    const card = comicCard(season, i);
+    card.addEventListener('click', () => openSeason(season));
+    el.comicList.append(card);
+  });
+}
+
+function openSeason(season) {
+  el.seasonTitle.textContent = season.title;
+  el.seasonBar.hidden = false;
+  el.comicList.innerHTML = '';
+  season.comics.forEach((comic, i) => {
+    const card = comicCard(comic, i);
+    card.addEventListener('click', () => openComic(comic, card));
+    el.comicList.append(card);
+  });
+  el.gate.scrollTop = 0;
+}
+
+el.seasonBack.addEventListener('click', renderSeasons);
 
 function comicCard(comic, index) {
   const card = document.createElement('button');
@@ -160,7 +188,6 @@ function comicCard(comic, index) {
   sub.textContent = comic.subtitle ?? '';
 
   card.append(img, title, sub);
-  card.addEventListener('click', () => openComic(comic, card));
   return card;
 }
 
@@ -245,6 +272,9 @@ function backToHub() {
   el.stage.hidden = true;
   el.gate.hidden = false;
   el.gate.scrollTop = 0;
+  // Из истории — в её сезон: следующую серию ребёнок ищет рядом.
+  const season = seasons.find(s => s.comics.some(c => c.id === state.comicId));
+  if (season) openSeason(season); else renderSeasons();
   renderResume();
   // Полный экран снимается вместе с историей. Иначе каталог открывался
   // в оставшемся от прошлого комикса альбомном полноэкранном режиме:

@@ -10665,6 +10665,809 @@
    "hintAudio": "4d44309b"
   }
  ],
+ "minecraft|math|15|fuel|wide": [
+  {
+   "type": "addition",
+   "question": "Сколько будет шесть угольков и ещё пять угольков?",
+   "hint": "Посчитаем вместе: шесть угольков, и прибавим ещё пять.",
+   "choices": [
+    {
+     "label": "Пятнадцать",
+     "keywords": [
+      "пятнадцать",
+      "15"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Один",
+     "keywords": [
+      "один",
+      "1"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Одиннадцать",
+     "keywords": [
+      "одиннадцать",
+      "11"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "784469b5",
+   "hintAudio": "fab7c58d"
+  },
+  {
+   "type": "addition",
+   "question": "Сколько будет один уголёк и ещё шесть угольков?",
+   "hint": "Посчитаем вместе: один уголёк, и прибавим ещё шесть.",
+   "choices": [
+    {
+     "label": "Один",
+     "keywords": [
+      "один",
+      "1"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Семь",
+     "keywords": [
+      "семь",
+      "7"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Девять",
+     "keywords": [
+      "девять",
+      "9"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "e20a882f",
+   "hintAudio": "0ee62473"
+  },
+  {
+   "type": "addition",
+   "question": "Сколько будет пять угольков и ещё четыре уголька?",
+   "hint": "Посчитаем вместе: пять угольков, и прибавим ещё четыре.",
+   "choices": [
+    {
+     "label": "Один",
+     "keywords": [
+      "один",
+      "1"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Четырнадцать",
+     "keywords": [
+      "четырнадцать",
+      "14"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Девять",
+     "keywords": [
+      "девять",
+      "9"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "7a97f4ab",
+   "hintAudio": "e988e17b"
+  },
+  {
+   "type": "addition",
+   "question": "Сколько будет два уголька и ещё три уголька?",
+   "hint": "Посчитаем вместе: два уголька, и прибавим ещё три.",
+   "choices": [
+    {
+     "label": "Пять",
+     "keywords": [
+      "пять",
+      "5"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Семь",
+     "keywords": [
+      "семь",
+      "7"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Два",
+     "keywords": [
+      "два",
+      "2"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "4862e87b",
+   "hintAudio": "8ee98433"
+  },
+  {
+   "type": "addition",
+   "question": "Сколько будет шесть факелов и ещё два факела?",
+   "hint": "Посчитаем вместе: шесть факелов, и прибавим ещё два.",
+   "choices": [
+    {
+     "label": "Десять",
+     "keywords": [
+      "десять",
+      "10"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Восемь",
+     "keywords": [
+      "восемь",
+      "8"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Четыре",
+     "keywords": [
+      "четыре",
+      "4"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "733b41c9",
+   "hintAudio": "1df39e6c"
+  }
+ ],
+ "minecraft|math|17|blocks|wide": [
+  {
+   "type": "next",
+   "question": "Какое число идёт после пятнадцати?",
+   "hint": "Посчитай по порядку: четырнадцать, пятнадцать, а дальше?",
+   "choices": [
+    {
+     "label": "Одиннадцать",
+     "keywords": [
+      "одиннадцать",
+      "11"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Четырнадцать",
+     "keywords": [
+      "четырнадцать",
+      "14"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Шестнадцать",
+     "keywords": [
+      "шестнадцать",
+      "16"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "f2331cb1",
+   "hintAudio": "2f838184"
+  },
+  {
+   "type": "next",
+   "question": "Какое число идёт после десяти?",
+   "hint": "Посчитай по порядку: девять, десять, а дальше?",
+   "choices": [
+    {
+     "label": "Девять",
+     "keywords": [
+      "девять",
+      "9"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Одиннадцать",
+     "keywords": [
+      "одиннадцать",
+      "11"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Пятнадцать",
+     "keywords": [
+      "пятнадцать",
+      "15"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "330b06db",
+   "hintAudio": "dbb03598"
+  },
+  {
+   "type": "next",
+   "question": "Какое число идёт после трёх?",
+   "hint": "Посчитай по порядку: два, три, а дальше?",
+   "choices": [
+    {
+     "label": "Четыре",
+     "keywords": [
+      "четыре",
+      "4"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Шесть",
+     "keywords": [
+      "шесть",
+      "6"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Два",
+     "keywords": [
+      "два",
+      "2"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "f1fa7710",
+   "hintAudio": "1d3ac6c9"
+  },
+  {
+   "type": "next",
+   "question": "Какое число идёт после шести?",
+   "hint": "Посчитай по порядку: пять, шесть, а дальше?",
+   "choices": [
+    {
+     "label": "Двенадцать",
+     "keywords": [
+      "двенадцать",
+      "12"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Пять",
+     "keywords": [
+      "пять",
+      "5"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Семь",
+     "keywords": [
+      "семь",
+      "7"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "dd112e66",
+   "hintAudio": "94bd3911"
+  },
+  {
+   "type": "next",
+   "question": "Какое число идёт после пяти?",
+   "hint": "Посчитай по порядку: четыре, пять, а дальше?",
+   "choices": [
+    {
+     "label": "Четыре",
+     "keywords": [
+      "четыре",
+      "4"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Шесть",
+     "keywords": [
+      "шесть",
+      "6"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Девять",
+     "keywords": [
+      "девять",
+      "9"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "c96f79ac",
+   "hintAudio": "62c5f46d"
+  }
+ ],
+ "minecraft|logic|10|ford": [
+  {
+   "type": "oddOneOut",
+   "question": "Что здесь лишнее: ночь, вечер или ворота?",
+   "hint": "Подумай: два из них — это время дня. А третий?",
+   "choices": [
+    {
+     "label": "Ночь",
+     "keywords": [
+      "ночь"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Вечер",
+     "keywords": [
+      "вечер"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Ворота",
+     "keywords": [
+      "ворота"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "562f041b",
+   "hintAudio": "fbc7056a"
+  },
+  {
+   "type": "oddOneOut",
+   "question": "Что здесь лишнее: факел, звезда или забор?",
+   "hint": "Подумай: два из них — это то, что светит вечером. А третий?",
+   "choices": [
+    {
+     "label": "Забор",
+     "keywords": [
+      "забор"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Звезда",
+     "keywords": [
+      "звезда"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Факел",
+     "keywords": [
+      "факел"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "f53c57b7",
+   "hintAudio": "8005d1d8"
+  },
+  {
+   "type": "oddOneOut",
+   "question": "Что здесь лишнее: снег, ветер или ложка?",
+   "hint": "Подумай: два из них — это погода. А третий?",
+   "choices": [
+    {
+     "label": "Снег",
+     "keywords": [
+      "снег"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Ложка",
+     "keywords": [
+      "ложка"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Ветер",
+     "keywords": [
+      "ветер"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "d03b0dcd",
+   "hintAudio": "b3d0319c"
+  },
+  {
+   "type": "oddOneOut",
+   "question": "Что здесь лишнее: утро, вечер или ворота?",
+   "hint": "Подумай: два из них — это время дня. А третий?",
+   "choices": [
+    {
+     "label": "Утро",
+     "keywords": [
+      "утро"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Вечер",
+     "keywords": [
+      "вечер"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Ворота",
+     "keywords": [
+      "ворота"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "19a3e56e",
+   "hintAudio": "fbc7056a"
+  },
+  {
+   "type": "oddOneOut",
+   "question": "Что здесь лишнее: звезда, факел или забор?",
+   "hint": "Подумай: два из них — это то, что светит вечером. А третий?",
+   "choices": [
+    {
+     "label": "Звезда",
+     "keywords": [
+      "звезда"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Факел",
+     "keywords": [
+      "факел"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Забор",
+     "keywords": [
+      "забор"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "8e0890c5",
+   "hintAudio": "8005d1d8"
+  },
+  {
+   "type": "pattern",
+   "question": "Что дальше: мост, луна, мост, луна, а потом?",
+   "hint": "Они идут по очереди. После «луна» снова начинается тот же порядок.",
+   "choices": [
+    {
+     "label": "Луна",
+     "keywords": [
+      "луна"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Мост",
+     "keywords": [
+      "мост"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Туман",
+     "keywords": [
+      "туман"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "19ddc6d9",
+   "hintAudio": "62510f3a"
+  },
+  {
+   "type": "pattern",
+   "question": "Что дальше: ручей, лодка, ручей, лодка, а потом?",
+   "hint": "Они идут по очереди. После «лодка» снова начинается тот же порядок.",
+   "choices": [
+    {
+     "label": "Ручей",
+     "keywords": [
+      "ручей"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Мост",
+     "keywords": [
+      "мост"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Лодка",
+     "keywords": [
+      "лодка"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "175a90c9",
+   "hintAudio": "3b59e206"
+  },
+  {
+   "type": "pattern",
+   "question": "Что дальше: луна, камень, луна, камень, а потом?",
+   "hint": "Они идут по очереди. После «камень» снова начинается тот же порядок.",
+   "choices": [
+    {
+     "label": "Луна",
+     "keywords": [
+      "луна"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Лодка",
+     "keywords": [
+      "лодка"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Камень",
+     "keywords": [
+      "камень"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "91debf91",
+   "hintAudio": "5de94b29"
+  },
+  {
+   "type": "pattern",
+   "question": "Что дальше: туман, мост, туман, мост, а потом?",
+   "hint": "Они идут по очереди. После «мост» снова начинается тот же порядок.",
+   "choices": [
+    {
+     "label": "Туман",
+     "keywords": [
+      "туман"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Мост",
+     "keywords": [
+      "мост"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Камень",
+     "keywords": [
+      "камень"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "c2552627",
+   "hintAudio": "b32147bc"
+  },
+  {
+   "type": "pattern",
+   "question": "Что дальше: камень, туман, камень, туман, а потом?",
+   "hint": "Они идут по очереди. После «туман» снова начинается тот же порядок.",
+   "choices": [
+    {
+     "label": "Луна",
+     "keywords": [
+      "луна"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Туман",
+     "keywords": [
+      "туман"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Камень",
+     "keywords": [
+      "камень"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "78d0e615",
+   "hintAudio": "dacb27b5"
+  }
+ ],
+ "minecraft|math|18|blocks|wide": [
+  {
+   "type": "addition",
+   "question": "Сколько будет шесть камней и ещё пять камней?",
+   "hint": "Посчитаем вместе: шесть камней, и прибавим ещё пять.",
+   "choices": [
+    {
+     "label": "Один",
+     "keywords": [
+      "один",
+      "1"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Одиннадцать",
+     "keywords": [
+      "одиннадцать",
+      "11"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Шестнадцать",
+     "keywords": [
+      "шестнадцать",
+      "16"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "c2e2dcad",
+   "hintAudio": "55329485"
+  },
+  {
+   "type": "addition",
+   "question": "Сколько будет три камня и ещё два камня?",
+   "hint": "Посчитаем вместе: три камня, и прибавим ещё два.",
+   "choices": [
+    {
+     "label": "Пять",
+     "keywords": [
+      "пять",
+      "5"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Один",
+     "keywords": [
+      "один",
+      "1"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Семь",
+     "keywords": [
+      "семь",
+      "7"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "232bafe3",
+   "hintAudio": "e9f71efa"
+  },
+  {
+   "type": "addition",
+   "question": "Сколько будет восемь блоков и ещё пять блоков?",
+   "hint": "Посчитаем вместе: восемь блоков, и прибавим ещё пять.",
+   "choices": [
+    {
+     "label": "Тринадцать",
+     "keywords": [
+      "тринадцать",
+      "13"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Три",
+     "keywords": [
+      "три",
+      "3"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Восемнадцать",
+     "keywords": [
+      "восемнадцать",
+      "18"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "c285d199",
+   "hintAudio": "1dc9a2be"
+  },
+  {
+   "type": "addition",
+   "question": "Сколько будет шесть блоков и ещё шесть блоков?",
+   "hint": "Посчитаем вместе: шесть блоков, и прибавим ещё шесть.",
+   "choices": [
+    {
+     "label": "Ноль",
+     "keywords": [
+      "ноль",
+      "0"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Семнадцать",
+     "keywords": [
+      "семнадцать",
+      "17"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Двенадцать",
+     "keywords": [
+      "двенадцать",
+      "12"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "727bb719",
+   "hintAudio": "ec718e2e"
+  },
+  {
+   "type": "addition",
+   "question": "Сколько будет девять камней и ещё пять камней?",
+   "hint": "Посчитаем вместе: девять камней, и прибавим ещё пять.",
+   "choices": [
+    {
+     "label": "Четырнадцать",
+     "keywords": [
+      "четырнадцать",
+      "14"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Четыре",
+     "keywords": [
+      "четыре",
+      "4"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Восемнадцать",
+     "keywords": [
+      "восемнадцать",
+      "18"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "9ed93795",
+   "hintAudio": "61f14531"
+  }
+ ],
  "minecraft|logic|15|blocks": [
   {
    "type": "pattern",

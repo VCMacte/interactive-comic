@@ -1,0 +1,190 @@
+{
+  "title": "Два Железных",
+  "theme": "minecraft",
+  "voice": "hero",
+  "start": "dusk",
+  "hook": "искры ведут под дуб: тот, в лиловом плаще, идёт в библиотеку",
+  "closes": ["dragon-isle"],
+  "scenes": {
+    "dusk": {
+      "bg": { "sky": "assets/mc/sky-dusk.webp", "near": "assets/mc/near-gate-bare.svg" },
+      "cast": [
+        { "src": "assets/mc/wolf.svg", "x": 16, "y": 28, "w": 7 },
+        { "src": "assets/mc/steve.svg", "x": 25, "y": 28, "w": 8 },
+        { "src": "assets/mc/alex.svg", "x": 36, "y": 28, "w": 8 },
+        { "src": "assets/mc/fog-bank.svg", "x": 76, "y": 24, "w": 40 }
+      ],
+      "voice": "ally",
+      "text": "Вечером Железный ушёл сторожить брод. Над воротами всё так же пусто. А с речки пополз туман — белый, а по краям лиловый. «Ой, не нравится мне этот туман!»",
+      "prompt": "Подождём Железного у ворот или залезем на стену посмотреть?",
+      "choices": [
+        { "label": "Ждать у ворот", "keywords": ["ждать", "подождём", "у ворот", "ворота", "ждём"],
+          "voice": "hero",
+          "say": "Стив сел у ворот. «Железный большой, он не заблудится. Но факелы зажжём!»",
+          "dir": "forward", "next": "torches" },
+        { "label": "На стену", "keywords": ["стену", "на стену", "залезем", "посмотреть", "стена"],
+          "voice": "ally",
+          "say": "Залезли на стену — и тут же спрыгнули. «Ничего не видно, один туман! Нужен свет!»",
+          "dir": "forward", "next": "torches" }
+      ]
+    },
+    "torches": {
+      "bg": { "sky": "assets/mc/sky-dusk.webp", "near": "assets/mc/near-gate-bare.svg" },
+      "cast": [
+        { "src": "assets/mc/wolf.svg", "x": 16, "y": 28, "w": 7 },
+        { "src": "assets/mc/steve.svg", "x": 25, "y": 28, "w": 8 },
+        { "src": "assets/mc/alex.svg", "x": 36, "y": 28, "w": 8 },
+        { "src": "assets/mc/torch-row.svg", "x": 76, "y": 28, "w": 25 }
+      ],
+      "text": "Быстро стемнело. Алекс подсыпала угольки, а Стив зажигал факелы у ворот. «Считай со мной!»",
+      "task": { "kind": "math", "max": 15, "types": ["addition"], "topic": "fuel", "spread": "wide" },
+      "next": "steps"
+    },
+    "steps": {
+      "bg": { "sky": "assets/mc/sky-dusk.webp", "near": "assets/mc/near-gate-bare.svg" },
+      "cast": [
+        { "src": "assets/mc/wolf.svg", "x": 16, "y": 28, "w": 7 },
+        { "src": "assets/mc/steve.svg", "x": 25, "y": 28, "w": 8 },
+        { "src": "assets/mc/alex.svg", "x": 36, "y": 28, "w": 8 },
+        { "src": "assets/mc/fog-bank.svg", "x": 76, "y": 24, "w": 40 }
+      ],
+      "text": "Вдруг волк вскочил и поднял уши. Из тумана шёл кто-то большой, но шагов за речкой не разобрать. Стив обрадовался. «Железный! Раз, два, три…»",
+      "task": { "kind": "math", "max": 17, "types": ["next"], "topic": "blocks", "spread": "wide" },
+      "next": "two"
+    },
+    "two": {
+      "bg": { "sky": "assets/mc/sky-dusk.webp", "near": "assets/mc/near-gate-bare.svg" },
+      "cast": [
+        { "src": "assets/mc/wolf.svg", "x": 14, "y": 28, "w": 7 },
+        { "src": "assets/mc/steve.svg", "x": 22, "y": 28, "w": 8 },
+        { "src": "assets/mc/alex.svg", "x": 32, "y": 28, "w": 8 },
+        { "src": "assets/mc/golem.svg", "x": 54, "y": 28, "w": 13 },
+        { "src": "assets/mc/golem.svg", "x": 71, "y": 28, "w": 13 },
+        { "src": "assets/mc/fog-bank.svg", "x": 63, "y": 24, "w": 40 }
+      ],
+      "voice": "ally",
+      "text": "Возле речки, в тумане, встали два Железных — одинаковые-одинаковые! К воротам не подходят. Алекс шепнула. «Который наш? Впустить надо одного!»",
+      "prompt": "Крикнем в туман или подойдём поближе?",
+      "choices": [
+        { "label": "Крикнуть в туман", "keywords": ["крикнуть", "крикнем", "в туман", "туман", "кричать"],
+          "voice": "trickster",
+          "say": "Стив крикнул в туман. Оттуда кто-то засмеялся. «Угадай, угадай, который твой!» И всё стихло.",
+          "dir": "forward", "next": "sniff" },
+        { "label": "Подойти ближе", "keywords": ["подойти", "подойдём", "ближе", "поближе"],
+          "dir": "forward", "next": "sniff" }
+      ]
+    },
+    "sniff": {
+      "bg": { "sky": "assets/mc/sky-dusk.webp", "near": "assets/mc/near-gate-bare.svg" },
+      "cast": [
+        { "src": "assets/mc/steve.svg", "x": 22, "y": 28, "w": 8 },
+        { "src": "assets/mc/alex.svg", "x": 32, "y": 28, "w": 8 },
+        { "src": "assets/mc/wolf.svg", "x": 45, "y": 28, "w": 7 },
+        { "src": "assets/mc/golem.svg", "x": 54, "y": 28, "w": 13 },
+        { "src": "assets/mc/golem.svg", "x": 71, "y": 28, "w": 13 },
+        { "src": "assets/mc/fog-bank.svg", "x": 63, "y": 24, "w": 40 }
+      ],
+      "text": "Волк обнюхал обоих и чихнул: туман с речки забил волчий нос. Стив вздохнул. «Даже волк не знает!» А у речки валялось всякое.",
+      "task": { "kind": "logic", "max": 10, "types": ["oddOneOut"], "topic": "ford" },
+      "next": "fog"
+    },
+    "fog": {
+      "bg": { "sky": "assets/mc/sky-dusk.webp", "near": "assets/mc/near-gate-bare.svg" },
+      "cast": [
+        { "src": "assets/mc/wolf.svg", "x": 14, "y": 28, "w": 7 },
+        { "src": "assets/mc/steve.svg", "x": 22, "y": 28, "w": 8 },
+        { "src": "assets/mc/alex.svg", "x": 32, "y": 28, "w": 8 },
+        { "src": "assets/mc/golem.svg", "x": 54, "y": 28, "w": 13 },
+        { "src": "assets/mc/golem.svg", "x": 71, "y": 28, "w": 13 },
+        { "src": "assets/mc/fog-bank.svg", "x": 63, "y": 24, "w": 40 }
+      ],
+      "text": "У копии нет тени, и шагов её не слышно. Но в тумане тени не видно, а шаги глушит речка. Стив почесал затылок. «Как же их проверить?»",
+      "prompt": "Посветим факелом или вспомним, что говорил дракон?",
+      "choices": [
+        { "label": "Посветить факелом", "keywords": ["посветить", "посветим", "факелом", "факел", "свет"],
+          "dir": "right", "next": "light" },
+        { "label": "Совет дракона", "keywords": ["дракон", "дракона", "совет", "вспомнить", "вспомним", "говорил"],
+          "dir": "forward", "next": "advice" }
+      ]
+    },
+    "light": {
+      "bg": { "sky": "assets/mc/sky-dusk.webp", "near": "assets/mc/near-gate-bare.svg" },
+      "cast": [
+        { "src": "assets/mc/steve.svg", "x": 30, "y": 28, "w": 8 },
+        { "src": "assets/mc/alex.svg", "x": 40, "y": 28, "w": 8 },
+        { "src": "assets/mc/golem.svg", "x": 54, "y": 28, "w": 13 },
+        { "src": "assets/mc/golem.svg", "x": 71, "y": 28, "w": 13 },
+        { "src": "assets/mc/fog-bank.svg", "x": 63, "y": 24, "w": 40 }
+      ],
+      "voice": "ally",
+      "text": "Стив поднял факел повыше. Свет утонул в тумане, как в молоке, и ничего не стало видно. Алекс фыркнула. «Туман съел весь свет!»",
+      "prompt": "Вспомним, что говорил дракон?",
+      "choices": [
+        { "label": "Совет дракона", "keywords": ["дракон", "дракона", "совет", "вспомнить", "вспомним", "да"],
+          "dir": "left", "next": "advice" }
+      ]
+    },
+    "advice": {
+      "bg": { "sky": "assets/mc/sky-dusk.webp", "near": "assets/mc/near-gate-bare.svg" },
+      "cast": [
+        { "src": "assets/mc/wolf.svg", "x": 14, "y": 28, "w": 7 },
+        { "src": "assets/mc/steve.svg", "x": 22, "y": 28, "w": 8 },
+        { "src": "assets/mc/alex.svg", "x": 32, "y": 28, "w": 8 },
+        { "src": "assets/mc/golem.svg", "x": 54, "y": 28, "w": 13 },
+        { "src": "assets/mc/golem.svg", "x": 71, "y": 28, "w": 13 },
+        { "src": "assets/mc/fog-bank.svg", "x": 63, "y": 24, "w": 40 }
+      ],
+      "text": "Стив хлопнул себя по лбу. «Копия — как эхо, только повторяет! А когда Железный проснулся, колдуна рядом не было!»",
+      "task": { "kind": "logic", "max": 10, "types": ["pattern"], "topic": "ford" },
+      "next": "answers"
+    },
+    "answers": {
+      "bg": { "sky": "assets/mc/sky-dusk.webp", "near": "assets/mc/near-gate-bare.svg" },
+      "cast": [
+        { "src": "assets/mc/wolf.svg", "x": 14, "y": 28, "w": 7 },
+        { "src": "assets/mc/steve.svg", "x": 22, "y": 28, "w": 8 },
+        { "src": "assets/mc/alex.svg", "x": 32, "y": 28, "w": 8 },
+        { "src": "assets/mc/golem.svg", "x": 54, "y": 28, "w": 13 },
+        { "src": "assets/mc/golem.svg", "x": 71, "y": 28, "w": 13 },
+        { "src": "assets/mc/fog-bank.svg", "x": 63, "y": 24, "w": 40 }
+      ],
+      "voice": "golem",
+      "text": "Стив спросил обоих, что они сказали, когда проснулись. Первый загудел сразу. «Стойте за мной! Я держу!» А второй сказал тихо. «Не бойтесь. Я с вами»",
+      "prompt": "Помнишь, что сказал Железный, когда проснулся? Кто настоящий — первый или второй?",
+      "choices": [
+        { "label": "Первый", "keywords": ["первый", "один", "1", "держу"],
+          "hint": "Это колдун слышал из ёлок в ночь рейда. А что Железный сказал, когда проснулся?" },
+        { "label": "Второй", "keywords": ["второй", "два", "2", "с вами", "не бойтесь"],
+          "voice": "hero",
+          "say": "«Это наш! Так он сказал, когда проснулся. А первый повторил то, что колдун подслушал из ёлок в ночь рейда!»",
+          "dir": "forward", "next": "melt" }
+      ]
+    },
+    "melt": {
+      "bg": { "sky": "assets/mc/sky-dusk.webp", "near": "assets/mc/near-gate-bare.svg" },
+      "cast": [
+        { "src": "assets/mc/wolf.svg", "x": 14, "y": 28, "w": 7 },
+        { "src": "assets/mc/steve.svg", "x": 22, "y": 28, "w": 8 },
+        { "src": "assets/mc/alex.svg", "x": 32, "y": 28, "w": 8 },
+        { "src": "assets/mc/golem-ghost.svg", "x": 54, "y": 28, "w": 13 },
+        { "src": "assets/mc/golem.svg", "x": 71, "y": 28, "w": 13 },
+        { "src": "assets/mc/pumpkin.svg", "x": 46, "y": 28, "w": 4 }
+      ],
+      "text": "Наш Железный шагнул в ворота, а первый растаял! В траве лежала тыква с наших ворот. «Подставим блоки и вернём её на место!»",
+      "task": { "kind": "math", "max": 18, "types": ["addition"], "topic": "blocks", "spread": "wide" },
+      "next": "sparks"
+    },
+    "sparks": {
+      "bg": { "sky": "assets/mc/sky-dusk.webp", "near": "assets/mc/near-gate-pumpkin.svg" },
+      "cast": [
+        { "src": "assets/mc/steve.svg", "x": 22, "y": 28, "w": 8 },
+        { "src": "assets/mc/alex.svg", "x": 32, "y": 28, "w": 8 },
+        { "src": "assets/mc/golem.svg", "x": 44, "y": 28, "w": 13 },
+        { "src": "assets/mc/wolf.svg", "x": 66, "y": 28, "w": 7 },
+        { "src": "assets/mc/sparks.svg", "x": 80, "y": 26, "w": 15 }
+      ],
+      "voice": "ally",
+      "text": "Тыква снова смотрела с ворот. А волк нашёл у стенки лиловые искры. Цепочка их вела под дуб. Алекс ахнула! «Тот, в лиловом плаще, идёт в библиотеку!»"
+    }
+  }
+}

@@ -2081,7 +2081,9 @@ ${px(8 * U, 30 * U, 4 * U, 2 * U, shoe)}`;
  * то есть в кадре он ровно такой, каким его описывает рассказчик.
  * Руки длинные и опущены ниже колен: так силуэт узнаётся даже издали.
  */
-function golem() {
+// `ghost` — тающая копия семнадцатого дня. Рисунок тот же, что у настоящего:
+// в тумане их не различить, и разница видна, только когда копия тает.
+function golem({ ghost = false } = {}) {
   const U = 20;
   const iron = '#c9ccd2', ironDark = '#9a9ea8', ironLight = '#e4e7ec';
   const moss = '#5e7f52', mossDark = '#46603c';
@@ -2143,7 +2145,8 @@ ${px(12.2 * U, 37.4 * U, 5.2 * U, 2.6 * U, ironDark)}
 <!-- ржавые пятна поверх железа -->
 ${patches.join('\n')}`;
 
-  return charSvg(body, 24 * U, 40 * U);
+  return charSvg(body, 24 * U, 40 * U,
+    ghost ? '.idle { animation: none; opacity: 0.4 }' : '');
 }
 
 /**
@@ -3536,6 +3539,22 @@ const mistBand = () => {
 };
 
 /**
+ * Синие сумерки семнадцатого дня, с белым туманом над рекой. Закатов
+ * в каталоге шесть, и все тёплые; этот вечер холодный: синий сверху,
+ * бирюзовый ниже и только тонкая янтарная полоска у самого края.
+ * Туман снизу светлее неба — у тумана свет от земли, как у `sky-fog`.
+ */
+function skyDusk() {
+  const defs = `<defs><linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#1d2a55"/><stop offset="0.45" stop-color="#2f5578"/>
+    <stop offset="0.68" stop-color="#5f8a98"/><stop offset="0.8" stop-color="#d9a868"/>
+    <stop offset="0.86" stop-color="#c9d6dc"/><stop offset="1" stop-color="#e6edf0"/></linearGradient></defs>`;
+  return svg(`<rect width="${W}" height="${H}" fill="url(#g)"/>
+${clouds(171, '#3d5a7c', 0.5)}
+${clouds(172, '#c9d6dc', 0.25)}`, defs);
+}
+
+/**
  * Предрассветный лиловый туман. Светила нет — третья такая история после
  * грозы десятого дня и молока одиннадцатого, и повод снова свой: там тучи,
  * там молоко, здесь холодная мгла перед рассветом.
@@ -3974,6 +3993,29 @@ ${px(x * U, (y + s) * U, s * U, 0.25 * U, dark)}`).join('');
  * ряд: вопрос звучит «столько и ещё столько», и слагаемых должно быть
  * видно два.
  */
+/**
+ * Туман по колено — предмет `cast` семнадцатого дня. Кладётся поверх ног
+ * двух Железных: тени и шагов в нём не видно, и это сюжет, а не украшение.
+ * Блоками, как облака: в этом мире даже пар квадратный. Прозрачность
+ * на каждом ряду своя — снизу гуще, кверху редеет.
+ */
+function fogBank() {
+  const U = 20;
+  const rand = rng(1717);
+  const out = [];
+  const cols = 40, rows = 10;
+  for (let r = 0; r < rows; r++) {
+    // Верхние ряды рваные: кромка тумана не бывает ровной.
+    const gap = [0.7, 0.5, 0.3, 0.15][r] ?? 0;
+    for (let c = 0; c < cols; c++) {
+      if (rand() < gap) continue;
+      const op = n(Math.min(0.8, 0.28 + r * 0.06));
+      out.push(px(c * 2 * U, r * 2 * U, 2 * U, 2 * U, '#e6edf2', ` opacity="${op}"`));
+    }
+  }
+  return charSvg(out.join('\n'), cols * 2 * U, rows * 2 * U, '.idle { animation: none }');
+}
+
 function torchRow() {
   const U = 20;
   const stick = '#7a5630', flame = '#ffb13b', core = '#fff0b0';
@@ -4020,6 +4062,7 @@ write('assets/mc/sky-fog.svg', skyFog());
 write('assets/mc/sky-fire.svg', skyFire());
 write('assets/mc/sky-mist.svg', skyMist());
 write('assets/mc/sky-woods.svg', skyWoods());
+write('assets/mc/sky-dusk.svg', skyDusk());
 write('assets/mc/sun-day.svg', celestial(1500, 220, 88, '#ffe873', '#fff3b0'));
 write('assets/mc/sun-sunset.svg', celestial(1420, 600, 86, '#ffc24d', '#ff9d5c'));
 write('assets/mc/moon-night.svg', celestial(1500, 230, 74, '#f2f5fb', '#c9d8f2', 90));
@@ -4070,7 +4113,9 @@ write('assets/mc/far-dark-woods.svg', farDarkWoods());
  * день берёт готовые near-breach, near-bell, near-village и near-house,
  * и земля запрыгала бы от сцены к сцене (грабля тринадцатого дня).
  */
-function nearGate(seed = 914, { bare = false } = {}) {
+// `pumpkin` у пустых ворот семнадцатого дня: тыкву вернули на место,
+// а ряда задания четырнадцатого дня и золота свинолюда по-прежнему нет.
+function nearGate(seed = 914, { bare = false, pumpkin = !bare } = {}) {
   const rand = rng(seed);
   const out = [];
   const EDGE = '#3f3c35';
@@ -4156,10 +4201,10 @@ function nearGate(seed = 914, { bare = false } = {}) {
   for (const dx of [-B * 0.42, B * 0.42]) {
     // У пустых ворот пятнадцатого дня тыкву унесли: верёвки обрываются
     // короче, и пустота под перекладиной видна сразу.
-    const rope = bare ? B * 0.3 : B * 0.62;
+    const rope = pumpkin ? B * 0.62 : B * 0.3;
     out.push(`<rect x="${n(cx + dx - 4)}" y="${n(beamY + 20)}" width="8" height="${n(rope)}" fill="${LOG_DARK}"/>`);
   }
-  if (!bare) {
+  if (pumpkin) {
   out.push(`<rect x="${n(cx - B * 0.66)}" y="${n(cy - B * 0.66)}" width="${n(B * 1.32)}" height="${n(B * 1.32)}" fill="${PUMPKIN}"/>`);
   out.push(`<rect x="${n(cx - B * 0.66)}" y="${n(cy + B * 0.32)}" width="${n(B * 1.32)}" height="${n(B * 0.34)}" fill="${PUMPKIN_DARK}"/>`);
   out.push(`<rect x="${n(cx - B * 0.12)}" y="${n(cy - B * 0.9)}" width="${n(B * 0.24)}" height="${n(B * 0.26)}" fill="${STEM}"/>`);
@@ -4289,6 +4334,7 @@ write('assets/mc/near-breach.svg', nearBreach());
 write('assets/mc/near-copies.svg', nearCopies());
 write('assets/mc/near-gate.svg', nearGate());
 write('assets/mc/near-gate-bare.svg', nearGate(914, { bare: true }));
+write('assets/mc/near-gate-pumpkin.svg', nearGate(914, { bare: true, pumpkin: true }));
 write('assets/mc/near-woods-edge.svg', nearWoodsEdge());
 write('assets/mc/near-thicket.svg', nearThicket());
 write('assets/mc/near-block-wall.svg', nearBlockWall());
@@ -4318,6 +4364,8 @@ write('assets/mc/illusioner.svg', illusioner());
 write('assets/mc/steve-ghost.svg', steveGhost());
 write('assets/mc/sparks.svg', sparks());
 write('assets/mc/torch-row.svg', torchRow());
+write('assets/mc/golem-ghost.svg', golem({ ghost: true }));
+write('assets/mc/fog-bank.svg', fogBank());
 write('assets/mc/cone-row.svg', coneRow());
 
 console.log('\nГотово.');

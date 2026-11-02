@@ -6,6 +6,13 @@
     "cover": "assets/covers/dark-woods.webp",
     "comics": [
       {
+        "id": "two-golems",
+        "title": "Два Железных",
+        "subtitle": "Семнадцатый день Стива · пять игр",
+        "cover": "assets/covers/two-golems.webp",
+        "story": "stories/two-golems.json"
+      },
+      {
         "id": "dragon-isle",
         "title": "Остров дракона",
         "subtitle": "Шестнадцатый день Стива · пять игр",

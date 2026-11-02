@@ -230,6 +230,16 @@ const LAYERS = {
       + `no sun, no moon, no stars, ${STYLE}, no ground, no trees`,
     negative: NEG + ', night, black sky, stars, moon, lilac, violet, purple, orange, sunset, blue sky, rain, lightning',
   },
+  // Вечер семнадцатого дня. Отличать его от шести тёплых закатов должен
+  // ЦВЕТ: холодный синий и бирюза, янтарь — только тонкой полоской.
+  // Лиловое — в negative: им занят туман тринадцатого дня.
+  'mc/sky-dusk': {
+    strength: 0.42,
+    prompt: `cold blue evening twilight sky, deep indigo blue at the top, teal blue in the middle, `
+      + `a thin warm amber stripe low near the horizon, white river fog rising below it, calm and quiet, `
+      + `no sun, no moon, no stars, ${STYLE}, no ground, no trees`,
+    negative: NEG + ', lilac, violet, purple, pink, orange sky, red sunset, sun, moon, stars, black night, rain, lightning',
+  },
   'mc/far-dark-woods': {
     strength: 0.24,
     prompt: `dense dark green forest of blocky spruce trees in three rows, `

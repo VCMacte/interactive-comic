@@ -802,6 +802,809 @@
    "hintAudio": "5fa5bcd3"
   }
  ],
+ "minecraft|math|16|fuel|wide": [
+  {
+   "type": "addition",
+   "question": "Сколько будет три уголька и ещё два уголька?",
+   "hint": "Посчитаем вместе: три уголька, и прибавим ещё два.",
+   "choices": [
+    {
+     "label": "Семь",
+     "keywords": [
+      "семь",
+      "7"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Один",
+     "keywords": [
+      "один",
+      "1"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Пять",
+     "keywords": [
+      "пять",
+      "5"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "f5c0aa23",
+   "hintAudio": "be828823"
+  },
+  {
+   "type": "addition",
+   "question": "Сколько будет восемь угольков и ещё семь угольков?",
+   "hint": "Посчитаем вместе: восемь угольков, и прибавим ещё семь.",
+   "choices": [
+    {
+     "label": "Один",
+     "keywords": [
+      "один",
+      "1"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Пятнадцать",
+     "keywords": [
+      "пятнадцать",
+      "15"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Двенадцать",
+     "keywords": [
+      "двенадцать",
+      "12"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "908e96df",
+   "hintAudio": "7d52351f"
+  },
+  {
+   "type": "addition",
+   "question": "Сколько будет два уголька и ещё пять угольков?",
+   "hint": "Посчитаем вместе: два уголька, и прибавим ещё пять.",
+   "choices": [
+    {
+     "label": "Два",
+     "keywords": [
+      "два",
+      "2"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Двенадцать",
+     "keywords": [
+      "двенадцать",
+      "12"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Семь",
+     "keywords": [
+      "семь",
+      "7"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "6c6603e3",
+   "hintAudio": "1f83349f"
+  },
+  {
+   "type": "addition",
+   "question": "Сколько будет три факела и ещё два факела?",
+   "hint": "Посчитаем вместе: три факела, и прибавим ещё два.",
+   "choices": [
+    {
+     "label": "Восемь",
+     "keywords": [
+      "восемь",
+      "8"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Пять",
+     "keywords": [
+      "пять",
+      "5"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Один",
+     "keywords": [
+      "один",
+      "1"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "062fecfd",
+   "hintAudio": "e3f0bcfc"
+  },
+  {
+   "type": "addition",
+   "question": "Сколько будет два факела и ещё восемь факелов?",
+   "hint": "Посчитаем вместе: два факела, и прибавим ещё восемь.",
+   "choices": [
+    {
+     "label": "Двенадцать",
+     "keywords": [
+      "двенадцать",
+      "12"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Два",
+     "keywords": [
+      "два",
+      "2"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Десять",
+     "keywords": [
+      "десять",
+      "10"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "974b0ced",
+   "hintAudio": "a07b85c4"
+  }
+ ],
+ "minecraft|logic|10|hideout": [
+  {
+   "type": "oddOneOut",
+   "question": "Что здесь лишнее: стол, стул или река?",
+   "hint": "Подумай: два из них — это мебель. А третий?",
+   "choices": [
+    {
+     "label": "Стол",
+     "keywords": [
+      "стол"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Река",
+     "keywords": [
+      "река"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Стул",
+     "keywords": [
+      "стул"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "206ca966",
+   "hintAudio": "9e03f636"
+  },
+  {
+   "type": "oddOneOut",
+   "question": "Что здесь лишнее: дверь, люк или ложка?",
+   "hint": "Подумай: два из них — это то, через что входят. А третий?",
+   "choices": [
+    {
+     "label": "Ложка",
+     "keywords": [
+      "ложка"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Люк",
+     "keywords": [
+      "люк"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Дверь",
+     "keywords": [
+      "дверь"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "2d565369",
+   "hintAudio": "2c2b6f9f"
+  },
+  {
+   "type": "oddOneOut",
+   "question": "Что здесь лишнее: полка, бочка или облако?",
+   "hint": "Подумай: два из них — это то, куда кладут вещи. А третий?",
+   "choices": [
+    {
+     "label": "Облако",
+     "keywords": [
+      "облако"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Полка",
+     "keywords": [
+      "полка"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Бочка",
+     "keywords": [
+      "бочка"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "7f0f491c",
+   "hintAudio": "245ebaeb"
+  },
+  {
+   "type": "oddOneOut",
+   "question": "Что здесь лишнее: сапог, шляпа или окно?",
+   "hint": "Подумай: два из них — это то, что надевают. А третий?",
+   "choices": [
+    {
+     "label": "Шляпа",
+     "keywords": [
+      "шляпа"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Окно",
+     "keywords": [
+      "окно"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Сапог",
+     "keywords": [
+      "сапог"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "bb192be3",
+   "hintAudio": "f65eb771"
+  },
+  {
+   "type": "oddOneOut",
+   "question": "Что здесь лишнее: узор, рисунок или молоток?",
+   "hint": "Подумай: два из них — это то, что рисуют. А третий?",
+   "choices": [
+    {
+     "label": "Молоток",
+     "keywords": [
+      "молоток"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Узор",
+     "keywords": [
+      "узор"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Рисунок",
+     "keywords": [
+      "рисунок"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "2e767e7a",
+   "hintAudio": "4e0f07a1"
+  },
+  {
+   "type": "pattern",
+   "question": "Что дальше: фонарь, картина, фонарь, картина, а потом?",
+   "hint": "Они идут по очереди. После «картина» снова начинается тот же порядок.",
+   "choices": [
+    {
+     "label": "Картина",
+     "keywords": [
+      "картина"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Фонарь",
+     "keywords": [
+      "фонарь"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Свеча",
+     "keywords": [
+      "свеча"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "ae88d321",
+   "hintAudio": "c7ba953a"
+  },
+  {
+   "type": "pattern",
+   "question": "Что дальше: свеча, ковёр, свеча, ковёр, а потом?",
+   "hint": "Они идут по очереди. После «ковёр» снова начинается тот же порядок.",
+   "choices": [
+    {
+     "label": "Полка",
+     "keywords": [
+      "полка"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Ковёр",
+     "keywords": [
+      "ковёр"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Свеча",
+     "keywords": [
+      "свеча"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "549c4f95",
+   "hintAudio": "44117364"
+  },
+  {
+   "type": "pattern",
+   "question": "Что дальше: бочка, картина, бочка, картина, а потом?",
+   "hint": "Они идут по очереди. После «картина» снова начинается тот же порядок.",
+   "choices": [
+    {
+     "label": "Ковёр",
+     "keywords": [
+      "ковёр"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Картина",
+     "keywords": [
+      "картина"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Бочка",
+     "keywords": [
+      "бочка"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "4e7e3319",
+   "hintAudio": "c7ba953a"
+  },
+  {
+   "type": "pattern",
+   "question": "Что дальше: картина, полка, картина, полка, а потом?",
+   "hint": "Они идут по очереди. После «полка» снова начинается тот же порядок.",
+   "choices": [
+    {
+     "label": "Полка",
+     "keywords": [
+      "полка"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Бочка",
+     "keywords": [
+      "бочка"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Картина",
+     "keywords": [
+      "картина"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "ef01b6d9",
+   "hintAudio": "db132e67"
+  },
+  {
+   "type": "pattern",
+   "question": "Что дальше: ковёр, бочка, ковёр, бочка, а потом?",
+   "hint": "Они идут по очереди. После «бочка» снова начинается тот же порядок.",
+   "choices": [
+    {
+     "label": "Бочка",
+     "keywords": [
+      "бочка"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Ковёр",
+     "keywords": [
+      "ковёр"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Свеча",
+     "keywords": [
+      "свеча"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "8e0a395d",
+   "hintAudio": "595e2d11"
+  }
+ ],
+ "minecraft|math|19|blocks|wide": [
+  {
+   "type": "next",
+   "question": "Какое число идёт после одиннадцати?",
+   "hint": "Посчитай по порядку: десять, одиннадцать, а дальше?",
+   "choices": [
+    {
+     "label": "Двенадцать",
+     "keywords": [
+      "двенадцать",
+      "12"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Пятнадцать",
+     "keywords": [
+      "пятнадцать",
+      "15"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Десять",
+     "keywords": [
+      "десять",
+      "10"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "a7c061de",
+   "hintAudio": "8a76bdc4"
+  },
+  {
+   "type": "next",
+   "question": "Какое число идёт после одного?",
+   "hint": "Посчитай по порядку: ноль, один, а дальше?",
+   "choices": [
+    {
+     "label": "Семь",
+     "keywords": [
+      "семь",
+      "7"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Ноль",
+     "keywords": [
+      "ноль",
+      "0"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Два",
+     "keywords": [
+      "два",
+      "2"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "f082306c",
+   "hintAudio": "87cb7cfa"
+  },
+  {
+   "type": "next",
+   "question": "Какое число идёт после двенадцати?",
+   "hint": "Посчитай по порядку: одиннадцать, двенадцать, а дальше?",
+   "choices": [
+    {
+     "label": "Одиннадцать",
+     "keywords": [
+      "одиннадцать",
+      "11"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Шестнадцать",
+     "keywords": [
+      "шестнадцать",
+      "16"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Тринадцать",
+     "keywords": [
+      "тринадцать",
+      "13"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "1cdb6968",
+   "hintAudio": "8a2c6909"
+  },
+  {
+   "type": "next",
+   "question": "Какое число идёт после двух?",
+   "hint": "Посчитай по порядку: один, два, а дальше?",
+   "choices": [
+    {
+     "label": "Три",
+     "keywords": [
+      "три",
+      "3"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Пять",
+     "keywords": [
+      "пять",
+      "5"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Один",
+     "keywords": [
+      "один",
+      "1"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "e65be4f6",
+   "hintAudio": "31ac47a2"
+  },
+  {
+   "type": "next",
+   "question": "Какое число идёт после пяти?",
+   "hint": "Посчитай по порядку: четыре, пять, а дальше?",
+   "choices": [
+    {
+     "label": "Четыре",
+     "keywords": [
+      "четыре",
+      "4"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Шесть",
+     "keywords": [
+      "шесть",
+      "6"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Девять",
+     "keywords": [
+      "девять",
+      "9"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "c96f79ac",
+   "hintAudio": "62c5f46d"
+  }
+ ],
+ "minecraft|math|14|iron|wide": [
+  {
+   "type": "addition",
+   "question": "Сколько будет три слитка и ещё пять слитков?",
+   "hint": "Посчитаем вместе: три слитка, и прибавим ещё пять.",
+   "choices": [
+    {
+     "label": "Три",
+     "keywords": [
+      "три",
+      "3"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Восемь",
+     "keywords": [
+      "восемь",
+      "8"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Десять",
+     "keywords": [
+      "десять",
+      "10"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "35691d47",
+   "hintAudio": "373a7d74"
+  },
+  {
+   "type": "addition",
+   "question": "Сколько будет пять блоков и ещё четыре блока?",
+   "hint": "Посчитаем вместе: пять блоков, и прибавим ещё четыре.",
+   "choices": [
+    {
+     "label": "Девять",
+     "keywords": [
+      "девять",
+      "9"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Четырнадцать",
+     "keywords": [
+      "четырнадцать",
+      "14"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Один",
+     "keywords": [
+      "один",
+      "1"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "278445a3",
+   "hintAudio": "1017f818"
+  },
+  {
+   "type": "addition",
+   "question": "Сколько будет три блока и ещё четыре блока?",
+   "hint": "Посчитаем вместе: три блока, и прибавим ещё четыре.",
+   "choices": [
+    {
+     "label": "Двенадцать",
+     "keywords": [
+      "двенадцать",
+      "12"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Три",
+     "keywords": [
+      "три",
+      "3"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Семь",
+     "keywords": [
+      "семь",
+      "7"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "c211c601",
+   "hintAudio": "182d3d4a"
+  },
+  {
+   "type": "addition",
+   "question": "Сколько будет один слиток и ещё один слиток?",
+   "hint": "Посчитаем вместе: один слиток, и прибавим ещё один.",
+   "choices": [
+    {
+     "label": "Ноль",
+     "keywords": [
+      "ноль",
+      "0"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Семь",
+     "keywords": [
+      "семь",
+      "7"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Два",
+     "keywords": [
+      "два",
+      "2"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "085ef833",
+   "hintAudio": "50c68f6a"
+  },
+  {
+   "type": "addition",
+   "question": "Сколько будет один блок и ещё шесть блоков?",
+   "hint": "Посчитаем вместе: один блок, и прибавим ещё шесть.",
+   "choices": [
+    {
+     "label": "Один",
+     "keywords": [
+      "один",
+      "1"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Двенадцать",
+     "keywords": [
+      "двенадцать",
+      "12"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Семь",
+     "keywords": [
+      "семь",
+      "7"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "7094d4c0",
+   "hintAudio": "63521021"
+  }
+ ],
  "minecraft|logic|10|woods": [
   {
    "type": "oddOneOut",

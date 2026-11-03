@@ -3931,7 +3931,9 @@ ${darkPine(W - B, 8, rand)}`);
  * и тут её надо узнать с первого взгляда, поэтому она крупная.
  * Дверь внизу справа: у неё стоят копии из `cast`.
  */
-function nearDarkHouse(seed = 967) {
+// `empty` у восемнадцатого дня: днём колдуна нет, тыква давно на воротах,
+// и окно тёмное, как все остальные.
+function nearDarkHouse(seed = 967, { empty = false } = {}) {
   const rand = rng(seed);
   const out = [];
   const HX = 17, HW = 13, FLOORS = 7;
@@ -3955,12 +3957,14 @@ function nearDarkHouse(seed = 967) {
     out.push(`<rect x="${n((HX + c) * B)}" y="${n(GROUND - B * (r + 1))}" width="${B}" height="${n(B * 1.3)}" fill="#1a1622"/>`);
   }
   const wx = (HX + 9.5) * B, wy = GROUND - B * 6.2;
-  out.push(`<rect x="${n(wx)}" y="${n(wy)}" width="${n(B * 2)}" height="${n(B * 1.8)}" fill="${LILAC}"/>`);
-  const px0 = wx + B * 0.3, py0 = wy + B * 0.3, ps = B * 1.4;
-  out.push(`<rect x="${n(px0)}" y="${n(py0)}" width="${n(ps)}" height="${n(ps)}" fill="${PUMPKIN}"/>`);
-  out.push(`<rect x="${n(px0 + ps * 0.18)}" y="${n(py0 + ps * 0.28)}" width="${n(ps * 0.18)}" height="${n(ps * 0.18)}" fill="${PUMPKIN_DARK}"/>`);
-  out.push(`<rect x="${n(px0 + ps * 0.64)}" y="${n(py0 + ps * 0.28)}" width="${n(ps * 0.18)}" height="${n(ps * 0.18)}" fill="${PUMPKIN_DARK}"/>`);
-  out.push(`<rect x="${n(px0 + ps * 0.28)}" y="${n(py0 + ps * 0.62)}" width="${n(ps * 0.44)}" height="${n(ps * 0.14)}" fill="${PUMPKIN_DARK}"/>`);
+  out.push(`<rect x="${n(wx)}" y="${n(wy)}" width="${n(B * 2)}" height="${n(B * 1.8)}" fill="${empty ? '#1a1622' : LILAC}"/>`);
+  if (!empty) {
+    const px0 = wx + B * 0.3, py0 = wy + B * 0.3, ps = B * 1.4;
+    out.push(`<rect x="${n(px0)}" y="${n(py0)}" width="${n(ps)}" height="${n(ps)}" fill="${PUMPKIN}"/>`);
+    out.push(`<rect x="${n(px0 + ps * 0.18)}" y="${n(py0 + ps * 0.28)}" width="${n(ps * 0.18)}" height="${n(ps * 0.18)}" fill="${PUMPKIN_DARK}"/>`);
+    out.push(`<rect x="${n(px0 + ps * 0.64)}" y="${n(py0 + ps * 0.28)}" width="${n(ps * 0.18)}" height="${n(ps * 0.18)}" fill="${PUMPKIN_DARK}"/>`);
+    out.push(`<rect x="${n(px0 + ps * 0.28)}" y="${n(py0 + ps * 0.62)}" width="${n(ps * 0.44)}" height="${n(ps * 0.14)}" fill="${PUMPKIN_DARK}"/>`);
+  }
   // Дверь в две створки.
   const dx = (HX + 5) * B;
   out.push(`<rect x="${n(dx)}" y="${n(GROUND - B * 2.4)}" width="${n(B * 2)}" height="${n(B * 2.4)}" fill="#24180f"/>`);
@@ -3969,6 +3973,149 @@ function nearDarkHouse(seed = 967) {
 ${darkPine(B, 8, rand)}
 ${darkPine(B * 4, 6, rand)}
 ${out.join('\n')}`);
+}
+
+/* ---- восемнадцатый день ---- */
+
+/**
+ * Комнаты тёмного дома днём. Кадр закрыт целиком, как библиотека: неба
+ * нет, и покраски нет — тепло и лиловый свет должны быть в самом векторе.
+ *
+ * Варианты одного дома, а не три разных слоя: стены и пол обязаны быть
+ * одни и те же, иначе комната запрыгает от сцены к сцене.
+ *
+ * - без флагов — прихожая: лестница наверх справа, тёмный проём в пустую
+ *   комнату посередине. Лестница правее 65%, в чистой полосе: по ней
+ *   считают ступеньки в сцене `echo`;
+ * - `chest` — наверху: сундук нарисован на стене в рамке. Сцена `chest`
+ *   держится на том, что это картинка, а не вещь, поэтому рамка видна;
+ * - `pile` — тайная комната за картинкой: стены каменные и тёмные,
+ *   открытая дверца. Горка железа — предмет `iron-pile`, а не часть
+ *   слоя: её считают, и место ей правее 65%.
+ *
+ * Свечи, книги, бочки и ковёр стоят на виду нарочно: из этих слов
+ * собраны загадки и чередования области `hideout`.
+ */
+function nearDarkRoom(seed = 971, { chest = false, pile = false } = {}) {
+  const rand = rng(seed);
+  const out = [];
+  const WALL = pile
+    ? { base: '#3c3a44', dark: '#2c2a33', light: '#4a4854' }
+    : { base: '#3e3048', dark: '#2e2338', light: '#4f3f5c' };
+  const FLOOR = { base: '#5a4030', dark: '#45301f', light: '#6b4d38' };
+  const LILAC = '#b58be8';
+
+  for (let r = 0; r * B < H; r++) {
+    for (let c = 0; c * B < W; c++) {
+      out.push(block(c * B, r * B, r * B >= GROUND ? FLOOR : WALL, rand));
+    }
+  }
+  for (let r = 0; GROUND + r * B < H; r++) {
+    out.push(`<rect x="0" y="${n(GROUND + r * B)}" width="${W}" height="5" fill="${FLOOR.dark}" opacity="0.8"/>`);
+  }
+  for (let r = 0; r * B < GROUND; r++) {
+    out.push(`<rect x="0" y="${n(r * B + B - 5)}" width="${W}" height="5" fill="${WALL.dark}" opacity="0.7"/>`);
+  }
+
+  // Свеча с ореолом — тот же рисунок, что в библиотеке. Без ореола свеча
+  // читается белой палочкой и света в комнате не прибавляет.
+  const candle = (x, y, h = B * 0.7) => `
+${glow(x + B * 0.15, y - h - B * 0.2, B * 1.9)}
+<rect x="${n(x)}" y="${n(y - h)}" width="${n(B * 0.3)}" height="${n(h)}" fill="#f4efdf"/>
+<rect x="${n(x - B * 0.06)}" y="${n(y - h - B * 0.26)}" width="${n(B * 0.42)}" height="${n(B * 0.3)}" fill="#ffb13b"/>
+<rect x="${n(x + B * 0.06)}" y="${n(y - h - B * 0.44)}" width="${n(B * 0.18)}" height="${n(B * 0.24)}" fill="#fff0b0"/>`;
+
+  // Полка вверху слева: свеча, книга, свеча, книга. Выше 56% высоты,
+  // то есть над текстом, — её видно в любой сцене.
+  const shelfY = GROUND - B * 5;
+  const sx0 = B * 2;
+  out.push(`<rect x="${n(sx0)}" y="${n(shelfY)}" width="${n(B * 7)}" height="${n(B * 0.22)}" fill="${FLOOR.light}"/>`);
+  for (let i = 0; i < 6; i++) {
+    const x = sx0 + B * 0.4 + i * B * 1.1;
+    if (i % 2 === 0) {
+      out.push(candle(x, shelfY, B * 0.6));
+    } else {
+      out.push(`<rect x="${n(x)}" y="${n(shelfY - B * 0.7)}" width="${n(B * 0.5)}" height="${n(B * 0.7)}" fill="${['#7a3f8f', '#2f6ba8', '#b5452f'][i % 3]}"/>`);
+    }
+  }
+
+  const barrel = (x) => [
+    `<rect x="${n(x)}" y="${n(GROUND - B * 1.2)}" width="${n(B)}" height="${n(B * 1.2)}" fill="#7a5630"/>`,
+    ...[0.15, 0.85].map((k) =>
+      `<rect x="${n(x)}" y="${n(GROUND - B * 1.2 * k - 4)}" width="${n(B)}" height="8" fill="#45301a"/>`),
+  ].join('\n');
+
+  if (pile) {
+    // Открытая дверца, через которую вошли: тёмный проём и откинутая створка.
+    const dx = W * 0.47;
+    out.push(`<rect x="${n(dx)}" y="${n(GROUND - B * 2.2)}" width="${n(B * 1.6)}" height="${n(B * 2.2)}" fill="#120e16"/>`);
+    out.push(`<rect x="${n(dx - B * 0.5)}" y="${n(GROUND - B * 2.2)}" width="${n(B * 0.5)}" height="${n(B * 2.2)}" fill="#5a3f22"/>`);
+    out.push(candle(W * 0.6, GROUND - B * 3.4, B * 0.8));
+  } else if (chest) {
+    // Сундук в рамке на стене: лиловая рамка, внутри плоский рисунок
+    // сундука без тени и без пола под ним — картинка, а не вещь.
+    const fx = W * 0.7, fy = GROUND - B * 4.4, fw = B * 5, fh = B * 3.6;
+    out.push(`<rect x="${n(fx)}" y="${n(fy)}" width="${n(fw)}" height="${n(fh)}" fill="${LILAC}"/>`);
+    out.push(`<rect x="${n(fx + B * 0.3)}" y="${n(fy + B * 0.3)}" width="${n(fw - B * 0.6)}" height="${n(fh - B * 0.6)}" fill="#e9dcc4"/>`);
+    const cx = fx + B * 0.9, cy = fy + B * 1, cw = B * 3.2, ch = B * 2;
+    out.push(`<rect x="${n(cx)}" y="${n(cy)}" width="${n(cw)}" height="${n(ch)}" fill="#a8742f"/>`);
+    out.push(`<rect x="${n(cx)}" y="${n(cy + ch * 0.38)}" width="${n(cw)}" height="${n(B * 0.18)}" fill="#5a3f22"/>`);
+    out.push(`<rect x="${n(cx + cw / 2 - B * 0.2)}" y="${n(cy + ch * 0.3)}" width="${n(B * 0.4)}" height="${n(B * 0.5)}" fill="#d2d2d8"/>`);
+    out.push(barrel(W - B * 3));
+    out.push(candle(W * 0.62, GROUND, B * 1));
+  } else {
+    // Проём в пустую комнату: оттуда и зовут чужим голосом.
+    const dx = W * 0.5;
+    out.push(`<rect x="${n(dx)}" y="${n(GROUND - B * 2.6)}" width="${n(B * 1.8)}" height="${n(B * 2.6)}" fill="#120e16"/>`);
+    // Лестница наверх ступенями, вправо и вверх.
+    for (let i = 0; i < 6; i++) {
+      for (let r = 0; r <= i; r++) {
+        out.push(block(W * 0.7 + i * B, GROUND - B * (r + 1), FLOOR, rand));
+      }
+    }
+    out.push(barrel(W * 0.62));
+  }
+
+  // Ковёр на полу — лиловый, в цвет плаща хозяина.
+  if (!pile) {
+    out.push(`<rect x="${n(W * 0.3)}" y="${n(GROUND + B * 0.3)}" width="${n(B * 6)}" height="${n(B * 0.9)}" fill="#6b3f8f"/>`);
+    out.push(`<rect x="${n(W * 0.3 + B * 0.25)}" y="${n(GROUND + B * 0.5)}" width="${n(B * 5.5)}" height="${n(B * 0.5)}" fill="#8a5ab0"/>`);
+  }
+
+  out.push(`<rect x="0" y="0" width="${W}" height="${H}" fill="${LILAC}" opacity="0.06"/>`);
+  return svg(`${out.join('\n')}
+<rect x="0" y="0" width="${B}" height="${H}" fill="#140f18"/>
+<rect x="${W - B}" y="0" width="${B}" height="${H}" fill="#140f18"/>`, GLOW_DEF);
+}
+
+/**
+ * Горка железа в тайной комнате — предмет задания сцены `pile`. Блоки
+ * пирамидой и слитки рядом: в области `iron` считают именно блоки
+ * и слитки. Сверху лежит книга про железо, за которой герои пришли.
+ */
+function ironPile() {
+  const U = 20;
+  const S = 3 * U;
+  const iron = '#d2d2d8', ironDark = '#9ea0a8', ironHi = '#eff0f4';
+  const blockAt = (x, y) => `
+${px(x, y, S, S, iron)}
+${px(x, y + S - 0.5 * U, S, 0.5 * U, ironDark)}
+${px(x + 0.5 * U, y + 0.5 * U, U, 0.6 * U, ironHi)}`;
+  const ingot = (x, y) => `
+${px(x, y, 2.2 * U, 0.9 * U, iron)}
+${px(x, y + 0.6 * U, 2.2 * U, 0.3 * U, ironDark)}`;
+  const base = 4.8 * U;
+  const body = [
+    blockAt(0, base + S), blockAt(S, base + S), blockAt(2 * S, base + S),
+    blockAt(0.5 * S, base), blockAt(1.5 * S, base),
+    blockAt(S, base - S),
+    ingot(9.4 * U, base + 2 * S - 0.9 * U), ingot(9.9 * U, base + 2 * S - 1.8 * U),
+    ingot(12 * U, base + 2 * S - 0.9 * U),
+    // книга про железо — на самой верхушке
+    px(S + 0.2 * U, base - S - 0.8 * U, 2.6 * U, 0.8 * U, '#6b4a2a'),
+    px(S + 0.2 * U, base - S - 0.8 * U, 2.6 * U, 0.2 * U, '#efe7d2'),
+  ].join('');
+  return charSvg(body, 14.4 * U, base + 2 * S, '.idle { animation: none }');
 }
 
 /**
@@ -4339,6 +4486,10 @@ write('assets/mc/near-woods-edge.svg', nearWoodsEdge());
 write('assets/mc/near-thicket.svg', nearThicket());
 write('assets/mc/near-block-wall.svg', nearBlockWall());
 write('assets/mc/near-dark-house.svg', nearDarkHouse());
+write('assets/mc/near-dark-house-empty.svg', nearDarkHouse(967, { empty: true }));
+write('assets/mc/near-dark-room.svg', nearDarkRoom());
+write('assets/mc/near-dark-chest.svg', nearDarkRoom(971, { chest: true }));
+write('assets/mc/near-dark-pile.svg', nearDarkRoom(971, { pile: true }));
 
 console.log('Персонажи:');
 write('assets/mc/steve.svg', steve());
@@ -4367,5 +4518,6 @@ write('assets/mc/torch-row.svg', torchRow());
 write('assets/mc/golem-ghost.svg', golem({ ghost: true }));
 write('assets/mc/fog-bank.svg', fogBank());
 write('assets/mc/cone-row.svg', coneRow());
+write('assets/mc/iron-pile.svg', ironPile());
 
 console.log('\nГотово.');

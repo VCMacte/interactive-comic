@@ -6,6 +6,13 @@
     "cover": "assets/covers/dark-woods.webp",
     "comics": [
       {
+        "id": "dark-house",
+        "title": "Тёмный дом",
+        "subtitle": "Восемнадцатый день Стива · пять игр",
+        "cover": "assets/covers/dark-house.webp",
+        "story": "stories/dark-house.json"
+      },
+      {
         "id": "two-golems",
         "title": "Два Железных",
         "subtitle": "Семнадцатый день Стива · пять игр",

@@ -1,0 +1,157 @@
+{
+  "title": "Тёмный дом",
+  "theme": "minecraft",
+  "voice": "hero",
+  "start": "morning",
+  "hook": "железа колдуну мало: ночью он придёт за нашим железом",
+  "closes": ["two-golems"],
+  "scenes": {
+    "morning": {
+      "bg": { "near": "assets/mc/near-library.svg" },
+      "cast": [
+        { "src": "assets/mc/wolf.svg", "x": 16, "y": 28, "w": 7 },
+        { "src": "assets/mc/steve.svg", "x": 26, "y": 28, "w": 8 },
+        { "src": "assets/mc/alex.svg", "x": 37, "y": 28, "w": 8 },
+        { "src": "assets/mc/villager.svg", "x": 58, "y": 28, "w": 7.6 }
+      ],
+      "voice": "friend",
+      "text": "Утром лиловые искры довели под дуб. Библиотекарь всплеснул руками. «Хм-хм! Ночью пропала книга про железо — та, по которой будили Железного! Это тот, в лиловом плаще!»",
+      "prompt": "Пойдём сразу к тёмному дому или сперва позовём Железного?",
+      "choices": [
+        { "label": "Сразу в лес", "keywords": ["сразу", "в лес", "лес", "к дому", "дом", "идём"],
+          "voice": "hero",
+          "say": "Стив сжал кирку. «Идём, пока светло!»",
+          "dir": "forward", "next": "path" },
+        { "label": "Позвать Железного", "keywords": ["позвать", "позовём", "железного", "железный", "голема"],
+          "voice": "golem",
+          "say": "Сбегали к воротам. Железный загудел. «Я сторожу ворота. Идите. Он хитрый»",
+          "dir": "forward", "next": "path" }
+      ]
+    },
+    "path": {
+      "bg": { "sky": "assets/mc/sky-woods.webp", "far": "assets/mc/far-dark-woods.webp", "near": "assets/mc/near-thicket.svg" },
+      "cast": [
+        { "src": "assets/mc/wolf.svg", "x": 16, "y": 28, "w": 7 },
+        { "src": "assets/mc/steve.svg", "x": 25, "y": 28, "w": 8 },
+        { "src": "assets/mc/alex.svg", "x": 36, "y": 28, "w": 8 },
+        { "src": "assets/mc/torch-row.svg", "x": 76, "y": 28, "w": 25 }
+      ],
+      "voice": "ally",
+      "text": "По старым факелам пошли к тёмному дому. Где огонь погас, подсыпали угольков. «Помогай считать!»",
+      "task": { "kind": "math", "max": 16, "types": ["addition"], "topic": "fuel", "spread": "wide" },
+      "next": "house"
+    },
+    "house": {
+      "bg": { "sky": "assets/mc/sky-woods.webp", "far": "assets/mc/far-dark-woods.webp", "near": "assets/mc/near-dark-house-empty.svg" },
+      "cast": [
+        { "src": "assets/mc/steve.svg", "x": 18, "y": 28, "w": 8 },
+        { "src": "assets/mc/alex.svg", "x": 29, "y": 28, "w": 8 },
+        { "src": "assets/mc/wolf.svg", "x": 40, "y": 28, "w": 7 }
+      ],
+      "text": "Сегодня дом стоял пустой, без копий. Стив толкнул дверь и стукнулся лбом! «Ай! Нарисованная!» У крыльца валялось всякое.",
+      "task": { "kind": "logic", "max": 10, "types": ["oddOneOut"], "topic": "hideout" },
+      "next": "inside"
+    },
+    "inside": {
+      "bg": { "near": "assets/mc/near-dark-room.svg" },
+      "cast": [
+        { "src": "assets/mc/wolf.svg", "x": 16, "y": 28, "w": 7 },
+        { "src": "assets/mc/steve.svg", "x": 25, "y": 28, "w": 8 },
+        { "src": "assets/mc/alex.svg", "x": 36, "y": 28, "w": 8 }
+      ],
+      "voice": "ally",
+      "text": "Волк обнюхал стену и нашёл сзади открытое окошко. Пролезли внутрь. Вдруг из соседней комнаты позвали. «Стив, сюда! Это я, Алекс!» А она тут, рядом!",
+      "prompt": "Пойдём на голос или останемся вместе?",
+      "choices": [
+        { "label": "На голос", "keywords": ["на голос", "голос", "пойдём", "туда", "в комнату"],
+          "dir": "right", "next": "empty" },
+        { "label": "Остаться вместе", "keywords": ["остаться", "останемся", "вместе", "рядом"],
+          "voice": "ally",
+          "say": "«Это его фокус! Держимся вместе!»",
+          "dir": "forward", "next": "echo" }
+      ]
+    },
+    "empty": {
+      "bg": { "near": "assets/mc/near-dark-room.svg" },
+      "cast": [
+        { "src": "assets/mc/steve.svg", "x": 30, "y": 28, "w": 8 },
+        { "src": "assets/mc/alex.svg", "x": 41, "y": 28, "w": 8 },
+        { "src": "assets/mc/sparks.svg", "x": 54, "y": 26, "w": 8 }
+      ],
+      "voice": "ally",
+      "text": "В комнате никого. Только у стенки погасла лиловая искра. «Это не я звала! Это его фокус!»",
+      "prompt": "Вернёмся к волку?",
+      "choices": [
+        { "label": "Назад", "keywords": ["назад", "вернёмся", "к волку", "волк", "да"],
+          "dir": "left", "next": "echo" }
+      ]
+    },
+    "echo": {
+      "bg": { "near": "assets/mc/near-dark-room.svg" },
+      "cast": [
+        { "src": "assets/mc/wolf.svg", "x": 16, "y": 28, "w": 7 },
+        { "src": "assets/mc/steve.svg", "x": 25, "y": 28, "w": 8 },
+        { "src": "assets/mc/alex.svg", "x": 36, "y": 28, "w": 8 }
+      ],
+      "text": "Стив понял. «Он подслушал твой голос из ёлок — и повторяет!» Наверх вела лестница, и Стив считал ступеньки.",
+      "task": { "kind": "math", "max": 19, "types": ["next"], "topic": "blocks", "spread": "wide" },
+      "next": "chest"
+    },
+    "chest": {
+      "bg": { "near": "assets/mc/near-dark-chest.svg" },
+      "cast": [
+        { "src": "assets/mc/wolf.svg", "x": 16, "y": 28, "w": 7 },
+        { "src": "assets/mc/steve.svg", "x": 25, "y": 28, "w": 8 },
+        { "src": "assets/mc/alex.svg", "x": 36, "y": 28, "w": 8 }
+      ],
+      "voice": "ally",
+      "text": "Наверху стоял сундук. Хвать за крышку — а это картинка на стене! «Опять нарисовано! И картинки висят по очереди!»",
+      "task": { "kind": "logic", "max": 10, "types": ["pattern"], "topic": "hideout" },
+      "next": "pile"
+    },
+    "pile": {
+      "bg": { "near": "assets/mc/near-dark-pile.svg" },
+      "cast": [
+        { "src": "assets/mc/wolf.svg", "x": 16, "y": 28, "w": 7 },
+        { "src": "assets/mc/steve.svg", "x": 25, "y": 28, "w": 8 },
+        { "src": "assets/mc/alex.svg", "x": 36, "y": 28, "w": 8 },
+        { "src": "assets/mc/iron-pile.svg", "x": 70, "y": 28, "w": 19 }
+      ],
+      "voice": "ally",
+      "text": "Волк заскрёб лапой за картинкой. Там была дверца, а за ней — горка железа! «Откуда у него столько? Посчитаем!»",
+      "task": { "kind": "math", "max": 14, "types": ["addition"], "topic": "iron", "spread": "wide" },
+      "next": "book"
+    },
+    "book": {
+      "bg": { "near": "assets/mc/near-dark-pile.svg" },
+      "cast": [
+        { "src": "assets/mc/wolf.svg", "x": 16, "y": 28, "w": 7 },
+        { "src": "assets/mc/steve.svg", "x": 25, "y": 28, "w": 8 },
+        { "src": "assets/mc/alex.svg", "x": 36, "y": 28, "w": 8 },
+        { "src": "assets/mc/iron-pile.svg", "x": 68, "y": 28, "w": 19 },
+        { "src": "assets/mc/gold-glint.svg", "x": 90, "y": 26, "w": 6 }
+      ],
+      "text": "На горке лежала книга про железо! Стив прижал её к себе, а слитки распихали по карманам. «Всю горку не унести!» А за горкой что-то шуршало.",
+      "prompt": "Пойдём домой с книгой или посмотрим, кто там шуршит?",
+      "choices": [
+        { "label": "Домой с книгой", "keywords": ["домой", "с книгой", "книга", "книгу", "пойдём", "идём"],
+          "dir": "left", "next": "home" },
+        { "label": "Кто шуршит?", "keywords": ["кто", "шуршит", "посмотрим", "посмотреть", "за горкой"],
+          "voice": "kid",
+          "say": "Из-за горки кто-то хрюкнул! «Хрю! Тут темно, а моё золото всё равно блестит!» Стив пожал плечами и пошёл к дверце.",
+          "dir": "left", "next": "home" }
+      ]
+    },
+    "home": {
+      "bg": { "near": "assets/mc/near-library.svg" },
+      "cast": [
+        { "src": "assets/mc/wolf.svg", "x": 16, "y": 28, "w": 7 },
+        { "src": "assets/mc/steve.svg", "x": 26, "y": 28, "w": 8 },
+        { "src": "assets/mc/alex.svg", "x": 37, "y": 28, "w": 8 },
+        { "src": "assets/mc/villager.svg", "x": 58, "y": 28, "w": 7.6 }
+      ],
+      "voice": "ally",
+      "text": "По факелам вернулись под дуб, и книга снова встала на полку. А слитки сложили в кузнице. «Железа у него теперь мало. Ночью он придёт за нашим железом!»"
+    }
+  }
+}

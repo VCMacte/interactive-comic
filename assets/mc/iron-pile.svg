@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 288 216" width="288" height="216">
+<style>
+  .idle { animation: idle 3.2s ease-in-out infinite; transform-origin: 50% 100%; }
+  @keyframes idle { 0%,100% { transform: translateY(0) } 50% { transform: translateY(-6px) } }
+  @media (prefers-reduced-motion: reduce) { .idle { animation: none } }
+  .idle { animation: none }
+</style>
+<g class="idle">
+
+<rect x="0" y="156" width="60" height="60" fill="#d2d2d8"/>
+<rect x="0" y="206" width="60" height="10" fill="#9ea0a8"/>
+<rect x="10" y="166" width="20" height="12" fill="#eff0f4"/>
+<rect x="60" y="156" width="60" height="60" fill="#d2d2d8"/>
+<rect x="60" y="206" width="60" height="10" fill="#9ea0a8"/>
+<rect x="70" y="166" width="20" height="12" fill="#eff0f4"/>
+<rect x="120" y="156" width="60" height="60" fill="#d2d2d8"/>
+<rect x="120" y="206" width="60" height="10" fill="#9ea0a8"/>
+<rect x="130" y="166" width="20" height="12" fill="#eff0f4"/>
+<rect x="30" y="96" width="60" height="60" fill="#d2d2d8"/>
+<rect x="30" y="146" width="60" height="10" fill="#9ea0a8"/>
+<rect x="40" y="106" width="20" height="12" fill="#eff0f4"/>
+<rect x="90" y="96" width="60" height="60" fill="#d2d2d8"/>
+<rect x="90" y="146" width="60" height="10" fill="#9ea0a8"/>
+<rect x="100" y="106" width="20" height="12" fill="#eff0f4"/>
+<rect x="60" y="36" width="60" height="60" fill="#d2d2d8"/>
+<rect x="60" y="86" width="60" height="10" fill="#9ea0a8"/>
+<rect x="70" y="46" width="20" height="12" fill="#eff0f4"/>
+<rect x="188" y="198" width="44" height="18" fill="#d2d2d8"/>
+<rect x="188" y="210" width="44" height="6" fill="#9ea0a8"/>
+<rect x="198" y="180" width="44" height="18" fill="#d2d2d8"/>
+<rect x="198" y="192" width="44" height="6" fill="#9ea0a8"/>
+<rect x="240" y="198" width="44" height="18" fill="#d2d2d8"/>
+<rect x="240" y="210" width="44" height="6" fill="#9ea0a8"/><rect x="64" y="20" width="52" height="16" fill="#6b4a2a"/><rect x="64" y="20" width="52" height="4" fill="#efe7d2"/>
+</g>
+</svg>

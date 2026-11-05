@@ -944,8 +944,13 @@ function woodWindow(x, y, rand, tint = '#2c4a7a') {
  * Предметы нарочно крупные, в два-три блока. Первая версия рисовала их
  * «в натуральную величину», по одному блоку, и на снимке сцены кадр
  * оказался пустой серой стеной с мелкими значками по углам.
+ *
+ * Флаги — для ночи девятнадцатого дня, без них файл прежний байт в байт:
+ * `night` — в окне ночь со звёздами; `dark` — факелы и горн погасли,
+ * кузницу накрывает темнота, от горна остались угольки; `bare` — слитки
+ * с наковальни спрятаны.
  */
-function nearAnvil(seed = 171) {
+function nearAnvil(seed = 171, { night = false, dark = false, bare = false } = {}) {
   const rand = rng(seed);
   const out = [];
 
@@ -961,7 +966,15 @@ function nearAnvil(seed = 171) {
   }
 
   // Утреннее небо в окне: оно же связывает кузницу с остальным домом.
-  out.push(woodWindow(Math.round((W / B) * 0.46) * B, GROUND - B * 7, rand, '#5b6f9a'));
+  // Ночью темнеют стены и пол, а не вещи: горн, наковальня и факелы
+  // рисуются поверх, и кузница выглядит освещённой огнём изнутри.
+  if (night || dark) out.push(`<rect x="0" y="0" width="${W}" height="${H}" fill="#0a0c1e" opacity="0.5"/>`);
+  const wx = Math.round((W / B) * 0.46) * B, wy = GROUND - B * 7;
+  const stars = () => [[0.45, 0.4], [1.0, 1.35], [2.2, 0.55], [2.55, 1.45]].map(([dx, dy]) =>
+    `<rect x="${n(wx + B * dx)}" y="${n(wy + B * dy)}" width="12" height="12" fill="#e8ecff"/>`);
+  out.push(woodWindow(wx, wy, rand, night || dark ? '#141a3c' : '#5b6f9a'));
+  // Звёзды крупные: мелкая точка после сжатия при зеркалировании пропадает.
+  if (night || dark) out.push(...stars());
 
   // Горн: 4×3 блока с широким устьем. Он же объясняет, почему тут жарко,
   // поэтому вокруг идёт зарево — без него огонь выглядит картинкой на стене.
@@ -973,7 +986,7 @@ function nearAnvil(seed = 171) {
   out.push(`<rect x="${n(hx + B * 0.4)}" y="${n(hy + B * 0.6)}" width="${n(B * 3.2)}" height="${n(B * 2.4)}" fill="#20150a"/>`);
   // Огонь языками разной высоты, а не ровной полосой: ровная читается
   // как картина в раме, что и вышло в первой версии кузницы.
-  const flames = [[0.2, 1.1], [0.8, 1.6], [1.5, 2.0], [2.2, 1.5], [2.7, 1.0]];
+  const flames = dark ? [] : [[0.2, 1.1], [0.8, 1.6], [1.5, 2.0], [2.2, 1.5], [2.7, 1.0]];
   for (const [dx, fh] of flames) {
     out.push(`<rect x="${n(hx + B * (0.45 + dx))}" y="${n(hy + B * (3 - fh))}" width="${n(B * 0.5)}" height="${n(B * fh)}" fill="#ff8c1a"/>`);
     out.push(`<rect x="${n(hx + B * (0.55 + dx))}" y="${n(hy + B * (3 - fh * 0.6))}" width="${n(B * 0.3)}" height="${n(B * fh * 0.6)}" fill="#ffd36b"/>`);
@@ -989,7 +1002,7 @@ function nearAnvil(seed = 171) {
   out.push(`<rect x="${n(ax)}" y="${n(GROUND - B * 0.7)}" width="${n(B * 2)}" height="${n(B * 0.7)}" fill="${P.anvil.base}"/>`);
   out.push(`<rect x="${n(ax)}" y="${n(GROUND - B * 0.7)}" width="${n(B * 2)}" height="${n(B * 0.14)}" fill="${P.anvil.light}"/>`);
   // Слитки на наковальне — то, что в этой сцене и считают.
-  for (let i = 0; i < 4; i++) {
+  for (let i = 0; i < (bare ? 0 : 4); i++) {
     out.push(`<rect x="${n(ax + B * 0.1 + i * B * 0.56)}" y="${n(GROUND - B * 2.34)}" width="${n(B * 0.42)}" height="${n(B * 0.34)}" fill="${P.iron.light}" stroke="${P.iron.dark}" stroke-width="5"/>`);
   }
   // Молот прислонён к наковальне: без него кузница — просто мебель.
@@ -1019,6 +1032,16 @@ function nearAnvil(seed = 171) {
   out.push(`<rect x="${n(cx)}" y="${n(GROUND - B * 0.55)}" width="${n(B * 2)}" height="12" fill="#5a3f22"/>`);
   out.push(`<rect x="${n(cx + B * 0.85)}" y="${n(GROUND - B * 0.62)}" width="${n(B * 0.3)}" height="${n(B * 0.4)}" fill="#e8c35a"/>`);
 
+  if (dark) {
+    // Темнота поверх всего, кроме окна: за стеклом ночь светлее кузницы,
+    // и по окну видно, что погас свет, а не кончилась картинка. От горна
+    // остаются угольки — красной полосой у самого устья.
+    out.push(`<rect x="0" y="0" width="${W}" height="${H}" fill="#05060f" opacity="0.62"/>`);
+    out.push(`<rect x="${n(wx + 8)}" y="${n(wy + 8)}" width="${n(B * 3 - 16)}" height="${n(B * 2 - 16)}" fill="#141a3c"/>`);
+    out.push(...stars());
+    out.push(`<rect x="${n(hx + B * 0.4)}" y="${n(hy + B * 2.7)}" width="${n(B * 3.2)}" height="${n(B * 0.3)}" fill="#c4521e"/>`);
+    return svg(out.join('\n'));
+  }
   return svg(`${out.join('\n')}
 ${torch(B * 8, GROUND - B * 4)}
 ${torch(W - B * 2, GROUND - B * 4)}`);
@@ -4457,6 +4480,9 @@ write('assets/mc/near-deep.svg', nearDeep());
 write('assets/mc/near-furnace.svg', nearFurnace());
 write('assets/mc/near-pines.svg', nearPines());
 write('assets/mc/near-anvil.svg', nearAnvil());
+write('assets/mc/near-anvil-night.svg', nearAnvil(171, { night: true }));
+write('assets/mc/near-anvil-dark.svg', nearAnvil(171, { dark: true }));
+write('assets/mc/near-anvil-bare.svg', nearAnvil(171, { night: true, bare: true }));
 write('assets/mc/near-brew.svg', nearBrew());
 write('assets/mc/near-obsidian.svg', nearObsidian());
 write('assets/mc/near-portal.svg', nearPortal());

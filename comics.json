@@ -6,6 +6,13 @@
     "cover": "assets/covers/dark-woods.webp",
     "comics": [
       {
+        "id": "forge-night",
+        "title": "Ночь у кузницы",
+        "subtitle": "Девятнадцатый день Стива · пять игр",
+        "cover": "assets/covers/forge-night.webp",
+        "story": "stories/forge-night.json"
+      },
+      {
         "id": "dark-house",
         "title": "Тёмный дом",
         "subtitle": "Восемнадцатый день Стива · пять игр",

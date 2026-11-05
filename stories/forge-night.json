@@ -1,0 +1,148 @@
+{
+  "title": "Ночь у кузницы",
+  "theme": "minecraft",
+  "voice": "hero",
+  "start": "night",
+  "hook": "колдуна в ёлках не догнать, зато обмануть можно: пусть увидит не того",
+  "closes": ["dark-house"],
+  "scenes": {
+    "night": {
+      "bg": { "sky": "assets/mc/sky-night.webp", "stars": "assets/mc/moon-night.svg", "far": "assets/mc/far-hills.webp", "near": "assets/mc/near-village.svg" },
+      "cast": [
+        { "src": "assets/mc/wolf.svg", "x": 16, "y": 28, "w": 7 },
+        { "src": "assets/mc/steve.svg", "x": 26, "y": 28, "w": 8 },
+        { "src": "assets/mc/alex.svg", "x": 37, "y": 28, "w": 8 }
+      ],
+      "voice": "hero",
+      "text": "Ночью в деревне никто не спал. Слитки, что унесли от колдуна, лежали в кузнице. Стив поправил кирку. «Он придёт за нашим железом. Встретим его!»",
+      "prompt": "Ждём в кузнице или сперва сходим к Железному?",
+      "choices": [
+        { "label": "В кузницу", "keywords": ["в кузницу", "кузница", "кузницу", "ждём", "ждать"],
+          "voice": "hero", "say": "«Сядем у наковальни. Мимо нас он не пройдёт!»", "dir": "left", "next": "torches" },
+        { "label": "К Железному", "keywords": ["к железному", "железному", "железный", "голем", "к воротам"],
+          "voice": "golem", "say": "Железный стоял у ворот. Он загудел. «Я сторожу ворота. А вы сторожите железо» Вернулись в кузницу.", "dir": "right", "next": "torches" }
+      ]
+    },
+    "torches": {
+      "bg": { "sky": "assets/mc/sky-night.webp", "stars": "assets/mc/moon-night.svg", "far": "assets/mc/far-hills.webp", "near": "assets/mc/near-village.svg" },
+      "cast": [
+        { "src": "assets/mc/wolf.svg", "x": 16, "y": 28, "w": 7 },
+        { "src": "assets/mc/steve.svg", "x": 25, "y": 28, "w": 8 },
+        { "src": "assets/mc/alex.svg", "x": 36, "y": 28, "w": 8 },
+        { "src": "assets/mc/torch-row.svg", "x": 76, "y": 28, "w": 25 }
+      ],
+      "voice": "ally",
+      "text": "В кузнице и вокруг зажгли факелы. «Чем больше огня, тем меньше фокусов! Помогай считать!»",
+      "task": { "kind": "math", "max": 18, "types": ["addition"], "topic": "fuel", "spread": "wide" },
+      "next": "out"
+    },
+    "out": {
+      "bg": { "near": "assets/mc/near-anvil-dark.svg" },
+      "cast": [
+        { "src": "assets/mc/steve.svg", "x": 46, "y": 28, "w": 8 },
+        { "src": "assets/mc/alex.svg", "x": 58, "y": 28, "w": 8 },
+        { "src": "assets/mc/wolf.svg", "x": 68, "y": 28, "w": 7 },
+        { "src": "assets/mc/sparks.svg", "x": 84, "y": 26, "w": 8 }
+      ],
+      "voice": "hero",
+      "text": "Волк зарычал на ёлки — и факелы погасли! Мигнула лиловая искра. Стив шарил руками. «Ничего не видно! Ищем на ощупь!»",
+      "task": { "kind": "logic", "max": 10, "types": ["oddOneOut"], "topic": "forge" },
+      "next": "voice"
+    },
+    "voice": {
+      "bg": { "near": "assets/mc/near-anvil-dark.svg" },
+      "cast": [
+        { "src": "assets/mc/steve.svg", "x": 46, "y": 28, "w": 8 },
+        { "src": "assets/mc/alex.svg", "x": 58, "y": 28, "w": 8 },
+        { "src": "assets/mc/wolf.svg", "x": 68, "y": 28, "w": 7 }
+      ],
+      "voice": "friend",
+      "text": "Из темноты позвал голос библиотекаря. «Хм-хм! Ночью пропала книга про железо!» А книга ведь уже вернулась на полку.",
+      "prompt": "Сбегаем в библиотеку или не будем верить голосу?",
+      "choices": [
+        { "label": "В библиотеку", "keywords": ["в библиотеку", "библиотеку", "библиотека", "сбегаем", "бежим"],
+          "say": "Волк остался сторожить слитки. Сбегали к библиотеке.", "dir": "right", "next": "library" },
+        { "label": "Не верить", "keywords": ["не верить", "не будем", "не верим", "нет"],
+          "voice": "ally", "say": "«Так библиотекарь говорил утром! Колдун подслушал и повторяет!»", "dir": "forward", "next": "hide" }
+      ]
+    },
+    "library": {
+      "bg": { "near": "assets/mc/near-library.svg" },
+      "cast": [
+        { "src": "assets/mc/steve.svg", "x": 26, "y": 28, "w": 8 },
+        { "src": "assets/mc/alex.svg", "x": 37, "y": 28, "w": 8 },
+        { "src": "assets/mc/villager.svg", "x": 58, "y": 28, "w": 7.6 }
+      ],
+      "voice": "friend",
+      "text": "Библиотекарь сидел с книгой в руках. «Хм-хм? Я никуда не выходил! Книга вот, на месте!»",
+      "prompt": "Вернёмся в кузницу?",
+      "choices": [
+        { "label": "Назад", "keywords": ["назад", "вернёмся", "в кузницу", "кузница", "да"],
+          "dir": "left", "next": "hide" }
+      ]
+    },
+    "hide": {
+      "bg": { "near": "assets/mc/near-anvil-dark.svg" },
+      "cast": [
+        { "src": "assets/mc/steve.svg", "x": 46, "y": 28, "w": 8 },
+        { "src": "assets/mc/alex.svg", "x": 58, "y": 28, "w": 8 },
+        { "src": "assets/mc/wolf.svg", "x": 68, "y": 28, "w": 7 }
+      ],
+      "voice": "ally",
+      "text": "Волк так и сидел у слитков. «Голос был ненастоящий! Прячем слитки!» Прятали то в одно место, то в другое — по очереди.",
+      "task": { "kind": "logic", "max": 10, "types": ["pattern"], "topic": "forge" },
+      "next": "count"
+    },
+    "count": {
+      "bg": { "near": "assets/mc/near-anvil-dark.svg" },
+      "cast": [
+        { "src": "assets/mc/steve.svg", "x": 46, "y": 28, "w": 8 },
+        { "src": "assets/mc/alex.svg", "x": 58, "y": 28, "w": 8 },
+        { "src": "assets/mc/wolf.svg", "x": 68, "y": 28, "w": 7 }
+      ],
+      "voice": "hero",
+      "text": "Последние слитки Стив сунул в сундук у стенки. «Считай шёпотом, чтобы он не услышал!»",
+      "task": { "kind": "math", "max": 18, "types": ["missing"], "topic": "iron", "spread": "wide" },
+      "next": "relight"
+    },
+    "relight": {
+      "bg": { "near": "assets/mc/near-anvil-bare.svg" },
+      "cast": [
+        { "src": "assets/mc/steve.svg", "x": 46, "y": 28, "w": 8 },
+        { "src": "assets/mc/alex.svg", "x": 58, "y": 28, "w": 8 },
+        { "src": "assets/mc/wolf.svg", "x": 68, "y": 28, "w": 7 }
+      ],
+      "voice": "ally",
+      "text": "Стив чиркнул огнивом, и факелы загорелись! У пустой наковальни мелькнул лиловый плащ — и пропал. «Ничего он не нашёл! Считаем огни!»",
+      "task": { "kind": "math", "max": 20, "types": ["next"], "topic": "fuel", "spread": "wide" },
+      "next": "laugh"
+    },
+    "laugh": {
+      "bg": { "sky": "assets/mc/sky-night.webp", "stars": "assets/mc/moon-night.svg", "far": "assets/mc/far-hills.webp", "near": "assets/mc/near-village.svg" },
+      "cast": [
+        { "src": "assets/mc/wolf.svg", "x": 16, "y": 28, "w": 7 },
+        { "src": "assets/mc/steve.svg", "x": 26, "y": 28, "w": 8 },
+        { "src": "assets/mc/alex.svg", "x": 37, "y": 28, "w": 8 }
+      ],
+      "voice": "trickster",
+      "text": "Волк выбежал к ёлкам и сел. Оттуда кто-то засмеялся. «Ха-ха! Сегодня вы меня перехитрили! Но я приду ещё — днём!»",
+      "prompt": "Догоним его или пусть уходит?",
+      "choices": [
+        { "label": "Догнать", "keywords": ["догнать", "догоним", "бежим", "за ним", "поймать"],
+          "voice": "golem", "say": "От ворот подошёл Железный и загудел. «Не надо. В ёлках он хитрее»", "dir": "forward", "next": "plan" },
+        { "label": "Пусть уходит", "keywords": ["пусть уходит", "пусть", "уходит", "отпустить", "не надо"],
+          "dir": "left", "next": "plan" }
+      ]
+    },
+    "plan": {
+      "bg": { "sky": "assets/mc/sky-night.webp", "stars": "assets/mc/moon-night.svg", "far": "assets/mc/far-hills.webp", "near": "assets/mc/near-village.svg" },
+      "cast": [
+        { "src": "assets/mc/wolf.svg", "x": 16, "y": 28, "w": 7 },
+        { "src": "assets/mc/steve.svg", "x": 26, "y": 28, "w": 8 },
+        { "src": "assets/mc/alex.svg", "x": 37, "y": 28, "w": 8 }
+      ],
+      "voice": "ally",
+      "text": "Слитки целы до одного, и факелы горят до утра. «В ёлках его не догнать. Зато обмануть можно! Он копирует всё, что видит. Пусть увидит не того!»"
+    }
+  }
+}

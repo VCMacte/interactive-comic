@@ -1,0 +1,175 @@
+{
+  "title": "Чучела",
+  "theme": "minecraft",
+  "voice": "hero",
+  "start": "idea",
+  "hook": "чучело стоит у ворот, настоящий Железный за кузницей, колдун смотрит из ёлок",
+  "closes": ["forge-night"],
+  "scenes": {
+    "idea": {
+      "bg": { "sky": "assets/mc/sky-day.webp", "stars": "assets/mc/sun-day.svg", "far": "assets/mc/far-hills.webp", "near": "assets/mc/near-village.svg" },
+      "cast": [
+        { "src": "assets/mc/wolf.svg", "x": 16, "y": 28, "w": 7 },
+        { "src": "assets/mc/steve.svg", "x": 26, "y": 28, "w": 8 },
+        { "src": "assets/mc/alex.svg", "x": 37, "y": 28, "w": 8 },
+        { "src": "assets/mc/golem.svg", "x": 72, "y": 28, "w": 12 }
+      ],
+      "voice": "hero",
+      "text": "Утром Стив вывалил на траву горку камня. «Слитков колдун не достал, ту копию мы разгадали. Он сказал: приду днём. Придёт смотреть на Железного заново! Пусть увидит чучело!»",
+      "prompt": "Чучело — это большая кукла из камня, а голова у неё — тыква. Сперва расскажем всё Железному или сразу потаскаем камни?",
+      "choices": [
+        { "label": "Рассказать Железному", "keywords": ["рассказать", "расскажем", "железному", "железный", "голем"],
+          "voice": "golem", "say": "Железный выслушал и загудел. «Кукла у ворот. Я за кузницей. Колдун меня не увидит» И ушёл.", "dir": "right", "next": "stone" },
+        { "label": "Таскать камни", "keywords": ["таскать", "потаскаем", "камни", "камень", "сразу"],
+          "voice": "hero", "say": "Стив махнул рукой. «Железный, иди за кузницу! Колдун не должен тебя видеть!» Железный кивнул и ушёл.", "dir": "left", "next": "stone" }
+      ]
+    },
+    "stone": {
+      "bg": { "sky": "assets/mc/sky-day.webp", "stars": "assets/mc/sun-day.svg", "far": "assets/mc/far-hills.webp", "near": "assets/mc/near-village.svg" },
+      "cast": [
+        { "src": "assets/mc/wolf.svg", "x": 16, "y": 28, "w": 7 },
+        { "src": "assets/mc/steve.svg", "x": 26, "y": 28, "w": 8 },
+        { "src": "assets/mc/alex.svg", "x": 37, "y": 28, "w": 8 },
+        { "src": "assets/mc/stone-pile.svg", "x": 70, "y": 28, "w": 16 }
+      ],
+      "voice": "ally",
+      "text": "Железо не тронули: его мало. «Он копирует только то, что видит. Увидит куклу — сделает куклу! А кукла не ходит. Таскаем блоки!»",
+      "task": { "kind": "math", "max": 16, "types": ["addition"], "topic": "scarecrow", "spread": "wide" },
+      "next": "fall"
+    },
+    "fall": {
+      "bg": { "sky": "assets/mc/sky-day.webp", "stars": "assets/mc/sun-day.svg", "far": "assets/mc/far-hills.webp", "near": "assets/mc/near-village.svg" },
+      "cast": [
+        { "src": "assets/mc/wolf.svg", "x": 16, "y": 28, "w": 7 },
+        { "src": "assets/mc/steve.svg", "x": 26, "y": 28, "w": 8 },
+        { "src": "assets/mc/alex.svg", "x": 37, "y": 28, "w": 8 },
+        { "src": "assets/mc/stone-pile.svg", "x": 70, "y": 28, "w": 16 }
+      ],
+      "voice": "hero",
+      "text": "Стив сложил крест, как в книге. Крест качнулся и рассыпался! «Первое чучело готово. Было готово! Убираем!»",
+      "task": { "kind": "math", "max": 9, "types": ["subtraction"], "topic": "scarecrow", "spread": "wide" },
+      "next": "patch"
+    },
+    "patch": {
+      "bg": { "sky": "assets/mc/sky-day.webp", "stars": "assets/mc/sun-day.svg", "far": "assets/mc/far-hills.webp", "near": "assets/mc/near-patch.svg" },
+      "cast": [
+        { "src": "assets/mc/steve.svg", "x": 12, "y": 28, "w": 8 },
+        { "src": "assets/mc/alex.svg", "x": 22, "y": 28, "w": 8 },
+        { "src": "assets/mc/villager.svg", "x": 33, "y": 28, "w": 7.6 },
+        { "src": "assets/mc/gold-glint.svg", "x": 88, "y": 26, "w": 6 }
+      ],
+      "voice": "friend",
+      "text": "За головой пошли на грядку. Житель отряхнул руки. «Хм-хм! Тыкв у меня много! А низ делайте шире!» За крайней тыквой что-то блеснуло.",
+      "prompt": "Выберем тыкву или посмотрим, что там блестит?",
+      "choices": [
+        { "label": "Выбрать тыкву", "keywords": ["выбрать", "выберем", "тыкву", "тыква", "голову"],
+          "dir": "forward", "next": "pick" },
+        { "label": "Что блестит?", "keywords": ["блестит", "что блестит", "посмотрим", "посмотреть", "блеск"],
+          "voice": "kid", "say": "За тыквой блеснуло, и кто-то хрюкнул! «Хрю! Тут шумно! Унесу золото туда, где тихо!» Житель только пожал плечами.", "dir": "right", "next": "pick" }
+      ]
+    },
+    "pick": {
+      "bg": { "sky": "assets/mc/sky-day.webp", "stars": "assets/mc/sun-day.svg", "far": "assets/mc/far-hills.webp", "near": "assets/mc/near-patch.svg" },
+      "cast": [
+        { "src": "assets/mc/steve.svg", "x": 12, "y": 28, "w": 8 },
+        { "src": "assets/mc/alex.svg", "x": 22, "y": 28, "w": 8 },
+        { "src": "assets/mc/villager.svg", "x": 33, "y": 28, "w": 7.6 },
+        { "src": "assets/mc/pumpkin.svg", "x": 44, "y": 28, "w": 9 }
+      ],
+      "voice": "friend",
+      "text": "Житель выкатил самую большую тыкву. «Хм-хм! Хороша голова! А вот загадка, пока катим!»",
+      "task": { "kind": "logic", "max": 10, "types": ["oddOneOut"], "topic": "scarecrow" },
+      "next": "build"
+    },
+    "build": {
+      "bg": { "sky": "assets/mc/sky-day.webp", "stars": "assets/mc/sun-day.svg", "far": "assets/mc/far-hills.webp", "near": "assets/mc/near-gate-pumpkin.svg" },
+      "cast": [
+        { "src": "assets/mc/wolf.svg", "x": 16, "y": 28, "w": 7 },
+        { "src": "assets/mc/steve.svg", "x": 26, "y": 28, "w": 8 },
+        { "src": "assets/mc/alex.svg", "x": 37, "y": 28, "w": 8 },
+        { "src": "assets/mc/stone-pile.svg", "x": 50, "y": 28, "w": 12 }
+      ],
+      "voice": "ally",
+      "text": "Второе чучело начали у ворот. Волк сторожил ёлки: пока никого. «Снизу широко, сверху узко!» Всё нужное несли по очереди.",
+      "task": { "kind": "logic", "max": 10, "types": ["pattern"], "topic": "scarecrow" },
+      "next": "ready"
+    },
+    "ready": {
+      "bg": { "sky": "assets/mc/sky-day.webp", "stars": "assets/mc/sun-day.svg", "far": "assets/mc/far-hills.webp", "near": "assets/mc/near-gate-pumpkin.svg" },
+      "cast": [
+        { "src": "assets/mc/wolf.svg", "x": 16, "y": 28, "w": 7 },
+        { "src": "assets/mc/steve.svg", "x": 26, "y": 28, "w": 8 },
+        { "src": "assets/mc/alex.svg", "x": 37, "y": 28, "w": 8 },
+        { "src": "assets/mc/scarecrow.svg", "x": 54, "y": 28, "w": 12 }
+      ],
+      "voice": "hero",
+      "text": "Тыкву поставили наверх. Кукла качнулась и устояла! Стив отошёл подальше. «Отсюда — совсем как Железный!»",
+      "prompt": "Проверим чучело на волке или сразу подставим камни, чтобы не упало?",
+      "choices": [
+        { "label": "Показать волку", "keywords": ["показать", "покажем", "проверим", "волку", "волке", "волк", "пёс"],
+          "dir": "left", "next": "sniff" },
+        { "label": "Подставить камни", "keywords": ["подставить", "подставим", "камни", "камнями", "сразу"],
+          "dir": "forward", "next": "gate" }
+      ]
+    },
+    "sniff": {
+      "bg": { "sky": "assets/mc/sky-day.webp", "stars": "assets/mc/sun-day.svg", "far": "assets/mc/far-hills.webp", "near": "assets/mc/near-gate-pumpkin.svg" },
+      "cast": [
+        { "src": "assets/mc/steve.svg", "x": 26, "y": 28, "w": 8 },
+        { "src": "assets/mc/alex.svg", "x": 37, "y": 28, "w": 8 },
+        { "src": "assets/mc/wolf.svg", "x": 47, "y": 28, "w": 7 },
+        { "src": "assets/mc/scarecrow.svg", "x": 54, "y": 28, "w": 12 }
+      ],
+      "voice": "hero",
+      "text": "Волк обошёл чучело, понюхал камень, фыркнул и чихнул. Стив засмеялся. «Волка не обманешь. Зато колдун не волк!»",
+      "prompt": "Подставим камни?",
+      "choices": [
+        { "label": "Подставить камни", "keywords": ["подставить", "подставим", "камни", "дальше", "да"],
+          "dir": "right", "next": "gate" }
+      ]
+    },
+    "gate": {
+      "bg": { "sky": "assets/mc/sky-day.webp", "stars": "assets/mc/sun-day.svg", "far": "assets/mc/far-hills.webp", "near": "assets/mc/near-gate-pumpkin.svg" },
+      "cast": [
+        { "src": "assets/mc/wolf.svg", "x": 16, "y": 28, "w": 7 },
+        { "src": "assets/mc/steve.svg", "x": 26, "y": 28, "w": 8 },
+        { "src": "assets/mc/alex.svg", "x": 37, "y": 28, "w": 8 },
+        { "src": "assets/mc/scarecrow.svg", "x": 54, "y": 28, "w": 12 }
+      ],
+      "voice": "ally",
+      "text": "Кукла стояла у самых ворот. «Подставим камни, чтобы не качалась. Считай, сколько принесли!»",
+      "task": { "kind": "math", "max": 19, "types": ["missing"], "topic": "scarecrow", "spread": "wide" },
+      "next": "loud"
+    },
+    "loud": {
+      "bg": { "sky": "assets/mc/sky-day.webp", "stars": "assets/mc/sun-day.svg", "far": "assets/mc/far-hills.webp", "near": "assets/mc/near-gate-pumpkin.svg" },
+      "cast": [
+        { "src": "assets/mc/steve.svg", "x": 26, "y": 28, "w": 8 },
+        { "src": "assets/mc/alex.svg", "x": 37, "y": 28, "w": 8 },
+        { "src": "assets/mc/wolf.svg", "x": 47, "y": 28, "w": 7 },
+        { "src": "assets/mc/scarecrow.svg", "x": 54, "y": 28, "w": 12 }
+      ],
+      "voice": "hero",
+      "text": "Волк сел мордой к ёлкам и притих. Там кто-то смотрел! Стив понял и нарочно крикнул кукле на всю деревню! «Железный, стой тут! Ни шагу! И молчи!»",
+      "prompt": "Крикнем ещё раз или стукнем настоящему Железному в стену кузницы?",
+      "choices": [
+        { "label": "Крикнуть ещё", "keywords": ["крикнуть", "крикнем", "ещё раз", "кричать", "ещё"],
+          "voice": "hero", "say": "«Стой и молчи! Понял, Железный?» Чучело, конечно, промолчало.", "dir": "forward", "next": "trap" },
+        { "label": "Стукнуть в стену", "keywords": ["стукнуть", "стукнем", "в стену", "стена", "кузница", "настоящего"],
+          "voice": "golem", "say": "Стив тихонько стукнул в стену кузницы. Оттуда еле слышно загудели. «Стою. Молчу. Скучно»", "dir": "right", "next": "trap" }
+      ]
+    },
+    "trap": {
+      "bg": { "sky": "assets/mc/sky-sunset.webp", "stars": "assets/mc/sun-sunset.svg", "far": "assets/mc/far-hills.webp", "near": "assets/mc/near-gate-pumpkin.svg" },
+      "cast": [
+        { "src": "assets/mc/steve.svg", "x": 26, "y": 28, "w": 8 },
+        { "src": "assets/mc/alex.svg", "x": 37, "y": 28, "w": 8 },
+        { "src": "assets/mc/wolf.svg", "x": 47, "y": 28, "w": 7 },
+        { "src": "assets/mc/scarecrow.svg", "x": 54, "y": 28, "w": 12 },
+        { "src": "assets/mc/sparks.svg", "x": 84, "y": 64, "w": 8 }
+      ],
+      "voice": "hero",
+      "text": "К вечеру в ёлках мигнула лиловая искра. Стив зашептал на ухо. «Тихо! Он смотрит и слушает. Ловушка готова!»"
+    }
+  }
+}

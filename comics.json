@@ -6,6 +6,13 @@
     "cover": "assets/covers/dark-woods.webp",
     "comics": [
       {
+        "id": "scarecrows",
+        "title": "Чучела",
+        "subtitle": "Двадцатый день Стива · пять игр",
+        "cover": "assets/covers/scarecrows.webp",
+        "story": "stories/scarecrows.json"
+      },
+      {
         "id": "forge-night",
         "title": "Ночь у кузницы",
         "subtitle": "Девятнадцатый день Стива · пять игр",

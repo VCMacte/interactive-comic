@@ -4221,6 +4221,105 @@ ${px(x * U + 0.2 * U, 2.6 * U, 1.8 * U, 0.3 * U, '#8e2a20')}`;
   return charSvg(body, 17.4 * U, 3.6 * U, '.idle { animation: none }');
 }
 
+/* ---- двадцатый день ---- */
+
+/**
+ * Чучело Железного: те же пропорции, что у `golem()`, поэтому издали
+ * оно похоже на него. Отличия видны вблизи: серый камень вместо железа,
+ * тыква вместо головы, нет знака ритуала и ржавчины. Анимации покоя нет:
+ * чучело не живое, и в этом вся ловушка.
+ */
+function scarecrow() {
+  const U = 20;
+  // Камень светлый: у ворот чучело стоит на фоне серой стены, а обычный
+  // серый с ней сливается. Светлый тон к тому же ближе к железу голема.
+  const st = '#bcbcc0', stDark = '#88888e', stLight = '#d6d6da';
+  const skin = '#d97a1e', skinDark = '#b35f12', skinLight = '#eb9a3c';
+  const stem = '#5e7f3a', hole = '#3a2410';
+  const seams = [];
+  for (let y = 15; y < 24; y += 3) seams.push(px(6 * U, y * U, 12 * U, 0.3 * U, stDark));
+  for (const x of [1.6, 18]) for (let y = 14; y < 26; y += 3.4) seams.push(px(x * U, y * U, 4.4 * U, 0.3 * U, stDark));
+  for (const x of [7.4, 12.2]) for (let y = 27; y < 37; y += 3.4) seams.push(px(x * U, y * U, 4.4 * U, 0.3 * U, stDark));
+
+  const body = `
+<!-- голова-тыква: стебель, рёбра, вырезанное лицо -->
+${px(10.6 * U, 0, 2.8 * U, 1.2 * U, stem)}
+${px(6.6 * U, 1 * U, 10.8 * U, 8 * U, skin)}
+${px(6.6 * U, 1 * U, 10.8 * U, 0.8 * U, skinLight)}
+${px(9 * U, 1 * U, 0.6 * U, 8 * U, skinDark)}
+${px(14.4 * U, 1 * U, 0.6 * U, 8 * U, skinDark)}
+${px(8 * U, 3.2 * U, 2.4 * U, 1.6 * U, hole)}
+${px(13.6 * U, 3.2 * U, 2.4 * U, 1.6 * U, hole)}
+${px(9.4 * U, 6 * U, 5.2 * U, 1.3 * U, hole)}
+
+<!-- плечи, туловище, руки, ноги: камень, сложенный рядами -->
+${px(4 * U, 9.4 * U, 16 * U, 3 * U, stDark)}
+${px(6 * U, 12.4 * U, 12 * U, 12 * U, st)}
+${px(6 * U, 12.4 * U, 12 * U, 1 * U, stLight)}
+${px(1.6 * U, 10.4 * U, 4.4 * U, 16 * U, st)}
+${px(18 * U, 10.4 * U, 4.4 * U, 16 * U, st)}
+${px(0.6 * U, 26.4 * U, 6.4 * U, 5 * U, stDark)}
+${px(17 * U, 26.4 * U, 6.4 * U, 5 * U, stDark)}
+${px(7.4 * U, 24.4 * U, 4.4 * U, 13 * U, st)}
+${px(12.2 * U, 24.4 * U, 4.4 * U, 13 * U, st)}
+${px(6.6 * U, 37.4 * U, 5.2 * U, 2.6 * U, stDark)}
+${px(12.2 * U, 37.4 * U, 5.2 * U, 2.6 * U, stDark)}
+${seams.join('\n')}`;
+  return charSvg(body, 24 * U, 40 * U, '.idle { animation: none }');
+}
+
+/** Горка камня: её считают в двух заданиях, поэтому блоки видны по одному. */
+function stonePile() {
+  const U = 20;
+  const S = 3 * U;
+  const st = '#8d8d90', stDark = '#6c6c70', stHi = '#b4b4b8';
+  const blockAt = (x, y) => `
+${px(x, y, S, S, st)}
+${px(x, y + S - 0.5 * U, S, 0.5 * U, stDark)}
+${px(x + S - 0.4 * U, y, 0.4 * U, S, stDark)}
+${px(x + 0.5 * U, y + 0.5 * U, U, 0.6 * U, stHi)}`;
+  const body = [
+    blockAt(0, 2 * S), blockAt(S, 2 * S), blockAt(2 * S, 2 * S), blockAt(3 * S, 2 * S),
+    blockAt(0.5 * S, S), blockAt(1.5 * S, S), blockAt(2.5 * S, S),
+    blockAt(1.5 * S, 0),
+  ].join('');
+  return charSvg(body, 4 * S, 3 * S, '.idle { animation: none }');
+}
+
+/**
+ * Грядка жителя. Тыквы стоят правее 45% ширины: левая часть кадра
+ * свободна для героев, а крайняя правая — для золота пасхалки.
+ * Плетень за грядкой держит деревню в кадре, не занимая верхнюю полосу.
+ */
+function nearPatch(seed = 983) {
+  const rand = rng(seed);
+  const out = [];
+  const LOG = '#7a5630', LOG_TOP = '#8f6a40', LOG_DARK = '#5a3f22';
+  const SKIN = '#d97a1e', SKIN_DARK = '#b35f12', SKIN_HI = '#eb9a3c';
+  const STEM = '#4e7c3a', LEAF = '#3d8148';
+
+  for (let x = 0; x < W; x += B * 1.5) {
+    const top = GROUND - B * 2 - 10 * rand();
+    out.push(`<rect x="${n(x + 18)}" y="${n(top)}" width="24" height="${n(GROUND - top)}" fill="${LOG}"/>`);
+    out.push(`<rect x="${n(x + 18)}" y="${n(top)}" width="24" height="8" fill="${LOG_TOP}"/>`);
+  }
+  out.push(`<rect x="0" y="${n(GROUND - B * 1.5)}" width="${W}" height="14" fill="${LOG_DARK}"/>`);
+  out.push(`<rect x="0" y="${n(GROUND - B * 0.8)}" width="${W}" height="14" fill="${LOG_DARK}"/>`);
+
+  const ripe = (x, y, s) => {
+    out.push(`<rect x="${n(x - s * 0.5)}" y="${n(y + s * 0.62)}" width="${n(s * 2)}" height="${n(s * 0.2)}" fill="${LEAF}"/>`);
+    out.push(`<rect x="${n(x)}" y="${n(y)}" width="${s}" height="${n(s * 0.8)}" fill="${SKIN}"/>`);
+    out.push(`<rect x="${n(x)}" y="${n(y)}" width="${s}" height="${n(s * 0.09)}" fill="${SKIN_HI}"/>`);
+    for (const f of [0.28, 0.66]) out.push(`<rect x="${n(x + s * f)}" y="${n(y)}" width="${n(s * 0.07)}" height="${n(s * 0.8)}" fill="${SKIN_DARK}"/>`);
+    out.push(`<rect x="${n(x + s * 0.42)}" y="${n(y - s * 0.16)}" width="${n(s * 0.16)}" height="${n(s * 0.16)}" fill="${STEM}"/>`);
+  };
+  for (const [x0, y, s, count] of [[B * 15, GROUND - 76, 72, 7], [B * 13.5, GROUND - 40, 92, 7]]) {
+    for (let i = 0; i < count; i++) ripe(x0 + i * (s + 52) + 18 * rand(), y, s);
+  }
+  return svg(`${groundRows(rand)}
+${out.join('\n')}`);
+}
+
 console.log('Небо:');
 write('assets/mc/sky-day.svg', skyDay());
 write('assets/mc/sky-sunset.svg', skySunset());
@@ -4470,6 +4569,7 @@ ${flame}`, GLOW_DEF);
 
 console.log('Ближний план:');
 write('assets/mc/near-forest.svg', nearForest());
+write('assets/mc/near-patch.svg', nearPatch());
 write('assets/mc/near-craft.svg', nearCraft());
 write('assets/mc/near-cave.svg', nearCave());
 write('assets/mc/near-build.svg', nearBuild());
@@ -4545,5 +4645,7 @@ write('assets/mc/golem-ghost.svg', golem({ ghost: true }));
 write('assets/mc/fog-bank.svg', fogBank());
 write('assets/mc/cone-row.svg', coneRow());
 write('assets/mc/iron-pile.svg', ironPile());
+write('assets/mc/scarecrow.svg', scarecrow());
+write('assets/mc/stone-pile.svg', stonePile());
 
 console.log('\nГотово.');

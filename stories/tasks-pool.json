@@ -10348,6 +10348,809 @@
    "hintAudio": "6fee6a83"
   }
  ],
+ "minecraft|math|16|scarecrow|wide": [
+  {
+   "type": "addition",
+   "question": "Сколько будет четыре блока и ещё три блока?",
+   "hint": "Посчитаем вместе: четыре блока, и прибавим ещё три.",
+   "choices": [
+    {
+     "label": "Один",
+     "keywords": [
+      "один",
+      "1"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Семь",
+     "keywords": [
+      "семь",
+      "7"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Одиннадцать",
+     "keywords": [
+      "одиннадцать",
+      "11"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "7a1e0713",
+   "hintAudio": "a6444fb4"
+  },
+  {
+   "type": "addition",
+   "question": "Сколько будет семь блоков и ещё семь блоков?",
+   "hint": "Посчитаем вместе: семь блоков, и прибавим ещё семь.",
+   "choices": [
+    {
+     "label": "Четырнадцать",
+     "keywords": [
+      "четырнадцать",
+      "14"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Ноль",
+     "keywords": [
+      "ноль",
+      "0"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Шестнадцать",
+     "keywords": [
+      "шестнадцать",
+      "16"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "5e1088b7",
+   "hintAudio": "81966704"
+  },
+  {
+   "type": "addition",
+   "question": "Сколько будет шесть блоков и ещё один блок?",
+   "hint": "Посчитаем вместе: шесть блоков, и прибавим ещё один.",
+   "choices": [
+    {
+     "label": "Семь",
+     "keywords": [
+      "семь",
+      "7"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Девять",
+     "keywords": [
+      "девять",
+      "9"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Пять",
+     "keywords": [
+      "пять",
+      "5"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "be3388e4",
+   "hintAudio": "07fc7c9d"
+  },
+  {
+   "type": "addition",
+   "question": "Сколько будет шесть блоков и ещё два блока?",
+   "hint": "Посчитаем вместе: шесть блоков, и прибавим ещё два.",
+   "choices": [
+    {
+     "label": "Четыре",
+     "keywords": [
+      "четыре",
+      "4"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Двенадцать",
+     "keywords": [
+      "двенадцать",
+      "12"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Восемь",
+     "keywords": [
+      "восемь",
+      "8"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "f86bab9f",
+   "hintAudio": "c52a9a10"
+  },
+  {
+   "type": "addition",
+   "question": "Сколько будет пять блоков и ещё пять блоков?",
+   "hint": "Посчитаем вместе: пять блоков, и прибавим ещё пять.",
+   "choices": [
+    {
+     "label": "Десять",
+     "keywords": [
+      "десять",
+      "10"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Четырнадцать",
+     "keywords": [
+      "четырнадцать",
+      "14"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Ноль",
+     "keywords": [
+      "ноль",
+      "0"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "de3b63ff",
+   "hintAudio": "8853cb38"
+  }
+ ],
+ "minecraft|math|9|scarecrow|wide": [
+  {
+   "type": "subtraction",
+   "question": "Было три камня, откатили в сторону два камня. Сколько осталось?",
+   "hint": "Было три, пропало два. Отними и скажи, сколько стало.",
+   "choices": [
+    {
+     "label": "Три",
+     "keywords": [
+      "три",
+      "3"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Пять",
+     "keywords": [
+      "пять",
+      "5"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Один",
+     "keywords": [
+      "один",
+      "1"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "15b15f49",
+   "hintAudio": "6afcd990"
+  },
+  {
+   "type": "subtraction",
+   "question": "Было девять камней, откатили в сторону шесть камней. Сколько осталось?",
+   "hint": "Было девять, пропало шесть. Отними и скажи, сколько стало.",
+   "choices": [
+    {
+     "label": "Три",
+     "keywords": [
+      "три",
+      "3"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Девять",
+     "keywords": [
+      "девять",
+      "9"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Ноль",
+     "keywords": [
+      "ноль",
+      "0"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "2cc3cc23",
+   "hintAudio": "6271680c"
+  },
+  {
+   "type": "subtraction",
+   "question": "Было шесть камней, откатили в сторону один камень. Сколько осталось?",
+   "hint": "Было шесть, пропало один. Отними и скажи, сколько стало.",
+   "choices": [
+    {
+     "label": "Два",
+     "keywords": [
+      "два",
+      "2"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Семь",
+     "keywords": [
+      "семь",
+      "7"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Пять",
+     "keywords": [
+      "пять",
+      "5"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "f8434faf",
+   "hintAudio": "78716a49"
+  },
+  {
+   "type": "subtraction",
+   "question": "Было девять блоков, откатили в сторону три блока. Сколько осталось?",
+   "hint": "Было девять, пропало три. Отними и скажи, сколько стало.",
+   "choices": [
+    {
+     "label": "Девять",
+     "keywords": [
+      "девять",
+      "9"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Два",
+     "keywords": [
+      "два",
+      "2"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Шесть",
+     "keywords": [
+      "шесть",
+      "6"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "18959b65",
+   "hintAudio": "1bc04c4e"
+  },
+  {
+   "type": "subtraction",
+   "question": "Было пять камней, откатили в сторону три камня. Сколько осталось?",
+   "hint": "Было пять, пропало три. Отними и скажи, сколько стало.",
+   "choices": [
+    {
+     "label": "Два",
+     "keywords": [
+      "два",
+      "2"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Восемь",
+     "keywords": [
+      "восемь",
+      "8"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Ноль",
+     "keywords": [
+      "ноль",
+      "0"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "655d4954",
+   "hintAudio": "8f9a9a4c"
+  }
+ ],
+ "minecraft|logic|10|scarecrow": [
+  {
+   "type": "oddOneOut",
+   "question": "Что здесь лишнее: морковка, тыква или молоток?",
+   "hint": "Подумай: два из них — это то, что растёт на грядке. А третий?",
+   "choices": [
+    {
+     "label": "Морковка",
+     "keywords": [
+      "морковка"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Молоток",
+     "keywords": [
+      "молоток"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Тыква",
+     "keywords": [
+      "тыква"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "0615a492",
+   "hintAudio": "cd3f5c8f"
+  },
+  {
+   "type": "oddOneOut",
+   "question": "Что здесь лишнее: огурец, тыква или молоток?",
+   "hint": "Подумай: два из них — это то, что растёт на грядке. А третий?",
+   "choices": [
+    {
+     "label": "Тыква",
+     "keywords": [
+      "тыква"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Огурец",
+     "keywords": [
+      "огурец"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Молоток",
+     "keywords": [
+      "молоток"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "a9f20e0f",
+   "hintAudio": "cd3f5c8f"
+  },
+  {
+   "type": "oddOneOut",
+   "question": "Что здесь лишнее: рука, нога или крыша?",
+   "hint": "Подумай: два из них — это части тела. А третий?",
+   "choices": [
+    {
+     "label": "Крыша",
+     "keywords": [
+      "крыша"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Нога",
+     "keywords": [
+      "нога"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Рука",
+     "keywords": [
+      "рука"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "80d639ba",
+   "hintAudio": "03df8546"
+  },
+  {
+   "type": "oddOneOut",
+   "question": "Что здесь лишнее: лопата, метла или тарелка?",
+   "hint": "Подумай: два из них — это вещи с длинной ручкой. А третий?",
+   "choices": [
+    {
+     "label": "Тарелка",
+     "keywords": [
+      "тарелка"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Лопата",
+     "keywords": [
+      "лопата"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Метла",
+     "keywords": [
+      "метла"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "ec61a032",
+   "hintAudio": "8473830e"
+  },
+  {
+   "type": "oddOneOut",
+   "question": "Что здесь лишнее: камень, кирпич или подушка?",
+   "hint": "Подумай: два из них — это то, из чего строят. А третий?",
+   "choices": [
+    {
+     "label": "Подушка",
+     "keywords": [
+      "подушка"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Кирпич",
+     "keywords": [
+      "кирпич"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Камень",
+     "keywords": [
+      "камень"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "f2c9217e",
+   "hintAudio": "4cc67356"
+  },
+  {
+   "type": "pattern",
+   "question": "Что дальше: булыжник, лопата, булыжник, лопата, а потом?",
+   "hint": "Они идут по очереди. После «лопата» снова начинается тот же порядок.",
+   "choices": [
+    {
+     "label": "Булыжник",
+     "keywords": [
+      "булыжник"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Лопата",
+     "keywords": [
+      "лопата"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Грабли",
+     "keywords": [
+      "грабли"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "bf0f3981",
+   "hintAudio": "4fbb1d51"
+  },
+  {
+   "type": "pattern",
+   "question": "Что дальше: морковка, камень, морковка, камень, а потом?",
+   "hint": "Они идут по очереди. После «камень» снова начинается тот же порядок.",
+   "choices": [
+    {
+     "label": "Морковка",
+     "keywords": [
+      "морковка"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Грабли",
+     "keywords": [
+      "грабли"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Камень",
+     "keywords": [
+      "камень"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "f951a809",
+   "hintAudio": "5de94b29"
+  },
+  {
+   "type": "pattern",
+   "question": "Что дальше: тыква, булыжник, тыква, булыжник, а потом?",
+   "hint": "Они идут по очереди. После «булыжник» снова начинается тот же порядок.",
+   "choices": [
+    {
+     "label": "Булыжник",
+     "keywords": [
+      "булыжник"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Тыква",
+     "keywords": [
+      "тыква"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Грабли",
+     "keywords": [
+      "грабли"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "9f30e4c9",
+   "hintAudio": "a9709c70"
+  },
+  {
+   "type": "pattern",
+   "question": "Что дальше: лопата, грабли, лопата, грабли, а потом?",
+   "hint": "Они идут по очереди. После «грабли» снова начинается тот же порядок.",
+   "choices": [
+    {
+     "label": "Тыква",
+     "keywords": [
+      "тыква"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Лопата",
+     "keywords": [
+      "лопата"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Грабли",
+     "keywords": [
+      "грабли"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "1a5d9c81",
+   "hintAudio": "8d7979ae"
+  },
+  {
+   "type": "pattern",
+   "question": "Что дальше: грабли, морковка, грабли, морковка, а потом?",
+   "hint": "Они идут по очереди. После «морковка» снова начинается тот же порядок.",
+   "choices": [
+    {
+     "label": "Морковка",
+     "keywords": [
+      "морковка"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Грабли",
+     "keywords": [
+      "грабли"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Булыжник",
+     "keywords": [
+      "булыжник"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "92121cd5",
+   "hintAudio": "fc3038f7"
+  }
+ ],
+ "minecraft|math|19|scarecrow|wide": [
+  {
+   "type": "missing",
+   "question": "Было двенадцать камней, стало шестнадцать камней. Сколько прибавилось?",
+   "hint": "Досчитай от двенадцати до шестнадцати и запомни, сколько вышло шагов.",
+   "choices": [
+    {
+     "label": "Шестнадцать",
+     "keywords": [
+      "шестнадцать",
+      "16"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Один",
+     "keywords": [
+      "один",
+      "1"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Четыре",
+     "keywords": [
+      "четыре",
+      "4"
+     ],
+     "correct": true
+    }
+   ],
+   "audio": "24f4ceb5",
+   "hintAudio": "696f6c2a"
+  },
+  {
+   "type": "missing",
+   "question": "Было четыре блока, стало шесть блоков. Сколько прибавилось?",
+   "hint": "Досчитай от четырёх до шести и запомни, сколько вышло шагов.",
+   "choices": [
+    {
+     "label": "Ноль",
+     "keywords": [
+      "ноль",
+      "0"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Два",
+     "keywords": [
+      "два",
+      "2"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Шесть",
+     "keywords": [
+      "шесть",
+      "6"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "59076a4a",
+   "hintAudio": "0afcb69a"
+  },
+  {
+   "type": "missing",
+   "question": "Было четыре камня, стало двенадцать камней. Сколько прибавилось?",
+   "hint": "Досчитай от четырёх до двенадцати и запомни, сколько вышло шагов.",
+   "choices": [
+    {
+     "label": "Четыре",
+     "keywords": [
+      "четыре",
+      "4"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Восемь",
+     "keywords": [
+      "восемь",
+      "8"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Двенадцать",
+     "keywords": [
+      "двенадцать",
+      "12"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "3804b135",
+   "hintAudio": "8de78e32"
+  },
+  {
+   "type": "missing",
+   "question": "Было девять камней, стало одиннадцать камней. Сколько прибавилось?",
+   "hint": "Досчитай от девяти до одиннадцати и запомни, сколько вышло шагов.",
+   "choices": [
+    {
+     "label": "Одиннадцать",
+     "keywords": [
+      "одиннадцать",
+      "11"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Два",
+     "keywords": [
+      "два",
+      "2"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Ноль",
+     "keywords": [
+      "ноль",
+      "0"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "5f25bb4a",
+   "hintAudio": "0adaed9f"
+  },
+  {
+   "type": "missing",
+   "question": "Было два камня, стало шесть камней. Сколько прибавилось?",
+   "hint": "Досчитай от двух до шести и запомни, сколько вышло шагов.",
+   "choices": [
+    {
+     "label": "Шесть",
+     "keywords": [
+      "шесть",
+      "6"
+     ],
+     "correct": false
+    },
+    {
+     "label": "Четыре",
+     "keywords": [
+      "четыре",
+      "4"
+     ],
+     "correct": true
+    },
+    {
+     "label": "Ноль",
+     "keywords": [
+      "ноль",
+      "0"
+     ],
+     "correct": false
+    }
+   ],
+   "audio": "1dca52e3",
+   "hintAudio": "5eb482a3"
+  }
+ ],
  "minecraft|math|20|raid|wide": [
   {
    "type": "addition",

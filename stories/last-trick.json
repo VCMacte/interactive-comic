@@ -1,0 +1,186 @@
+{
+  "title": "Последний фокус",
+  "theme": "minecraft",
+  "voice": "hero",
+  "start": "fog",
+  "closes": ["scarecrows"],
+  "scenes": {
+    "fog": {
+      "bg": { "sky": "assets/mc/sky-dawn.webp", "stars": "assets/mc/sun-dawn.svg", "far": "assets/mc/far-hills.webp", "near": "assets/mc/near-gate-pumpkin.svg" },
+      "cast": [
+        { "src": "assets/mc/wolf.svg", "x": 16, "y": 28, "w": 7 },
+        { "src": "assets/mc/steve.svg", "x": 26, "y": 28, "w": 8 },
+        { "src": "assets/mc/alex.svg", "x": 37, "y": 28, "w": 8 },
+        { "src": "assets/mc/scarecrow.svg", "x": 54, "y": 28, "w": 12 },
+        { "src": "assets/mc/fog-bank.svg", "x": 76, "y": 24, "w": 40 }
+      ],
+      "voice": "ally",
+      "text": "Утром у ёлок лёг туман. Волк вскочил и залаял на него! «Там кто-то есть! Пришёл смотреть на куклу!»",
+      "prompt": "Спрячемся у ворот или сперва стукнем Железному в стену?",
+      "choices": [
+        { "label": "Спрятаться у ворот", "keywords": ["спрятаться", "спрячемся", "у ворот", "ворота", "прятаться"],
+          "voice": "hero", "say": "Стив присел у ворот. «Волк, беги за кузницу, к Железному! Залаешь — и колдун уйдёт, куклу не увидит!» Волк убежал.", "dir": "left", "next": "watch" },
+        { "label": "Стукнуть в стену", "keywords": ["стукнуть", "стукнем", "в стену", "стена", "железному", "кузница"],
+          "voice": "golem", "say": "Стив тихо стукнул в стену кузницы. Оттуда загудели. «Понял. Жду» Волка тоже отправили туда: залает — и колдун уйдёт.", "dir": "right", "next": "watch" }
+      ]
+    },
+    "watch": {
+      "bg": { "sky": "assets/mc/sky-dawn.webp", "stars": "assets/mc/sun-dawn.svg", "far": "assets/mc/far-hills.webp", "near": "assets/mc/near-gate-pumpkin.svg" },
+      "cast": [
+        { "src": "assets/mc/steve.svg", "x": 20, "y": 28, "w": 8 },
+        { "src": "assets/mc/alex.svg", "x": 30, "y": 28, "w": 8 },
+        { "src": "assets/mc/scarecrow.svg", "x": 50, "y": 28, "w": 12 },
+        { "src": "assets/mc/illusioner.svg", "x": 78, "y": 28, "w": 10 },
+        { "src": "assets/mc/fog-bank.svg", "x": 76, "y": 24, "w": 40 }
+      ],
+      "voice": "hero",
+      "text": "Из тумана вышел тот, в лиловом плаще! Встал у ёлок и долго смотрел на чучело. Стив зашептал. «Считает камни. Копию делает!»",
+      "task": { "kind": "math", "max": 12, "types": ["addition"], "topic": "scarecrow", "spread": "wide" },
+      "next": "copy"
+    },
+    "copy": {
+      "bg": { "sky": "assets/mc/sky-dawn.webp", "stars": "assets/mc/sun-dawn.svg", "far": "assets/mc/far-hills.webp", "near": "assets/mc/near-gate-pumpkin.svg" },
+      "cast": [
+        { "src": "assets/mc/steve.svg", "x": 20, "y": 28, "w": 8 },
+        { "src": "assets/mc/alex.svg", "x": 30, "y": 28, "w": 8 },
+        { "src": "assets/mc/scarecrow.svg", "x": 46, "y": 28, "w": 12 },
+        { "src": "assets/mc/scarecrow-ghost.svg", "x": 62, "y": 28, "w": 12 },
+        { "src": "assets/mc/illusioner.svg", "x": 80, "y": 28, "w": 10 },
+        { "src": "assets/mc/fog-bank.svg", "x": 76, "y": 24, "w": 40 }
+      ],
+      "voice": "trickster",
+      "text": "Колдун взмахнул плащом, и рядом встала вторая кукла, лиловая по краям! «Вот мой Железный! Иди, открывай ворота!»",
+      "task": { "kind": "logic", "max": 10, "types": ["oddOneOut"], "topic": "trick" },
+      "next": "stuck"
+    },
+    "stuck": {
+      "bg": { "sky": "assets/mc/sky-dawn.webp", "stars": "assets/mc/sun-dawn.svg", "far": "assets/mc/far-hills.webp", "near": "assets/mc/near-gate-pumpkin.svg" },
+      "cast": [
+        { "src": "assets/mc/steve.svg", "x": 20, "y": 28, "w": 8 },
+        { "src": "assets/mc/alex.svg", "x": 30, "y": 28, "w": 8 },
+        { "src": "assets/mc/scarecrow.svg", "x": 46, "y": 28, "w": 12 },
+        { "src": "assets/mc/scarecrow-ghost.svg", "x": 62, "y": 28, "w": 12 },
+        { "src": "assets/mc/illusioner.svg", "x": 80, "y": 28, "w": 10 },
+        { "src": "assets/mc/fog-bank.svg", "x": 76, "y": 24, "w": 40 }
+      ],
+      "voice": "hero",
+      "text": "А кукла не шагнула. Колдун топнул ногой, а она стояла и молчала! Стив засмеялся в кулак. «Он же слышал вчера: ни шагу и молчи!»",
+      "prompt": "Засмеёмся или прикажем кукле шагать?",
+      "choices": [
+        { "label": "Засмеяться", "keywords": ["засмеяться", "засмеёмся", "смеяться", "смех", "смешно"],
+          "dir": "forward", "next": "laugh" },
+        { "label": "Приказать шагать", "keywords": ["приказать", "прикажем", "шагать", "шагай", "иди"],
+          "dir": "right", "next": "shout" }
+      ]
+    },
+    "shout": {
+      "bg": { "sky": "assets/mc/sky-dawn.webp", "stars": "assets/mc/sun-dawn.svg", "far": "assets/mc/far-hills.webp", "near": "assets/mc/near-gate-pumpkin.svg" },
+      "cast": [
+        { "src": "assets/mc/steve.svg", "x": 36, "y": 28, "w": 8 },
+        { "src": "assets/mc/scarecrow-ghost.svg", "x": 62, "y": 28, "w": 12 },
+        { "src": "assets/mc/illusioner.svg", "x": 80, "y": 28, "w": 10 },
+        { "src": "assets/mc/fog-bank.svg", "x": 76, "y": 24, "w": 40 }
+      ],
+      "voice": "hero",
+      "text": "Стив крикнул второй кукле! «Шагай!» Кукла даже не качнулась. Она знает только то, что слышал колдун. А он слышал: ни шагу!",
+      "prompt": "Посмеёмся вместе со всеми?",
+      "choices": [
+        { "label": "Засмеяться", "keywords": ["засмеяться", "посмеёмся", "смеяться", "смех", "да"],
+          "dir": "left", "next": "laugh" }
+      ]
+    },
+    "laugh": {
+      "bg": { "sky": "assets/mc/sky-dawn.webp", "stars": "assets/mc/sun-dawn.svg", "far": "assets/mc/far-hills.webp", "near": "assets/mc/near-gate-pumpkin.svg" },
+      "cast": [
+        { "src": "assets/mc/villager.svg", "x": 10, "y": 28, "w": 7.6 },
+        { "src": "assets/mc/steve.svg", "x": 20, "y": 28, "w": 8 },
+        { "src": "assets/mc/alex.svg", "x": 30, "y": 28, "w": 8 },
+        { "src": "assets/mc/scarecrow.svg", "x": 46, "y": 28, "w": 12 },
+        { "src": "assets/mc/scarecrow-ghost.svg", "x": 62, "y": 28, "w": 12 },
+        { "src": "assets/mc/illusioner.svg", "x": 80, "y": 28, "w": 10 }
+      ],
+      "voice": "friend",
+      "text": "Смеялась уже вся деревня. Житель хлопал себя по коленкам. «Хм-хм! Каменный, а не Железный! Ни шагу не сделал!»",
+      "task": { "kind": "logic", "max": 10, "types": ["pattern"], "topic": "trick" },
+      "next": "knock"
+    },
+    "knock": {
+      "bg": { "sky": "assets/mc/sky-dawn.webp", "stars": "assets/mc/sun-dawn.svg", "far": "assets/mc/far-hills.webp", "near": "assets/mc/near-gate-pumpkin.svg" },
+      "cast": [
+        { "src": "assets/mc/steve.svg", "x": 20, "y": 28, "w": 8 },
+        { "src": "assets/mc/alex.svg", "x": 30, "y": 28, "w": 8 },
+        { "src": "assets/mc/scarecrow.svg", "x": 46, "y": 28, "w": 12 },
+        { "src": "assets/mc/scarecrow-ghost.svg", "x": 62, "y": 28, "w": 12 },
+        { "src": "assets/mc/illusioner.svg", "x": 80, "y": 28, "w": 10 }
+      ],
+      "voice": "hero",
+      "text": "Колдун сердито махал рукавом. А Стив стукнул в стену кузницы. Бум! Бум! За стеной зашагали! «У настоящего шаги слышно. Считай!»",
+      "task": { "kind": "math", "max": 13, "types": ["next"], "topic": "blocks", "spread": "wide" },
+      "next": "real"
+    },
+    "real": {
+      "bg": { "sky": "assets/mc/sky-dawn.webp", "stars": "assets/mc/sun-dawn.svg", "far": "assets/mc/far-hills.webp", "near": "assets/mc/near-gate-pumpkin.svg" },
+      "cast": [
+        { "src": "assets/mc/steve.svg", "x": 14, "y": 28, "w": 8 },
+        { "src": "assets/mc/alex.svg", "x": 24, "y": 28, "w": 8 },
+        { "src": "assets/mc/golem.svg", "x": 38, "y": 28, "w": 12 },
+        { "src": "assets/mc/scarecrow-ghost.svg", "x": 62, "y": 28, "w": 12 },
+        { "src": "assets/mc/illusioner.svg", "x": 80, "y": 28, "w": 10 }
+      ],
+      "voice": "golem",
+      "text": "Из-за кузницы вышел настоящий Железный. Тень за ним, земля дрожит! Он встал у ворот. «Я здесь. Это мой дом»",
+      "prompt": "Посмотрим на колдуна или помашем Железному?",
+      "choices": [
+        { "label": "Посмотреть на колдуна", "keywords": ["посмотреть", "посмотрим", "колдуна", "колдун", "на колдуна"],
+          "voice": "trickster", "say": "Колдун посмотрел на свою куклу и вздохнул. «Ни шагу. Молчит. Сам виноват»", "dir": "right", "next": "gone" },
+        { "label": "Помахать Железному", "keywords": ["помахать", "помашем", "железному", "железный", "голем"],
+          "voice": "golem", "say": "Железный поднял руку. «Не бойтесь. Я с вами»", "dir": "left", "next": "gone" }
+      ]
+    },
+    "gone": {
+      "bg": { "sky": "assets/mc/sky-dawn.webp", "stars": "assets/mc/sun-dawn.svg", "far": "assets/mc/far-hills.webp", "near": "assets/mc/near-gate-pumpkin.svg" },
+      "cast": [
+        { "src": "assets/mc/steve.svg", "x": 14, "y": 28, "w": 8 },
+        { "src": "assets/mc/alex.svg", "x": 24, "y": 28, "w": 8 },
+        { "src": "assets/mc/golem.svg", "x": 38, "y": 28, "w": 12 },
+        { "src": "assets/mc/illusioner.svg", "x": 80, "y": 28, "w": 10 },
+        { "src": "assets/mc/fog-bank.svg", "x": 76, "y": 24, "w": 40 }
+      ],
+      "voice": "trickster",
+      "text": "Копия растаяла. Колдун понял, что попался на свой же фокус! «Тут каждый знает все мои фокусы! В вашу деревню я больше не приду!» И он ушёл в туман.",
+      "prompt": "Помашем вслед или позовём волка?",
+      "choices": [
+        { "label": "Помахать вслед", "keywords": ["помахать", "помашем", "вслед", "пока", "до свидания"],
+          "voice": "hero", "say": "«Пока! А тыквы бери на грядке!» Из тумана в последний раз засмеялись, и стало тихо. Из-за кузницы прибежал волк.", "dir": "forward", "next": "tidy" },
+        { "label": "Позвать волка", "keywords": ["позвать", "позовём", "волка", "волк", "пёс"],
+          "voice": "hero", "say": "Волк прибежал, обнюхал траву у ёлок и чихнул. Стив засмеялся. «Пусто! Ушёл насовсем!»", "dir": "left", "next": "tidy" }
+      ]
+    },
+    "tidy": {
+      "bg": { "sky": "assets/mc/sky-day.webp", "stars": "assets/mc/sun-day.svg", "far": "assets/mc/far-hills.webp", "near": "assets/mc/near-gate-pumpkin.svg" },
+      "cast": [
+        { "src": "assets/mc/wolf.svg", "x": 16, "y": 28, "w": 7 },
+        { "src": "assets/mc/steve.svg", "x": 26, "y": 28, "w": 8 },
+        { "src": "assets/mc/alex.svg", "x": 37, "y": 28, "w": 8 },
+        { "src": "assets/mc/scarecrow.svg", "x": 54, "y": 28, "w": 12 },
+        { "src": "assets/mc/golem.svg", "x": 76, "y": 28, "w": 12 }
+      ],
+      "voice": "ally",
+      "text": "Выглянуло солнце. «Камни — в кузницу, тыкву — на грядку! И горку железа, что копил колдун, — тоже к нам!»",
+      "task": { "kind": "math", "max": 7, "types": ["subtraction"], "topic": "scarecrow", "spread": "wide" },
+      "next": "sky"
+    },
+    "sky": {
+      "bg": { "sky": "assets/mc/sky-day.webp", "stars": "assets/mc/sun-day.svg", "far": "assets/mc/far-hills.webp", "near": "assets/mc/near-meadow.svg" },
+      "cast": [
+        { "src": "assets/mc/wolf.svg", "x": 16, "y": 28, "w": 7 },
+        { "src": "assets/mc/steve.svg", "x": 26, "y": 28, "w": 8 },
+        { "src": "assets/mc/alex.svg", "x": 37, "y": 28, "w": 8 },
+        { "src": "assets/mc/golem.svg", "x": 50, "y": 28, "w": 12 },
+        { "src": "assets/mc/dragon.svg", "x": 72, "y": 64, "w": 20 }
+      ],
+      "voice": "villain",
+      "text": "Днём все вышли на луг. Волк вдруг залаял в небо! Над лугом летел дракон. «Колдун ушёл — можно и в гости! Теперь мне есть к кому прилетать!»"
+    }
+  }
+}

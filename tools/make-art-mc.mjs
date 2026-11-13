@@ -4229,12 +4229,16 @@ ${px(x * U + 0.2 * U, 2.6 * U, 1.8 * U, 0.3 * U, '#8e2a20')}`;
  * тыква вместо головы, нет знака ритуала и ржавчины. Анимации покоя нет:
  * чучело не живое, и в этом вся ловушка.
  */
-function scarecrow() {
+// `ghost` — копия двадцать первого дня: тот же камень и та же тыква,
+// только полупрозрачная и с лиловым краем — колдовство сериала лиловое.
+function scarecrow({ ghost = false } = {}) {
   const U = 20;
   // Камень светлый: у ворот чучело стоит на фоне серой стены, а обычный
   // серый с ней сливается. Светлый тон к тому же ближе к железу голема.
-  const st = '#bcbcc0', stDark = '#88888e', stLight = '#d6d6da';
-  const skin = '#d97a1e', skinDark = '#b35f12', skinLight = '#eb9a3c';
+  // У копии камень и тыква отливают лиловым: так ребёнок отличает её
+  // от настоящего чучела с первого взгляда, без подсказки рассказчика.
+  const st = ghost ? '#b9a6d6' : '#bcbcc0', stDark = ghost ? '#7f68a6' : '#88888e', stLight = ghost ? '#d9ccee' : '#d6d6da';
+  const skin = ghost ? '#c77ab8' : '#d97a1e', skinDark = ghost ? '#9a5592' : '#b35f12', skinLight = ghost ? '#df9ccf' : '#eb9a3c';
   const stem = '#5e7f3a', hole = '#3a2410';
   const seams = [];
   for (let y = 15; y < 24; y += 3) seams.push(px(6 * U, y * U, 12 * U, 0.3 * U, stDark));
@@ -4646,6 +4650,7 @@ write('assets/mc/fog-bank.svg', fogBank());
 write('assets/mc/cone-row.svg', coneRow());
 write('assets/mc/iron-pile.svg', ironPile());
 write('assets/mc/scarecrow.svg', scarecrow());
+write('assets/mc/scarecrow-ghost.svg', scarecrow({ ghost: true }));
 write('assets/mc/stone-pile.svg', stonePile());
 
 console.log('\nГотово.');

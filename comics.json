@@ -6,6 +6,13 @@
     "cover": "assets/covers/dark-woods.webp",
     "comics": [
       {
+        "id": "last-trick",
+        "title": "Последний фокус",
+        "subtitle": "Двадцать первый день Стива · пять игр",
+        "cover": "assets/covers/last-trick.webp",
+        "story": "stories/last-trick.json"
+      },
+      {
         "id": "scarecrows",
         "title": "Чучела",
         "subtitle": "Двадцатый день Стива · пять игр",

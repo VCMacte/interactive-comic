@@ -1,5 +1,20 @@
 [
   {
+    "id": "s4",
+    "title": "В гости к дракону",
+    "subtitle": "Четвёртый сезон · дракон зовёт Стива на дальние острова",
+    "cover": "assets/covers/dragon-calls.webp",
+    "comics": [
+      {
+        "id": "dragon-calls",
+        "title": "Дракон зовёт",
+        "subtitle": "Двадцать второй день Стива · пять игр",
+        "cover": "assets/covers/dragon-calls.webp",
+        "story": "stories/dragon-calls.json"
+      }
+    ]
+  },
+  {
     "id": "s3",
     "title": "Колдун из тёмного леса",
     "subtitle": "Третий сезон · тыква пропала, и Стив идёт по следу",

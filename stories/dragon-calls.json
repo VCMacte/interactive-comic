@@ -1,0 +1,551 @@
+{
+  "title": "Дракон зовёт",
+  "theme": "minecraft",
+  "voice": "hero",
+  "start": "landing",
+  "hook": "завтра — через рамку, к дракону на дальние острова",
+  "scenes": {
+    "landing": {
+      "bg": {
+        "sky": "assets/mc/sky-dawn.webp",
+        "stars": "assets/mc/sun-dawn.svg",
+        "far": "assets/mc/far-hills.webp",
+        "near": "assets/mc/near-meadow.svg"
+      },
+      "cast": [
+        {
+          "src": "assets/mc/steve.svg",
+          "x": 14,
+          "y": 28,
+          "w": 8
+        },
+        {
+          "src": "assets/mc/wolf.svg",
+          "x": 36,
+          "y": 28,
+          "w": 7
+        },
+        {
+          "src": "assets/mc/dragon.svg",
+          "x": 62,
+          "y": 28,
+          "w": 26
+        }
+      ],
+      "voice": "hero",
+      "text": "Утром над лугом опять зашумели крылья. Волк первым помчался встречать! Стив выбежал за ворота. «Дракон вернулся! И сел прямо на наш луг!»",
+      "prompt": "Побежим за волком или позовём наших?",
+      "choices": [
+        {
+          "label": "Бежать за волком",
+          "keywords": [
+            "бежать",
+            "побежим",
+            "за волком",
+            "волк",
+            "волком"
+          ],
+          "voice": "hero",
+          "say": "Стив побежал следом. «Пёс, стой! Это друг!» А волк уже обнюхал драконью лапу и завилял хвостом.",
+          "dir": "right",
+          "next": "invite"
+        },
+        {
+          "label": "Позвать наших",
+          "keywords": [
+            "позвать",
+            "позовём",
+            "наших",
+            "алекс",
+            "всех"
+          ],
+          "voice": "ally",
+          "say": "Стив замахал руками у ворот. Оттуда выглянули и ахнули. «Он вернулся! Бежим скорее!» А волк уже обнюхал драконью лапу и завилял хвостом.",
+          "dir": "right",
+          "next": "invite"
+        }
+      ]
+    },
+    "invite": {
+      "bg": {
+        "sky": "assets/mc/sky-day.webp",
+        "stars": "assets/mc/sun-day.svg",
+        "far": "assets/mc/far-hills.webp",
+        "near": "assets/mc/near-meadow.svg"
+      },
+      "cast": [
+        {
+          "src": "assets/mc/steve.svg",
+          "x": 12,
+          "y": 28,
+          "w": 8
+        },
+        {
+          "src": "assets/mc/alex.svg",
+          "x": 22,
+          "y": 28,
+          "w": 8
+        },
+        {
+          "src": "assets/mc/wolf.svg",
+          "x": 36,
+          "y": 28,
+          "w": 7
+        },
+        {
+          "src": "assets/mc/dragon.svg",
+          "x": 62,
+          "y": 28,
+          "w": 26
+        }
+      ],
+      "voice": "villain",
+      "text": "«Зову к себе в гости! А от меня полетим на дальний остров. Там чужой город, а одному мне туда скучно! Сперва загадка!»",
+      "task": {
+        "kind": "logic",
+        "max": 10,
+        "types": [
+          "oddOneOut"
+        ],
+        "topic": "guest"
+      },
+      "next": "pack"
+    },
+    "pack": {
+      "bg": {
+        "sky": "assets/mc/sky-day.webp",
+        "stars": "assets/mc/sun-day.svg",
+        "far": "assets/mc/far-hills.webp",
+        "near": "assets/mc/near-village.svg"
+      },
+      "cast": [
+        {
+          "src": "assets/mc/steve.svg",
+          "x": 14,
+          "y": 28,
+          "w": 8
+        },
+        {
+          "src": "assets/mc/alex.svg",
+          "x": 26,
+          "y": 28,
+          "w": 8
+        },
+        {
+          "src": "assets/mc/torch-row.svg",
+          "x": 76,
+          "y": 28,
+          "w": 25
+        }
+      ],
+      "voice": "ally",
+      "text": "Мешки вынесли к воротам. «Летим в гости! У дракона нет солнца, там темно. Факелы я взяла. К ним нужны угольки. Считай!»",
+      "task": {
+        "kind": "math",
+        "max": 17,
+        "types": [
+          "addition"
+        ],
+        "topic": "guest",
+        "spread": "wide"
+      },
+      "next": "blocks"
+    },
+    "blocks": {
+      "bg": {
+        "sky": "assets/mc/sky-day.webp",
+        "stars": "assets/mc/sun-day.svg",
+        "far": "assets/mc/far-hills.webp",
+        "near": "assets/mc/near-village.svg"
+      },
+      "cast": [
+        {
+          "src": "assets/mc/alex.svg",
+          "x": 12,
+          "y": 28,
+          "w": 8
+        },
+        {
+          "src": "assets/mc/steve.svg",
+          "x": 26,
+          "y": 28,
+          "w": 8
+        },
+        {
+          "src": "assets/mc/stone-pile.svg",
+          "x": 70,
+          "y": 28,
+          "w": 16
+        }
+      ],
+      "voice": "hero",
+      "text": "Стив тащил второй мешок. «У дракона везде пустота, а между островами — ничего! Кладу блоки и камни. Считай!»",
+      "task": {
+        "kind": "math",
+        "max": 12,
+        "types": [
+          "missing"
+        ],
+        "topic": "blocks",
+        "spread": "wide"
+      },
+      "next": "village"
+    },
+    "village": {
+      "bg": {
+        "sky": "assets/mc/sky-day.webp",
+        "stars": "assets/mc/sun-day.svg",
+        "far": "assets/mc/far-hills.webp",
+        "near": "assets/mc/near-village.svg"
+      },
+      "cast": [
+        {
+          "src": "assets/mc/steve.svg",
+          "x": 14,
+          "y": 28,
+          "w": 8
+        },
+        {
+          "src": "assets/mc/alex.svg",
+          "x": 24,
+          "y": 28,
+          "w": 8
+        },
+        {
+          "src": "assets/mc/villager.svg",
+          "x": 38,
+          "y": 28,
+          "w": 7.6
+        },
+        {
+          "src": "assets/mc/gold-glint.svg",
+          "x": 88,
+          "y": 26,
+          "w": 6
+        }
+      ],
+      "voice": "friend",
+      "text": "Прибежал житель с корзиной. «Хм-хм! К дракону — и без еды? Вот хлеб и яблоки в дорогу!» А у забора что-то блеснуло жёлтым.",
+      "prompt": "Возьмём еду или глянем, что блестит?",
+      "choices": [
+        {
+          "label": "Взять еду",
+          "keywords": [
+            "взять",
+            "возьмём",
+            "еду",
+            "еда",
+            "хлеб",
+            "яблоки"
+          ],
+          "voice": "hero",
+          "say": "Стив сунул хлеб в мешок и откусил от яблока. «Спасибо! Яблоки — дракону, хлеб — нам!»",
+          "dir": "forward",
+          "next": "stay"
+        },
+        {
+          "label": "Что блестит?",
+          "keywords": [
+            "блестит",
+            "глянем",
+            "что там",
+            "посмотреть",
+            "жёлтое",
+            "забор"
+          ],
+          "voice": "kid",
+          "say": "У забора кто-то буркнул. «Хрю! Дракон большой, а золота у него нет! А у меня есть!» Стив пожал плечами и взял корзину с едой.",
+          "dir": "forward",
+          "next": "stay"
+        }
+      ]
+    },
+    "stay": {
+      "bg": {
+        "sky": "assets/mc/sky-day.webp",
+        "stars": "assets/mc/sun-day.svg",
+        "far": "assets/mc/far-hills.webp",
+        "near": "assets/mc/near-village.svg"
+      },
+      "cast": [
+        {
+          "src": "assets/mc/steve.svg",
+          "x": 20,
+          "y": 28,
+          "w": 8
+        },
+        {
+          "src": "assets/mc/wolf.svg",
+          "x": 34,
+          "y": 28,
+          "w": 7
+        },
+        {
+          "src": "assets/mc/alex.svg",
+          "x": 50,
+          "y": 28,
+          "w": 8
+        }
+      ],
+      "voice": "hero",
+      "text": "Волк схватил мешок зубами и потянул к воротам. Он тоже хотел в гости! Стив присел рядом. «Ты остаёшься, пёс. Там пустота. Стереги деревню с Железным!»",
+      "prompt": "Обнимем волка или позовём Железного?",
+      "choices": [
+        {
+          "label": "Обнять волка",
+          "keywords": [
+            "обнять",
+            "обнимем",
+            "волка",
+            "волк",
+            "пса"
+          ],
+          "dir": "left",
+          "next": "hug"
+        },
+        {
+          "label": "Позвать Железного",
+          "keywords": [
+            "позвать",
+            "позовём",
+            "железного",
+            "железный",
+            "голем"
+          ],
+          "dir": "forward",
+          "next": "guard",
+          "voice": "hero",
+          "say": "Стив свистнул в сторону кузницы. Волк вздохнул и отпустил мешок."
+        }
+      ]
+    },
+    "hug": {
+      "bg": {
+        "sky": "assets/mc/sky-day.webp",
+        "stars": "assets/mc/sun-day.svg",
+        "far": "assets/mc/far-hills.webp",
+        "near": "assets/mc/near-village.svg"
+      },
+      "cast": [
+        {
+          "src": "assets/mc/steve.svg",
+          "x": 26,
+          "y": 28,
+          "w": 8
+        },
+        {
+          "src": "assets/mc/wolf.svg",
+          "x": 34,
+          "y": 28,
+          "w": 7
+        }
+      ],
+      "voice": "hero",
+      "text": "Стив обнял волка за шею. Волк лизнул его в нос, вздохнул и отпустил мешок. «Я вернусь, пёс. И всё тебе расскажу!»",
+      "prompt": "Позовём Железного?",
+      "choices": [
+        {
+          "label": "Позвать Железного",
+          "keywords": [
+            "позвать",
+            "позовём",
+            "железного",
+            "железный",
+            "голем",
+            "да"
+          ],
+          "dir": "right",
+          "next": "guard"
+        }
+      ]
+    },
+    "guard": {
+      "bg": {
+        "sky": "assets/mc/sky-day.webp",
+        "stars": "assets/mc/sun-day.svg",
+        "far": "assets/mc/far-hills.webp",
+        "near": "assets/mc/near-gate-pumpkin.svg"
+      },
+      "cast": [
+        {
+          "src": "assets/mc/steve.svg",
+          "x": 14,
+          "y": 28,
+          "w": 8
+        },
+        {
+          "src": "assets/mc/alex.svg",
+          "x": 24,
+          "y": 28,
+          "w": 8
+        },
+        {
+          "src": "assets/mc/wolf.svg",
+          "x": 40,
+          "y": 28,
+          "w": 7
+        },
+        {
+          "src": "assets/mc/golem.svg",
+          "x": 54,
+          "y": 28,
+          "w": 12
+        }
+      ],
+      "voice": "golem",
+      "text": "От кузницы пришёл Железный. Волк сел рядом. «Идите. Я сторожу. Пёс со мной» Стив напоследок обошёл всё по очереди.",
+      "task": {
+        "kind": "logic",
+        "max": 10,
+        "types": [
+          "pattern"
+        ],
+        "topic": "guest"
+      },
+      "next": "why"
+    },
+    "why": {
+      "bg": {
+        "sky": "assets/mc/sky-day.webp",
+        "stars": "assets/mc/sun-day.svg",
+        "far": "assets/mc/far-hills.webp",
+        "near": "assets/mc/near-meadow.svg"
+      },
+      "cast": [
+        {
+          "src": "assets/mc/steve.svg",
+          "x": 12,
+          "y": 28,
+          "w": 8
+        },
+        {
+          "src": "assets/mc/alex.svg",
+          "x": 22,
+          "y": 28,
+          "w": 8
+        },
+        {
+          "src": "assets/mc/dragon.svg",
+          "x": 62,
+          "y": 28,
+          "w": 26
+        }
+      ],
+      "voice": "villain",
+      "text": "Дракон расправил крылья. «На спину не возьму! Я лечу выше облаков, вас сдует. А выход на моей горке ведёт только сюда. Идите через рамку под библиотекой. Жду завтра у столбов!»",
+      "prompt": "Помашем дракону или спросим про чужой город?",
+      "choices": [
+        {
+          "label": "Помахать дракону",
+          "keywords": [
+            "помахать",
+            "помашем",
+            "дракону",
+            "пока",
+            "до завтра"
+          ],
+          "voice": "hero",
+          "say": "Стив замахал обеими руками. «До завтра! Мы придём с факелами!»",
+          "dir": "forward",
+          "next": "wind"
+        },
+        {
+          "label": "Спросить про город",
+          "keywords": [
+            "спросить",
+            "спросим",
+            "про город",
+            "город",
+            "кто там"
+          ],
+          "voice": "villain",
+          "say": "Дракон прищурился. «Кто там жил? Не знаю! Я видел город только сверху. Вот вместе и посмотрим!»",
+          "dir": "forward",
+          "next": "wind"
+        }
+      ]
+    },
+    "wind": {
+      "bg": {
+        "sky": "assets/mc/sky-day.webp",
+        "stars": "assets/mc/sun-day.svg",
+        "far": "assets/mc/far-hills.webp",
+        "near": "assets/mc/near-meadow.svg"
+      },
+      "cast": [
+        {
+          "src": "assets/mc/steve.svg",
+          "x": 20,
+          "y": 28,
+          "w": 8
+        },
+        {
+          "src": "assets/mc/alex.svg",
+          "x": 32,
+          "y": 28,
+          "w": 8
+        },
+        {
+          "src": "assets/mc/stone-pile.svg",
+          "x": 70,
+          "y": 28,
+          "w": 16
+        },
+        {
+          "src": "assets/mc/dragon.svg",
+          "x": 72,
+          "y": 64,
+          "w": 20
+        }
+      ],
+      "voice": "hero",
+      "text": "Дракон взлетел, и от крыльев поднялся ветер! Мешок упал набок. «Эй! Мои блоки и камни! Считай, что осталось!»",
+      "task": {
+        "kind": "math",
+        "max": 9,
+        "types": [
+          "subtraction"
+        ],
+        "topic": "blocks",
+        "spread": "wide"
+      },
+      "next": "tomorrow"
+    },
+    "tomorrow": {
+      "bg": {
+        "sky": "assets/mc/sky-sunset.webp",
+        "stars": "assets/mc/sun-sunset.svg",
+        "far": "assets/mc/far-hills.webp",
+        "near": "assets/mc/near-gate-pumpkin.svg"
+      },
+      "cast": [
+        {
+          "src": "assets/mc/steve.svg",
+          "x": 14,
+          "y": 28,
+          "w": 8
+        },
+        {
+          "src": "assets/mc/alex.svg",
+          "x": 24,
+          "y": 28,
+          "w": 8
+        },
+        {
+          "src": "assets/mc/wolf.svg",
+          "x": 40,
+          "y": 28,
+          "w": 7
+        },
+        {
+          "src": "assets/mc/golem.svg",
+          "x": 54,
+          "y": 28,
+          "w": 12
+        }
+      ],
+      "voice": "ally",
+      "text": "Дракон давно улетел к себе. К вечеру Стив сложил блоки обратно в мешок. Мешки встали у ворот, рядом с Железным. Волк улёгся прямо на них. «Всем спать! Завтра — через рамку!»"
+    }
+  }
+}
